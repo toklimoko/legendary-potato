@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.tomek.audiometr.MainActivity"
+    tools:showIn="@layout/app_bar_main">
+
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/tapeta" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="275dp"
+        android:layout_height="90dp"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="casual"
+        android:gravity="center"
+        android:paddingTop="@dimen/nav_header_vertical_spacing"
+        android:text="@string/zacheta"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+        android:textColor="@color/lightText"
+        android:textSize="20sp"
+        android:textStyle="italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
+
+    <FrameLayout
+        android:id="@+id/frameCalibrateButton"
+        android:layout_width="160dp"
+        android:layout_height="118dp"
+        android:layout_marginBottom="65dp"
+        android:layout_marginStart="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:clickable="false"
+            android:fontFamily="sans-serif"
+            android:text="@string/kalibruj_txt"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp">
+
+
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/btn_kal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="240dp"
+            android:layout_marginStart="40dp"
+            android:adjustViewBounds="false"
+            android:background="@color/popUp"
+            android:cropToPadding="false"
+            android:scaleType="fitXY"
+            android:text="daondo"
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/calibration_icon" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/frameBeginButton"
+        android:layout_width="160dp"
+        android:layout_height="118dp"
+        android:layout_marginBottom="65dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:clickable="false"
+            android:fontFamily="sans-serif"
+            android:text="@string/title_activity_main3"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp">
+
+        </TextView>
+
+        <ImageButton
+            android:id="@+id/btn_badanie"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="240dp"
+            android:layout_marginStart="40dp"
+            android:adjustViewBounds="false"
+            android:background="@color/popUp"
+            android:cropToPadding="false"
+            android:scaleType="centerInside"
+            android:tint="@color/colorAccent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/play_icon" />
+    </FrameLayout>
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="251dp"-->
+    <!--android:layout_height="242dp"-->
+    <!--android:layout_marginBottom="24dp"-->
+    <!--android:layout_marginStart="8dp"-->
+    <!--android:gravity="center"-->
+    <!--android:orientation="vertical"-->
+    <!--android:visibility="gone"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent">-->
+
+    <!--<ImageButton-->
+    <!--android:id="@+id/button_x"-->
+    <!--android:layout_width="196dp"-->
+    <!--android:layout_height="178dp"-->
+    <!--android:background="@null"-->
+    <!--android:scaleType="fitXY"-->
+    <!--android:src="@drawacalibration_iconIcon"></ImageButton>-->
+
+    <!--<TextView-->
+    <!--android:layout_width="143dp"-->
+    <!--android:layout_height="54dp"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:clickable="false"-->
+    <!--android:text="TEST TEST"-->
+    <!--android:textAlignment="center"-->
+    <!--android:textColor="@color/lightText"-->
+    <!--android:textSize="24sp"-->
+    <!--android:textStyle="bold"></TextView>-->
+
+    <!--</LinearLayout>-->
+
+</android.support.constraint.ConstraintLayout>

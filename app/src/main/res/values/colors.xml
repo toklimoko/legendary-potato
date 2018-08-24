@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--<color name="colorPrimary">#b57a7a7a</color>-->
+    <!--<color name="colorPrimaryDark">#befffdfd</color>-->
+
+    <color name="colorPrimary">#c4ff6f00</color>
+    <color name="colorPrimaryDark">#c3ffb300</color>
+    <color name="lightText">#befffdfd</color>
+    <color name="colorAccent">#dfff9106</color>
+    <color name="buttonGo">#b68b520a</color>
+    <color name="buttonCalibration">#ce7a7a7a</color>
+    <color name="colorPopUp">#869bb5ff</color>
+    <color name="popUp">#007a7a7a</color>
+    <color name="SplashFirstColor">@android:color/holo_orange_dark</color>
+    <color name="SplashSecondColor">#000000</color>
+
+
+    <!--<color name="colorPrimary">@android:color/holo_orange_dark</color>-->
+    <!--<color name="colorPrimary">@android:color/holo_orange_dark</color>-->
+    <!--<color name="colorPrimaryDark">#c3ac6304</color>-->
+    <!--<color name="lightText">#befffdfd</color>-->
+    <!--<color name="colorAccent">#dfff9106</color>-->
+    <!--<color name="buttonGo">#b68b520a</color>-->
+    <!--<color name="buttonCalibration">#b57a7a7a</color>-->
+    <!--<color name="colorPopUp">#869bb5ff</color>-->
+    <!--<color name="popUp">#1e7a7a7a</color>-->
+    <!--<color name="SplashFirstColor">@android:color/holo_orange_dark</color>-->
+    <!--<color name="SplashSecondColor">#000000</color>-->
+</resources>
