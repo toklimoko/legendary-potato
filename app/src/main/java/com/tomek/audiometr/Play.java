@@ -13,16 +13,18 @@ import android.util.Log;
 public class Play {
 
     private double frequency = 0.0;
-    private double amplitude = 0.0;
+    private double amplitudeR = 0.0;
+    private double amplitudeL = 0.0;
     private int duration = 1;
 
     AudioTrack mAudioTrack;
 
 
-    public Play(double frequency, double amplitude, int duration) {
+    public Play(double frequency, double amplitudeR, double amplitudeL, int duration) {
         this.frequency = frequency;
-        this.amplitude = amplitude;
-        this.duration = duration*44100;
+        this.amplitudeR = amplitudeR;
+        this.amplitudeL = amplitudeL;
+        this.duration = duration*44100; //44100 - tyle bitów to jedna sekunda
 
 
     }
@@ -48,7 +50,8 @@ public class Play {
             mBuffer[i] = (short) (mSound[i]*Short.MAX_VALUE);
         }
 
-        mAudioTrack.setStereoVolume((float) amplitude, (float) amplitude);
+        mAudioTrack.setStereoVolume((float) amplitudeL, (float) amplitudeR);
+
 
         mAudioTrack.play();
 

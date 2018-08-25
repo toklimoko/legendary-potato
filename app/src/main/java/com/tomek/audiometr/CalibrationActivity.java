@@ -23,11 +23,7 @@ public class CalibrationActivity extends AppCompatActivity
 
 
     private Button btnKal;
-
-    private Context context;
-    private CharSequence text;
     private Toast toast;
-    private MotionEvent event;
     private Vibrator vibe;
 
     private Thread playThread;
@@ -42,7 +38,7 @@ public class CalibrationActivity extends AppCompatActivity
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                play = new Play(2000, 0.1, 4); //czestotliwosc = 2000 Hz - wartosc z zakresu najlepszej slyszalnosci ucha
+                play = new Play(2000, 0.1,0.1, 4); //czestotliwosc = 2000 Hz - wartosc z zakresu najlepszej slyszalnosci ucha
                 play.playSound();
                 play = null;
             }

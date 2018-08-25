@@ -35,8 +35,6 @@ public class PopUpCalibration extends Activity {
 
         mImageView = findViewById(R.id.iv_ksiazka);
         mImageView.setImageResource(R.drawable.manual_icon);
-
-
     }
 
     public void closeButton(View v) {
