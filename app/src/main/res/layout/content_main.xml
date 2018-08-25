@@ -60,7 +60,7 @@
     <FrameLayout
         android:id="@+id/frameCalibrateButton"
         android:layout_width="160dp"
-        android:layout_height="118dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="65dp"
         android:layout_marginStart="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -83,15 +83,14 @@
 
         <ImageButton
             android:id="@+id/btn_kal"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginBottom="240dp"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="45dp"
             android:adjustViewBounds="false"
-            android:background="@color/popUp"
+            android:background="@color/transparent"
             android:cropToPadding="false"
             android:scaleType="fitXY"
-            android:text="daondo"
             android:tint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -101,7 +100,7 @@
     <FrameLayout
         android:id="@+id/frameBeginButton"
         android:layout_width="160dp"
-        android:layout_height="118dp"
+        android:layout_height="100dp"
         android:layout_marginBottom="65dp"
         android:layout_marginEnd="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -123,10 +122,10 @@
 
         <ImageButton
             android:id="@+id/btn_badanie"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_marginBottom="240dp"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="50dp"
             android:adjustViewBounds="false"
             android:background="@color/popUp"
             android:cropToPadding="false"

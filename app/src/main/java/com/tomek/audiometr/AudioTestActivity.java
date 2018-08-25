@@ -70,7 +70,7 @@ public class AudioTestActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main3);
+        setContentView(R.layout.activity_audio_test);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -298,7 +298,7 @@ public class AudioTestActivity extends AppCompatActivity
         if (id == R.id.action_settings3) {
 
             //"jak wykonać badanie?"
-            Intent intentInfo = new Intent(AudioTestActivity.this,PopUp.class);
+            Intent intentInfo = new Intent(AudioTestActivity.this,PopUpAudioTest.class);
             startActivity(intentInfo);
 
             return true;
@@ -326,7 +326,7 @@ public class AudioTestActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_info) {
 
-            Intent intentInfo = new Intent(AudioTestActivity.this,PopUp0.class);
+            Intent intentInfo = new Intent(AudioTestActivity.this,PopUpAppInfo.class);
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_powrot) {

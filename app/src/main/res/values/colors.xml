@@ -11,6 +11,7 @@
     <color name="buttonCalibration">#ce7a7a7a</color>
     <color name="colorPopUp">#869bb5ff</color>
     <color name="popUp">#007a7a7a</color>
+    <color name="transparent">#007a7a7a</color>
     <color name="SplashFirstColor">@android:color/holo_orange_dark</color>
     <color name="SplashSecondColor">#000000</color>
 

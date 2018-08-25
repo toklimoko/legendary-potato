@@ -33,15 +33,15 @@
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".PopUp"
+            android:name=".PopUpAudioTest"
             android:theme="@style/AppTheme.CustomTheme"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".PopUp2"
+            android:name=".PopUpCalibration"
             android:theme="@style/AppTheme.CustomTheme"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".PopUp0"
+            android:name=".PopUpAppInfo"
             android:theme="@style/AppTheme.CustomTheme"
             android:screenOrientation="portrait"/>
     </application>

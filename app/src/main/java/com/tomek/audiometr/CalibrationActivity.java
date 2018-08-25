@@ -141,7 +141,7 @@ public class CalibrationActivity extends AppCompatActivity
         if (id == R.id.action_settings2) {
 
             //"po co kalibracja?"
-            Intent intentKalInfo = new Intent(CalibrationActivity.this,PopUp2.class);
+            Intent intentKalInfo = new Intent(CalibrationActivity.this,PopUpCalibration.class);
             startActivity(intentKalInfo);
 
             return true;
@@ -170,7 +170,7 @@ public class CalibrationActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_info) {
 
-            Intent intentInfo = new Intent(CalibrationActivity.this,PopUp0.class);
+            Intent intentInfo = new Intent(CalibrationActivity.this,PopUpAppInfo.class);
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 

@@ -14,9 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -136,7 +134,7 @@ public class MainActivity extends AppCompatActivity
             //gdy wybrano jak badac - otworz okno popup
         } else if (id == R.id.nav_info) {
 
-            Intent intentInfo = new Intent(MainActivity.this,PopUp0.class);
+            Intent intentInfo = new Intent(MainActivity.this,PopUpAppInfo.class);
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 
