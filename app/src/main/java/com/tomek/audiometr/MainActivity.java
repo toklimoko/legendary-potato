@@ -75,6 +75,14 @@ public class MainActivity extends AppCompatActivity
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
 
+
+        //zamykanie aplikacji:
+
+        if (getIntent().getBooleanExtra("EXIT", false)) {
+            finish();
+        }
+
+
         kal();
         badanie();
 
@@ -141,8 +149,10 @@ public class MainActivity extends AppCompatActivity
             //gdy wybrano zamknij - zamknij bieżącą aktywnosc
         } else if (id == R.id.nav_powrot) {
 
-            finish();
-            //System.exit(0); //drugi sposób zamknięcia aktywności
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

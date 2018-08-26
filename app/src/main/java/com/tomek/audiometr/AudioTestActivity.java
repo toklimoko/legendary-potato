@@ -330,8 +330,11 @@ public class AudioTestActivity extends AppCompatActivity
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_powrot) {
-            finish();
-            //System.exit(0); //drugi sposób zamykania aktywności
+
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("EXIT", true);
+            startActivity(intent);
 
         }
 
