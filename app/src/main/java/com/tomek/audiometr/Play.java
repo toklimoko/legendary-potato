@@ -13,20 +13,21 @@ import android.util.Log;
 public class Play {
 
     private double frequency = 0.0;
-    private double amplitudeR = 0.0;
-    private double amplitudeL = 0.0;
+    private double amplitude = 0.0;
     private int duration = 1;
+    private String channel = "Both"; //domyslnie
+
+    private double amplitudeL = 0.0;
+    private double amplitudeR = 0.0;
 
     AudioTrack mAudioTrack;
 
 
-    public Play(double frequency, double amplitudeR, double amplitudeL, int duration) {
+    public Play(double frequency, double amplitude, int duration, String channel) {
         this.frequency = frequency;
-        this.amplitudeR = amplitudeR;
-        this.amplitudeL = amplitudeL;
-        this.duration = duration*44100; //44100 - tyle bitów to jedna sekunda
-
-
+        this.amplitude = amplitude;
+        this.duration = duration * 44100; //44100 - tyle bitów to jedna sekunda
+        this.channel = channel;
     }
 
     // generowanie sgnału sinusoidalnego z wykorzystaniem klasy AudioTrack
@@ -46,8 +47,18 @@ public class Play {
 
 
         for (int i = 0; i < mSound.length; i++) {
-            mSound[i] = Math.sin((2*Math.PI * i/(44100/frequency)));
-            mBuffer[i] = (short) (mSound[i]*Short.MAX_VALUE);
+            mSound[i] = Math.sin((2 * Math.PI * i / (44100 / frequency)));
+            mBuffer[i] = (short) (mSound[i] * Short.MAX_VALUE);
+        }
+
+        // definicja wartości "gain" kanałów
+        if (channel.equals("Left")) {
+            amplitudeL = amplitude;
+        } else if (channel.equals("Right")) {
+            amplitudeR = amplitude;
+        } else if (channel.equals("Both")){
+            amplitudeR = amplitude;
+            amplitudeL = amplitude;
         }
 
         mAudioTrack.setStereoVolume((float) amplitudeL, (float) amplitudeR);
@@ -61,15 +72,12 @@ public class Play {
 
     }
 
-    void release(){
-        if(mAudioTrack != null){
+    void release() {
+        if (mAudioTrack != null) {
             mAudioTrack.stop();
             mAudioTrack.release();
         }
     }
-
-
-
 
 
 }

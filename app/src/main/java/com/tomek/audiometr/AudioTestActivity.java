@@ -42,8 +42,7 @@ public class AudioTestActivity extends AppCompatActivity
     private Spinner spinner;
 
     private double frequency = 0.0;
-    private double amplitudeR = 0.0;
-    private double amplitudeL = 0.0;
+    private double amplitude = 0.0;
 //    private boolean b = false;
 
     private Toast toast1;
@@ -51,11 +50,9 @@ public class AudioTestActivity extends AppCompatActivity
     private Toast toast3;
 
     private ArrayList<Double> listaF; //lista czestotliwosci podczas 1 próby
-    private ArrayList<Double> listaAR; //lista amplitud podczas 1 próby
-    private ArrayList<Double> listaAL; //lista amplitud podczas 1 próby
+    private ArrayList<Double> listaA; //lista amplitud podczas 1 próby
     public ArrayList<Double> listaX; //lista wartości X do wykresu (częstotliwości dla każdej z prób)
-    public ArrayList<Double> listaYR; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
-    public ArrayList<Double> listaYL; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
+    public ArrayList<Double> listaY; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
 
     private XYSeries series; //seria danych do wykresu
 
@@ -98,8 +95,7 @@ public class AudioTestActivity extends AppCompatActivity
 
         //tworzę nowe listy x i y do wykresów
         listaX = new ArrayList<>();
-        listaYR = new ArrayList<>();
-        listaYL = new ArrayList<>();
+        listaY = new ArrayList<>();
 
         buttonGeneruj();
         buttonStop();
@@ -137,19 +133,16 @@ public class AudioTestActivity extends AppCompatActivity
 
 
                 listaF = new ArrayList<>();
-                listaAR = new ArrayList<>();
-                listaAL = new ArrayList<>();
+                listaA = new ArrayList<>();
 
                 //dodaj element 0 do list
 
-                amplitudeR = 0;
-                amplitudeL = 0;
+                amplitude = 0;
 
-                    Play play = new Play(frequency, amplitudeR, amplitudeL, 1);
+                    Play play = new Play(frequency, amplitude, 1, "Right");
 
                     listaF.add(frequency);
-                    listaAR.add(amplitudeR);
-                    listaAL.add(amplitudeL);
+                    listaA.add(amplitude);
 
                 btn_generuj.setVisibility(View.INVISIBLE);
                 btn_Play_bad.setVisibility(View.VISIBLE);
@@ -178,18 +171,14 @@ public class AudioTestActivity extends AppCompatActivity
 
 //                while (b = true){
 
+                    amplitude += 0.05;
 
-/////POPRAWIĆ - DODAĆ ZALEŻNOŚĆ, ZWIĘKSZAĆ TYLKO DLA WYBRANEGO KANAŁU
-                    amplitudeR += 0.05;
-                    amplitudeL += 0.05;
-
-                    Play play = new Play(frequency, amplitudeR, amplitudeL, 1);
+                    Play play = new Play(frequency, amplitude, 1, "Right");
 
                     //toast2.show();
 
                     listaF.add(frequency);
-                    listaAR.add(amplitudeR);
-                    listaAL.add(amplitudeL);
+                    listaA.add(amplitude);
 
 //                    break;
 //                }
@@ -209,13 +198,11 @@ public class AudioTestActivity extends AppCompatActivity
 
                 //pobierz te wartości częstotliwości i amplitudy, przy których użytkownik wcisnął "słyszę"
                 frequency = listaF.get(listaF.size() - 1);
-                amplitudeR = listaAR.get(listaAR.size() - 1);
-                amplitudeL = listaAL.get(listaAL.size() - 1);
+                amplitude = listaA.get(listaA.size() - 1);
 
                 //dodaj nowe wartości do list wykorzystywanych do tworzenia wykresów
                 listaX.add(frequency);
-                listaYR.add(amplitudeR);
-                listaYL.add(amplitudeL);
+                listaY.add(amplitude);
 
                 btn_generuj.setVisibility(View.VISIBLE);
                 btn_Play_bad.setVisibility(View.INVISIBLE);
@@ -245,8 +232,7 @@ public class AudioTestActivity extends AppCompatActivity
 
         //dodaj każdy punkt pomiarowy do serii danych do wykresu
         for (int i = 0; i<listaX.size();i++){
-            series.add(listaX.get(i),listaYR.get(i));
-            series.add(listaX.get(i),listaYL.get(i)); //duplikacja przy zmianie na nowego playa - do poprawy (XR, XL)
+            series.add(listaX.get(i),listaY.get(i));
 
         }
 
