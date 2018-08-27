@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -32,17 +33,9 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import java.util.ArrayList;
 
 public class AudioTestActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener { //podwójna implementacja
+        implements NavigationView.OnNavigationItemSelectedListener{ //podwójna implementacja
 
-    private Button btn_generuj;
-    private Button btn_Play_bad;
-    private Button btn_Stop_bad;
-    private Button btn_rysuj;
 
-    private Spinner spinner;
-
-    private double frequency = 0.0;
-    private double amplitude = 0.0;
 //    private boolean b = false;
 
     private Toast toast1;
@@ -60,11 +53,140 @@ public class AudioTestActivity extends AppCompatActivity
     private GraphicalView chartView;
 
 
-    //deklaracja nazw itemów do spinnera
-    private static final String[]paths = {"Próba 1", "Próba 2", "Próba 3", "Próba 4", "Próba 5",
-            "Próba 6", "Próba 7", "Próba 8", "Próba 9", "Próba 10", "Próba 11", "Próba 12",
-            "Próba 13", "Próba 14", "Próba 15", "Próba 16", "Próba 17", "Próba 18", "Próba 19",
-            "Próba 20"};
+
+
+//////////////////////////////
+
+    private Button buttonStart;
+    private Button buttonSlysze;
+
+    private Vibrator vibe;
+    private Thread playThread;
+    private Play play;
+
+    private Thread algorithmThread;
+    private boolean stop = false;
+
+    private double frequency = 0.0;
+    private double amplitude = 0.0;
+    private String channel = "Both";
+
+    private ArrayList<Integer> frequencyList;
+    private int f;
+
+
+    private void playAsync(){
+        if(play != null){
+            return;
+        }
+
+        playThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                //ALGORYTM ODTWARZANIA - ODTWARZAJ PO KOLEI DZWIEKI O ZADANEJ CZESTOTLIWOSCI ZWIEKSZAJAC AMPLITUDE O ZADANEJ PRZEZ STOPA FREQ I KANALE. GDY SKONCZYSZ WYWOLAJ METODE ADDPOINT()
+
+
+                for (amplitude = 0.0; amplitude < 5; amplitude += 0.005) {
+                    play = new Play(frequency, amplitude, 2, channel); //czestotliwosc = 2000 Hz - wartosc z zakresu najlepszej slyszalnosci ucha
+                    play.playSound();
+                    play = null;
+                }
+
+
+            }
+        });
+
+        playThread.start();
+
+
+    }
+
+
+    public void initPlaySoundButton() {
+        buttonStart = findViewById(R.id.btn_start);
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                
+
+                playAsync();
+//                toast.show();
+//                vibe.vibrate(50);
+            }
+        });
+    }
+
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if(play != null) {
+            play.release();
+        }
+
+        if (stop){
+            newSignalData();
+            addPoint();
+        }
+
+        try {
+            playThread.interrupt();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+    }
+
+
+
+    public void initStopSoundButton() {
+        buttonSlysze = findViewById(R.id.btn_slysze);
+        buttonSlysze.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stop = true;
+                onPause();
+            }
+        });
+    }
+
+
+    public void newSignalData(){
+
+        // ZRESETUJ AMPLITUDĘ, POBIERZ NOWY PUNKT Z LISTY WYLOSOWANYCH CZĘSTOTLIWOŚCI (I KANAŁÓW)
+
+        amplitude = 0.0;
+
+        if (f<=frequencyList.size()) {
+            frequency = frequencyList.get(f);
+            f++;
+            playAsync();
+
+        } else {
+            //koniec badania
+
+        }
+
+
+
+        stop = false;
+
+    }
+
+
+
+
+    public void addPoint(){
+        // AKCJA GDY STOP - DODAJ PUNKT DO LIST
+
+
+
+    }
 
 
     @Override
@@ -84,191 +206,206 @@ public class AudioTestActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //deklaracja spinnera
-        spinner = findViewById(R.id.spinner);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(AudioTestActivity.this,
-                android.R.layout.simple_spinner_item,paths);
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
-
         //tworzę nowe listy x i y do wykresów
         listaX = new ArrayList<>();
         listaY = new ArrayList<>();
 
-        buttonGeneruj();
-        buttonStop();
-        buttonStart();
-        buttonRysuj();
 
-        btn_generuj.setVisibility(View.VISIBLE);
-        btn_Play_bad.setVisibility(View.INVISIBLE);
-        btn_Stop_bad.setVisibility(View.INVISIBLE);
-        btn_rysuj.setVisibility(View.INVISIBLE);
 
-        Context context = getApplicationContext();
-        CharSequence text = "Załadowano dane. Można zacząć badanie.";
-        CharSequence text2 = "Generowanie dźwięku";
-        CharSequence text3 = "Zapisano pomiar. Wybierz nowy dźwięk.";
-        int duration = Toast.LENGTH_SHORT;
 
-        toast1 = Toast.makeText(context, text, duration);
-        toast2 = Toast.makeText(context,text2, duration);
-        toast3 = Toast.makeText(context,text3, duration);
+//
+//  TOASTY
+
+//
+//        Context context = getApplicationContext();
+//        CharSequence text = "Załadowano dane. Można zacząć badanie.";
+//        CharSequence text2 = "Generowanie dźwięku";
+//        CharSequence text3 = "Zapisano pomiar. Wybierz nowy dźwięk.";
+//        int duration = Toast.LENGTH_SHORT;
+//
+//        toast1 = Toast.makeText(context, text, duration);
+//        toast2 = Toast.makeText(context,text2, duration);
+//        toast3 = Toast.makeText(context,text3, duration);
 
 
         if (series != null)
         series.clearSeriesValues();
-    }
-
-    public void buttonGeneruj(){
-        btn_generuj= findViewById(R.id.btn_generuj);
-        btn_generuj.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                if (series != null)
-                series.clearSeriesValues();
-
-
-                listaF = new ArrayList<>();
-                listaA = new ArrayList<>();
-
-                //dodaj element 0 do list
-
-                amplitude = 0;
-
-                    Play play = new Play(frequency, amplitude, 1, "Right");
-
-                    listaF.add(frequency);
-                    listaA.add(amplitude);
-
-                btn_generuj.setVisibility(View.INVISIBLE);
-                btn_Play_bad.setVisibility(View.VISIBLE);
-                btn_Stop_bad.setVisibility(View.VISIBLE);
-                btn_rysuj.setVisibility(View.INVISIBLE);
-
-                    toast1.show();
-            }
-        });
-    }
 
 
 
-    public void buttonStart(){
-        btn_Play_bad = findViewById(R.id.btn_glosniej);
-        btn_Play_bad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                btn_generuj.setVisibility(View.INVISIBLE);
-                btn_Play_bad.setVisibility(View.VISIBLE);
-                btn_Stop_bad.setVisibility(View.VISIBLE);
-                btn_rysuj.setVisibility(View.INVISIBLE);
+        ////////////////////////////////////////////
 
-                //tyle razy ile wcisnieto przycisk tyle podglosnij i dodaj do list F i A
-
-//                while (b = true){
-
-                    amplitude += 0.05;
-
-                    Play play = new Play(frequency, amplitude, 1, "Right");
-
-                    //toast2.show();
-
-                    listaF.add(frequency);
-                    listaA.add(amplitude);
-
-//                    break;
-//                }
-            }
-        });
-    }
+//        algorithm();
+        initPlaySoundButton();
+        initStopSoundButton();
 
 
 
-    public void buttonStop(){
-        btn_Stop_bad = findViewById(R.id.btn_slysze);
-        btn_Stop_bad.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        frequencyList = new ArrayList<>();
+        frequencyList.add(1000);
+        frequencyList.add(3000);
+        frequencyList.add(5000);
 
-//                b = false;
-
-                //pobierz te wartości częstotliwości i amplitudy, przy których użytkownik wcisnął "słyszę"
-                frequency = listaF.get(listaF.size() - 1);
-                amplitude = listaA.get(listaA.size() - 1);
-
-                //dodaj nowe wartości do list wykorzystywanych do tworzenia wykresów
-                listaX.add(frequency);
-                listaY.add(amplitude);
-
-                btn_generuj.setVisibility(View.VISIBLE);
-                btn_Play_bad.setVisibility(View.INVISIBLE);
-                btn_Stop_bad.setVisibility(View.INVISIBLE);
-                btn_rysuj.setVisibility(View.VISIBLE);
-
-                toast3.show();
-            }
-        });
-    }
+        frequency = frequencyList.get(f);
+                f++;
 
 
-    public void buttonRysuj(){
-        btn_rysuj= findViewById(R.id.btn_doWykresu);
-        btn_rysuj.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                rysuj();
-          }
-        });
-    }
 
-    public void rysuj(){
 
-        series = new XYSeries("Audiogram");
 
-        //dodaj każdy punkt pomiarowy do serii danych do wykresu
-        for (int i = 0; i<listaX.size();i++){
-            series.add(listaX.get(i),listaY.get(i));
-
-        }
-
-        XYSeriesRenderer renderer = new XYSeriesRenderer();
-        renderer.setLineWidth(3);
-        renderer.setColor(Color.BLUE);
-        renderer.setPointStyle(PointStyle.CIRCLE);
-
-        XYMultipleSeriesRenderer mrenderer = new XYMultipleSeriesRenderer();
-        mrenderer.addSeriesRenderer(renderer);
-        mrenderer.setYAxisMin(1.5);
-        mrenderer.setYAxisMax(0);
-        mrenderer.setXAxisMin(0);
-        mrenderer.setXAxisMax(18000);
-        mrenderer.setMarginsColor(Color.WHITE);
-        mrenderer.setShowGrid(true);
-        mrenderer.setMarginsColor(Color.WHITE);
-        mrenderer.setGridColor(Color.LTGRAY);
-        mrenderer.setAxesColor(Color.BLACK);
-        mrenderer.setXLabelsColor(Color.BLACK);
-        mrenderer.setYLabelsColor(0, Color.BLACK);
-        mrenderer.setYLabelsAlign(Paint.Align.CENTER);
-        mrenderer.setLabelsTextSize(30);
-        mrenderer.setLegendTextSize(30);
-        mrenderer.setFitLegend(true);
-        mrenderer.setShowLegend(false);
-
-        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-        dataset.addSeries(series);
-
-        chartLayout = findViewById(R.id.llv);
-        chartView = ChartFactory.getLineChartView(this,dataset,mrenderer);
-        chartLayout.addView(chartView);
-        chartView.repaint();
 
     }
+
+//    public void buttonGeneruj(){
+//        btn_generuj= findViewById(R.id.btn_generuj);
+//        btn_generuj.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                if (series != null)
+//                series.clearSeriesValues();
+//
+//
+//                listaF = new ArrayList<>();
+//                listaA = new ArrayList<>();
+//
+//                //dodaj element 0 do list
+//
+//                amplitude = 0;
+//
+//                    Play play = new Play(frequency, amplitude, 1, "Right");
+//
+//                    listaF.add(frequency);
+//                    listaA.add(amplitude);
+//
+//                btn_generuj.setVisibility(View.INVISIBLE);
+//                btn_Play_bad.setVisibility(View.VISIBLE);
+//                btn_Stop_bad.setVisibility(View.VISIBLE);
+//                btn_rysuj.setVisibility(View.INVISIBLE);
+//
+//                    toast1.show();
+//            }
+//        });
+//    }
+//
+//
+//
+//    public void buttonStart(){
+//        btn_Play_bad = findViewById(R.id.btn_glosniej);
+//        btn_Play_bad.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                btn_generuj.setVisibility(View.INVISIBLE);
+//                btn_Play_bad.setVisibility(View.VISIBLE);
+//                btn_Stop_bad.setVisibility(View.VISIBLE);
+//                btn_rysuj.setVisibility(View.INVISIBLE);
+//
+//                //tyle razy ile wcisnieto przycisk tyle podglosnij i dodaj do list F i A
+//
+////                while (b = true){
+//
+//                    amplitude += 0.05;
+//
+//                    Play play = new Play(frequency, amplitude, 1, "Right");
+//
+//                    //toast2.show();
+//
+//                    listaF.add(frequency);
+//                    listaA.add(amplitude);
+//
+////                    break;
+////                }
+//            }
+//        });
+//    }
+//
+//
+//
+//
+//    public void buttonStop(){
+//        btn_Stop_bad = findViewById(R.id.btn_slysze);
+//        btn_Stop_bad.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+////                b = false;
+//
+//                //pobierz te wartości częstotliwości i amplitudy, przy których użytkownik wcisnął "słyszę"
+//                frequency = listaF.get(listaF.size() - 1);
+//                amplitude = listaA.get(listaA.size() - 1);
+//
+//                //dodaj nowe wartości do list wykorzystywanych do tworzenia wykresów
+//                listaX.add(frequency);
+//                listaY.add(amplitude);
+//
+//                btn_generuj.setVisibility(View.VISIBLE);
+//                btn_Play_bad.setVisibility(View.INVISIBLE);
+//                btn_Stop_bad.setVisibility(View.INVISIBLE);
+//                btn_rysuj.setVisibility(View.VISIBLE);
+//
+//                toast3.show();
+//            }
+//        });
+//    }
+//
+//
+//    public void buttonRysuj(){
+//        btn_rysuj= findViewById(R.id.btn_doWykresu);
+//        btn_rysuj.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                rysuj();
+//          }
+//        });
+//    }
+//
+//    public void rysuj(){
+//
+//        series = new XYSeries("Audiogram");
+//
+//        //dodaj każdy punkt pomiarowy do serii danych do wykresu
+//        for (int i = 0; i<listaX.size();i++){
+//            series.add(listaX.get(i),listaY.get(i));
+//
+//        }
+//
+//        XYSeriesRenderer renderer = new XYSeriesRenderer();
+//        renderer.setLineWidth(3);
+//        renderer.setColor(Color.BLUE);
+//        renderer.setPointStyle(PointStyle.CIRCLE);
+//
+//        XYMultipleSeriesRenderer mrenderer = new XYMultipleSeriesRenderer();
+//        mrenderer.addSeriesRenderer(renderer);
+//        mrenderer.setYAxisMin(1.5);
+//        mrenderer.setYAxisMax(0);
+//        mrenderer.setXAxisMin(0);
+//        mrenderer.setXAxisMax(18000);
+//        mrenderer.setMarginsColor(Color.WHITE);
+//        mrenderer.setShowGrid(true);
+//        mrenderer.setMarginsColor(Color.WHITE);
+//        mrenderer.setGridColor(Color.LTGRAY);
+//        mrenderer.setAxesColor(Color.BLACK);
+//        mrenderer.setXLabelsColor(Color.BLACK);
+//        mrenderer.setYLabelsColor(0, Color.BLACK);
+//        mrenderer.setYLabelsAlign(Paint.Align.CENTER);
+//        mrenderer.setLabelsTextSize(30);
+//        mrenderer.setLegendTextSize(30);
+//        mrenderer.setFitLegend(true);
+//        mrenderer.setShowLegend(false);
+//
+//        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
+//        dataset.addSeries(series);
+//
+//        chartLayout = findViewById(R.id.llv);
+//        chartView = ChartFactory.getLineChartView(this,dataset,mrenderer);
+//        chartLayout.addView(chartView);
+//        chartView.repaint();
+//
+//    }
 
     @Override
     public void onBackPressed() {
@@ -344,77 +481,4 @@ public class AudioTestActivity extends AppCompatActivity
         return true;
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-
-        //załaduj częstotliwości - deklaracja wartości itemów do spinnera
-
-        switch (position) {
-            case 0:
-                frequency = 1000;
-                break;
-            case 1:
-                frequency = 8000;
-                break;
-            case 2:
-                frequency = 150;
-                break;
-            case 3:
-                frequency = 12000;
-                break;
-            case 4:
-                frequency = 3000;
-                break;
-            case 5:
-                frequency = 1500;
-                break;
-            case 6:
-                frequency = 100;
-                break;
-            case 7:
-                frequency = 4000;
-                break;
-            case 8:
-                frequency = 15000;
-                break;
-            case 9:
-                frequency = 2500;
-                break;
-            case 10:
-                frequency = 500;
-                break;
-            case 11:
-                frequency = 6000;
-                break;
-            case 12:
-                frequency = 17000;
-                break;
-            case 13:
-                frequency = 250;
-                break;
-            case 14:
-                frequency = 14000;
-                break;
-            case 15:
-                frequency = 125;
-                break;
-            case 16:
-                frequency = 16000;
-                break;
-            case 17:
-                frequency = 400;
-                break;
-            case 18:
-                frequency = 700;
-                break;
-            case 19:
-                frequency = 10000;
-                break;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
 }
