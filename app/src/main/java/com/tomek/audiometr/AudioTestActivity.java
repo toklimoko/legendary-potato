@@ -33,7 +33,7 @@ import org.achartengine.renderer.XYSeriesRenderer;
 import java.util.ArrayList;
 
 public class AudioTestActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener{ //podwójna implementacja
+        implements NavigationView.OnNavigationItemSelectedListener { //podwójna implementacja
 
 
 //    private boolean b = false;
@@ -53,8 +53,6 @@ public class AudioTestActivity extends AppCompatActivity
     private GraphicalView chartView;
 
 
-
-
 //////////////////////////////
 
     private Button buttonStart;
@@ -69,14 +67,17 @@ public class AudioTestActivity extends AppCompatActivity
 
     private double frequency = 0.0;
     private double amplitude = 0.0;
+    private int duration = 1;
     private String channel = "Both";
+
 
     private ArrayList<Integer> frequencyList;
     private int f;
 
 
-    private void playAsync(){
-        if(play != null){
+    private void playAsync() {
+
+        if (play != null) {
             return;
         }
 
@@ -84,24 +85,25 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void run() {
 
-                //ALGORYTM ODTWARZANIA - ODTWARZAJ PO KOLEI DZWIEKI O ZADANEJ CZESTOTLIWOSCI ZWIEKSZAJAC AMPLITUDE O ZADANEJ PRZEZ STOPA FREQ I KANALE. GDY SKONCZYSZ WYWOLAJ METODE ADDPOINT()
-
-
-                for (amplitude = 0.0; amplitude < 5; amplitude += 0.005) {
-                    play = new Play(frequency, amplitude, 2, channel); //czestotliwosc = 2000 Hz - wartosc z zakresu najlepszej slyszalnosci ucha
+                // play the loop until the thread is interrupted or condition is met
+                while (!Thread.currentThread().isInterrupted()) {
+                    play = new Play(frequency, amplitude, duration, channel); //czestotliwosc = 2000 Hz - wartosc z zakresu najlepszej slyszalnosci ucha
                     play.playSound();
                     play = null;
+
+                    amplitude += 0.005;
+
+                    if (stop || amplitude >= 0.5) {
+                        addPoint(frequency,amplitude,channel);
+                        break;
+                    }
                 }
-
-
             }
         });
 
         playThread.start();
 
-
     }
-
 
     public void initPlaySoundButton() {
         buttonStart = findViewById(R.id.btn_start);
@@ -109,33 +111,34 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                
-
+                amplitude = 0.0;
                 playAsync();
+
 //                toast.show();
 //                vibe.vibrate(50);
             }
         });
     }
 
-
-
     @Override
     protected void onPause() {
         super.onPause();
 
-        if(play != null) {
+        if (play != null) {
             play.release();
         }
 
-        if (stop){
-            newSignalData();
-            addPoint();
+        if (stop) {
+//            newSignalData();
+//            addPoint();
+
+            toast1.show();
+            stop = false;
         }
 
         try {
             playThread.interrupt();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -143,26 +146,28 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
 
-
     public void initStopSoundButton() {
         buttonSlysze = findViewById(R.id.btn_slysze);
         buttonSlysze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stop = true;
-                onPause();
+                stopButtonAction();
             }
         });
     }
 
+    public void stopButtonAction() {
+        stop = true;
+        onPause();
+    }
 
-    public void newSignalData(){
+    public void newSignalData() {
 
         // ZRESETUJ AMPLITUDĘ, POBIERZ NOWY PUNKT Z LISTY WYLOSOWANYCH CZĘSTOTLIWOŚCI (I KANAŁÓW)
 
         amplitude = 0.0;
 
-        if (f<=frequencyList.size()) {
+        if (f <= frequencyList.size()) {
             frequency = frequencyList.get(f);
             f++;
             playAsync();
@@ -173,16 +178,14 @@ public class AudioTestActivity extends AppCompatActivity
         }
 
 
-
         stop = false;
 
     }
 
 
-
-
-    public void addPoint(){
+    public void addPoint(double frequency, double amplitude, String channel) {
         // AKCJA GDY STOP - DODAJ PUNKT DO LIST
+
 
 
 
@@ -211,8 +214,6 @@ public class AudioTestActivity extends AppCompatActivity
         listaY = new ArrayList<>();
 
 
-
-
 //
 //  TOASTY
 
@@ -229,9 +230,7 @@ public class AudioTestActivity extends AppCompatActivity
 
 
         if (series != null)
-        series.clearSeriesValues();
-
-
+            series.clearSeriesValues();
 
 
         ////////////////////////////////////////////
@@ -241,19 +240,21 @@ public class AudioTestActivity extends AppCompatActivity
         initStopSoundButton();
 
 
-
         frequencyList = new ArrayList<>();
         frequencyList.add(1000);
         frequencyList.add(3000);
         frequencyList.add(5000);
 
         frequency = frequencyList.get(f);
-                f++;
+        f++;
 
 
+        Context context = getApplicationContext();
+        CharSequence text = "Stop wciśnięty";
 
+        int duration = Toast.LENGTH_SHORT;
 
-
+        toast1 = Toast.makeText(context, text, duration);
 
 
     }
@@ -435,7 +436,7 @@ public class AudioTestActivity extends AppCompatActivity
         if (id == R.id.action_settings3) {
 
             //"jak wykonać badanie?"
-            Intent intentInfo = new Intent(AudioTestActivity.this,PopUpAudioTest.class);
+            Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAudioTest.class);
             startActivity(intentInfo);
 
             return true;
@@ -453,17 +454,17 @@ public class AudioTestActivity extends AppCompatActivity
 
         if (id == R.id.nav_start) {
 
-            Intent intentLauncher = new Intent(AudioTestActivity.this,MainActivity.class);
+            Intent intentLauncher = new Intent(AudioTestActivity.this, MainActivity.class);
             startActivity(intentLauncher);
 
         } else if (id == R.id.nav_kalibruj) {
 
-            Intent intentKal = new Intent(AudioTestActivity.this,CalibrationActivity.class);
+            Intent intentKal = new Intent(AudioTestActivity.this, CalibrationActivity.class);
             startActivity(intentKal);
 
         } else if (id == R.id.nav_info) {
 
-            Intent intentInfo = new Intent(AudioTestActivity.this,PopUpAppInfo.class);
+            Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAppInfo.class);
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_powrot) {
