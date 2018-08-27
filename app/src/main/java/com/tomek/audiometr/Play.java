@@ -64,17 +64,30 @@ public class Play {
         mAudioTrack.setStereoVolume((float) amplitudeL, (float) amplitudeR);
 
 
-        mAudioTrack.play();
+        try {
+            mAudioTrack.play();
+        } catch(IllegalStateException e){
+            e.printStackTrace();
+        }
 
         mAudioTrack.write(mBuffer, 0, mSound.length);
-        mAudioTrack.stop();
+
+        try {
+            mAudioTrack.stop();
+        } catch (IllegalStateException e){
+            e.printStackTrace();
+        }
         mAudioTrack.release();
 
     }
 
     void release() {
         if (mAudioTrack != null) {
-            mAudioTrack.stop();
+            try {
+                mAudioTrack.stop();
+            } catch (IllegalStateException e){
+                e.printStackTrace();
+            }
             mAudioTrack.release();
         }
     }
