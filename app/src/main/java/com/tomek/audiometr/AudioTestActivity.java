@@ -2,8 +2,6 @@ package com.tomek.audiometr;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -16,20 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
-import org.achartengine.chart.PointStyle;
-import org.achartengine.model.XYMultipleSeriesDataset;
 import org.achartengine.model.XYSeries;
-import org.achartengine.renderer.XYMultipleSeriesRenderer;
-import org.achartengine.renderer.XYSeriesRenderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,14 +62,30 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
+    private ArrayList<String> allChannels;
 
 
     private ArrayList<Integer> allFrequencies;
     private ArrayList<Integer> chosenFrequencies;
+    private ArrayList<Sample> samplesList;
+    private ArrayList<String> newSample;
+
+    private ArrayList<Double> xAxis;
+    private ArrayList<Double> yAxis;
+
     private Random randomGenerator;
-    private int numberOfFrequencies = 10;
+    private int numberOfSamples = 2;  //zmienic na 10 po testach albo na definiowalne przez uzytkownika
     private int frequencyIndex = 0;
 
+    private int numberOfChannels = 0;
+    private int numberOfRightChannels = 0;
+    private int numberOfLeftChannels = 0;
+
+    private String[][] samplesBoard;
+    private String tempFrequency;
+    private int k = 0;
+
+    private Sample sample;
 
     private void playAsync() {
 
@@ -117,7 +123,8 @@ public class AudioTestActivity extends AppCompatActivity
     public void playButtonAction() {
 
         amplitude = 0.0;
-        getNewFrequence();
+        sample = new Sample(numberOfSamples, chosenFrequencies);
+        getNewSample();
         playAsync();
 
         stop = false;
@@ -130,7 +137,7 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
-                frequencyIndex = 0;
+//                frequencyIndex = 0;
                 randomFrequencies();
                 playButtonAction();
             }
@@ -150,26 +157,19 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     public void stopButtonAction() {
+        stop = true;
 
-        frequencyIndex++;
-
-        if (frequencyIndex < chosenFrequencies.size()) {
-
-            getNewFrequence();
-            playButtonAction();
-        } else {
-            //KONIEC BADANIA - pokaż wykres i wynik
-            toast2.show();
-        }
+        getNewSample();
+        playAsync();
     }
 
 
-    public void randomFrequencies() {
+    public ArrayList<Integer> randomFrequencies() {
 
         int index = 0;
         int newFrequency = 0;
 
-        while (chosenFrequencies.size() < numberOfFrequencies) {
+        while (chosenFrequencies.size() < numberOfSamples) {
             index = randomGenerator.nextInt(allFrequencies.size());
             newFrequency = allFrequencies.get(index);
 
@@ -178,14 +178,61 @@ public class AudioTestActivity extends AppCompatActivity
             }
         }
 
+
+        return chosenFrequencies;
     }
 
-    public void getNewFrequence() {
+//    public void getNewFrequence() {
+//
+//        frequency = chosenFrequencies.get(frequencyIndex);
+//        stop = false;
+//    }
 
-        frequency = chosenFrequencies.get(frequencyIndex);
-        stop = false;
+//    public void getNewChannel() {
+//        createSamplesBoard();
+//        getNewSample();
+//    }
+
+    private void getNewSample() {
+        newSample = sample.getNewSample();
+
+        if (newSample != null) {
+
+            frequency = Double.parseDouble(newSample.get(0));
+            channel = newSample.get(1);
+            stop = false;
+
+
+        } else {
+
+            toast2.show();
+            //koniec programu
+        }
+
+
     }
 
+//    public void createSamplesBoard() {
+//
+//        samplesBoard = new String[numberOfSamples * 2][2];
+//
+//        for (int j = 0; j < numberOfSamples; j++) {
+//
+//            tempFrequency = chosenFrequencies.get(j).toString();
+//            samplesBoard[0][j + k] = tempFrequency;
+//            samplesBoard[0][j + k + 1] = tempFrequency;
+//            k++;
+//        }
+//
+//        for (int j = 0; j < samplesBoard[0].length; j++) {
+//
+//            if (j % 2 == 0 || j == 0) {
+//                samplesBoard[1][j] = "Left";
+//            } else if (j % 2 != 0) {
+//                samplesBoard[1][j] = "Right";
+//            }
+//        }
+//    }
 
     public void addPoint(double frequency, double amplitude, String channel) {
         // DODAJ PUNKT DO WYKRESU
@@ -233,8 +280,8 @@ public class AudioTestActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //tworzę nowe listy x i y do wykresów
-        listaX = new ArrayList<>();
-        listaY = new ArrayList<>();
+        xAxis = new ArrayList<>();
+        yAxis = new ArrayList<>();
 
 
 //
@@ -259,7 +306,8 @@ public class AudioTestActivity extends AppCompatActivity
         ////////////////////////////////////////////
 
         allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
+        allFrequencies.addAll(Arrays.asList( 2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
+//        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
         ));
 //        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
 //        ));
@@ -268,6 +316,11 @@ public class AudioTestActivity extends AppCompatActivity
         chosenFrequencies = allFrequencies;//// tylko do testowania, usunąć przy losowaniu częstotliwości
         ////
         randomGenerator = new Random();
+
+        allChannels = new ArrayList<>();
+        allChannels.addAll(Arrays.asList("Right", "Left"));
+
+        samplesList = new ArrayList<Sample>();
 
         initPlaySoundButton();
         initStopSoundButton();
