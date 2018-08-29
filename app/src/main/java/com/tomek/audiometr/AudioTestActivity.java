@@ -77,15 +77,13 @@ public class AudioTestActivity extends AppCompatActivity
     private int numberOfSamples = 2;  //zmienic na 10 po testach albo na definiowalne przez uzytkownika
     private int frequencyIndex = 0;
 
-    private int numberOfChannels = 0;
-    private int numberOfRightChannels = 0;
-    private int numberOfLeftChannels = 0;
-
     private String[][] samplesBoard;
     private String tempFrequency;
     private int k = 0;
 
     private Sample sample;
+
+
 
     private void playAsync() {
 
@@ -109,7 +107,12 @@ public class AudioTestActivity extends AppCompatActivity
                     Log.d("Amplitude = ", "Amplitude = " + amplitude);
                     if (stop || amplitude >= 0.5) {
                         addPoint(frequency, amplitude, channel); //add result to a chart
+                        Log.e("test", "playAsync - if - przed stopButtonAction");
+
                         stopButtonAction();
+
+//                        Log.e("test", "playAsync - if - po stopButtonAction");
+
                         break;
                     }
                 }
@@ -121,11 +124,14 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     public void playButtonAction() {
+        Log.e("test", "playButtonAction - przed w metodzie");
 
         amplitude = 0.0;
         sample = new Sample(numberOfSamples, chosenFrequencies);
         getNewSample();
         playAsync();
+
+        Log.e("test", "playButtonAction - po ");
 
         stop = false;
 
@@ -137,9 +143,14 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
+                Log.e("test", "initPlaySoundButton - przed");
+
 //                frequencyIndex = 0;
                 randomFrequencies();
                 playButtonAction();
+
+                Log.e("test", "initPlaySoundButton - po");
+
             }
         });
     }
@@ -150,21 +161,34 @@ public class AudioTestActivity extends AppCompatActivity
         buttonSlysze.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.e("test", "initStopSoundButton - przed");
                 stop = true;
                 stopButtonAction();
+
+                Log.e("test", "initStopSoundButton - przed");
+
             }
         });
     }
 
     public void stopButtonAction() {
         stop = true;
-
+//        onPause();
+        amplitude = 0.0;
+        Log.e("test", "stopButtonAction - przed");
         getNewSample();
         playAsync();
+
+        Log.e("test", "stopButtonAction - po");
+
+
     }
 
 
     public ArrayList<Integer> randomFrequencies() {
+
+        Log.e("test", "randomFrenquencies - przed");
+
 
         int index = 0;
         int newFrequency = 0;
@@ -178,6 +202,8 @@ public class AudioTestActivity extends AppCompatActivity
             }
         }
 
+
+        Log.e("test", "randomFrenquencies - po");
 
         return chosenFrequencies;
     }
@@ -194,7 +220,17 @@ public class AudioTestActivity extends AppCompatActivity
 //    }
 
     private void getNewSample() {
+        Log.e("test", "newSample pobrany - przed newSample");
+
+
+        if (newSample != null) {
+            newSample.clear();
+        }
+
         newSample = sample.getNewSample();
+
+        Log.e("test", "newSample pobrany - newSample pobrany - NEWSAMPLE IN TEST = " + newSample.toString());
+
 
         if (newSample != null) {
 
@@ -202,13 +238,23 @@ public class AudioTestActivity extends AppCompatActivity
             channel = newSample.get(1);
             stop = false;
 
+            Log.e("test", "newSample pobrany - po; frequency = " + frequency + " channel = " + channel);
+
+
 
         } else {
 
+            result();
+
+            playThread.interrupt();
             toast2.show();
             //koniec programu
         }
 
+
+    }
+
+    public void result(){
 
     }
 
@@ -237,6 +283,7 @@ public class AudioTestActivity extends AppCompatActivity
     public void addPoint(double frequency, double amplitude, String channel) {
         // DODAJ PUNKT DO WYKRESU
 
+        Log.e("test", "addPoint");
     }
 
 
