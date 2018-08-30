@@ -48,6 +48,7 @@ public class Sample {
 
     }
 
+
     public ArrayList<String> getNewSample() {
 
         channels = new ArrayList<String>();
@@ -128,7 +129,7 @@ public class Sample {
 
     public String randomChannel() {
 
-        indexC = randomGenerator.nextInt(1);
+        indexC = randomGenerator.nextInt(2);
         newChannel = channels.get(indexC); //losuj częstotliwość
 
         Log.e("test", "Random channel in Sample ");
@@ -140,14 +141,52 @@ public class Sample {
 
     public boolean checkIfExists(Sample sample) {
 
-        if (samplesList.contains(sample)) {
-            Log.e("test", "exists");
+        Log.e("test", "samplesList size w checkIfExists = " + samplesList.size());
+        Log.e("test", "samplesList ma sampla? " + samplesList.contains(sample));
+        Log.e("test", "samplesList ma temporarySampla? " + samplesList.contains(temporarySample));
 
-            return true;
+//        if (samplesList.contains(sample)) {
+//            Log.e("test", "exists");
+//
+//            return true;
+//        }
+//
+//        Log.e("test", "doesnt exist");
+//
+//        return false;
+        int k = 0;
+
+        for (int i = 0; i < samplesList.size(); i++){
+
+
+            Log.e("test", "wyswietlanie kolejnych obiektow z listy: " + samplesList.toString());
+            Log.e("test", "obiekt temporary: " + temporarySample.toString());
+
+            if (samplesList.get(i).toString().equals(sample.toString())){
+                k++;
+            }
         }
 
-        Log.e("test", "doesnt exist");
+        if (k > 0){
+            Log.e("test", "exists");
+            return true;
+        }else{
+            Log.e("test", "doesnt exist");
+            return false;
+        }
 
-        return false;
+    }
+
+    public ArrayList<Sample> getSamplesList() {
+        return samplesList;
+    }
+
+    public void setSamplesList(ArrayList<Sample> samplesList) {
+        this.samplesList = samplesList;
+    }
+
+    @Override
+    public String toString() {
+        return frequency + '\'' + channel;
     }
 }

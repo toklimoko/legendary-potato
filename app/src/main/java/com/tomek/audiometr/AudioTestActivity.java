@@ -227,6 +227,8 @@ public class AudioTestActivity extends AppCompatActivity
             newSample.clear();
         }
 
+        sample.setSamplesList(samplesList);
+
         newSample = sample.getNewSample();
 
         Log.e("test", "newSample pobrany - newSample pobrany - NEWSAMPLE IN TEST = " + newSample.toString());
@@ -236,15 +238,23 @@ public class AudioTestActivity extends AppCompatActivity
 
             frequency = Double.parseDouble(newSample.get(0));
             channel = newSample.get(1);
+
+
+            Log.e("test", "samplesList size w przed getSamplesList() = " + samplesList.size());
+
+            samplesList = sample.getSamplesList();
+
+            Log.e("test", "samplesList size po getSamplesList() = " + samplesList.size());
+
             stop = false;
 
             Log.e("test", "newSample pobrany - po; frequency = " + frequency + " channel = " + channel);
 
 
 
-        } else {
-
             result();
+
+        } else {
 
             playThread.interrupt();
             toast2.show();
