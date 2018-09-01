@@ -28,62 +28,36 @@ import java.util.Random;
 public class AudioTestActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener { //podwójna implementacja
 
-
-//    private boolean b = false;
-
-    private Toast toast1;
-    private Toast toast2;
-    private Toast toast3;
-
-    private ArrayList<Double> listaF; //lista czestotliwosci podczas 1 próby
-    private ArrayList<Double> listaA; //lista amplitud podczas 1 próby
-    public ArrayList<Double> listaX; //lista wartości X do wykresu (częstotliwości dla każdej z prób)
-    public ArrayList<Double> listaY; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
-
-    private XYSeries series; //seria danych do wykresu
-
-    private LinearLayout chartLayout;
-    private GraphicalView chartView;
-
-
-//////////////////////////////
-
-    private Button buttonStart;
-    private Button buttonSlysze;
-
-    private Vibrator vibe;
-    private Thread playThread;
-    private Play play;
-
-    private Thread algorithmThread;
-    private boolean stop = false;
-
     private double frequency = 0.0;
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
-    private ArrayList<String> allChannels;
+    private int numberOfFrequencies = 5;
 
+    private Toast toast1;
+    private Toast toast2;
+
+    private Button buttonStart;
+    private Button buttonSlysze;
+    private Button buttonCancel;
+
+    private Vibrator vibe;
+    private Thread playThread;
+    private Play play;
+    private boolean stop = false;
+    private boolean koniecBadania = false;
+
+    private Random randomGenerator;
+    private Sample sample;
 
     private ArrayList<Integer> allFrequencies;
     private ArrayList<Integer> chosenFrequencies;
     private ArrayList<Sample> samplesList;
     private ArrayList<String> newSample;
 
-    private ArrayList<Double> xAxis;
-    private ArrayList<Double> yAxis;
-
-    private Random randomGenerator;
-    private int numberOfSamples = 2;  //zmienic na 10 po testach albo na definiowalne przez uzytkownika
-    private int frequencyIndex = 0;
-
-    private String[][] samplesBoard;
-    private String tempFrequency;
-    private int k = 0;
-
-    private Sample sample;
-
-
+    private ArrayList<Double> xAxis; //lista wartości X do wykresu (częstotliwości dla każdej z prób)
+    private ArrayList<Double> yAxis; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
+    private ArrayList<String> channels; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
 
     private void playAsync() {
 
@@ -106,34 +80,32 @@ public class AudioTestActivity extends AppCompatActivity
 
                     Log.d("Amplitude = ", "Amplitude = " + amplitude);
                     if (stop || amplitude >= 0.5) {
-                        addPoint(frequency, amplitude, channel); //add result to a chart
+                        addPoint(); //add result to a chart
                         Log.e("test", "playAsync - if - przed stopButtonAction");
 
-                        stopButtonAction();
-
-//                        Log.e("test", "playAsync - if - po stopButtonAction");
-
+                        if (koniecBadania) {
+                            hardResetValues();
+                        } else {
+                            stopButtonAction();
+                            resetValues();
+                        }
                         break;
                     }
                 }
             }
         });
-
         playThread.start();
-
     }
 
     public void playButtonAction() {
         Log.e("test", "playButtonAction - przed w metodzie");
-
-        amplitude = 0.0;
-        sample = new Sample(numberOfSamples, chosenFrequencies);
+        stop = false;
+        koniecBadania = false;
+        onPause();
+        resetValues();
         getNewSample();
         playAsync();
-
         Log.e("test", "playButtonAction - po ");
-
-        stop = false;
 
     }
 
@@ -142,15 +114,10 @@ public class AudioTestActivity extends AppCompatActivity
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 Log.e("test", "initPlaySoundButton - przed");
-
-//                frequencyIndex = 0;
                 randomFrequencies();
                 playButtonAction();
-
                 Log.e("test", "initPlaySoundButton - po");
-
             }
         });
     }
@@ -164,159 +131,156 @@ public class AudioTestActivity extends AppCompatActivity
                 Log.e("test", "initStopSoundButton - przed");
                 stop = true;
                 stopButtonAction();
-
                 Log.e("test", "initStopSoundButton - przed");
-
             }
         });
     }
 
     public void stopButtonAction() {
         stop = true;
-//        onPause();
-        amplitude = 0.0;
+        resetValues();
         Log.e("test", "stopButtonAction - przed");
         getNewSample();
         playAsync();
-
         Log.e("test", "stopButtonAction - po");
+    }
 
+    public void initCancelButton() {
+        buttonCancel = findViewById(R.id.btn_koniec);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("test", "initCancelButton - przed");
+                stop = true;
+                cancelButtonAction();
+                Log.e("test", "initCancelButton - przed");
+            }
+        });
+    }
+
+    public void cancelButtonAction() {
+        onPause();
+        Log.e("test", "onPause z cancelButtonAction - po");
+        hardResetValues();
+    }
+
+    public void hardResetValues() {
+        resetValues();
+        chosenFrequencies = new ArrayList<>();
+//        ////
+//        chosenFrequencies = allFrequencies;//// tylko do testowania, usunąć przy losowaniu częstotliwości
+//        ////
+        samplesList = new ArrayList<>();
 
     }
 
+    public void resetValues() {
+        amplitude = 0.0;
+        sample = new Sample(numberOfFrequencies, chosenFrequencies);
+    }
 
     public ArrayList<Integer> randomFrequencies() {
 
         Log.e("test", "randomFrenquencies - przed");
-
-
         int index = 0;
         int newFrequency = 0;
-
-        while (chosenFrequencies.size() < numberOfSamples) {
+        randomGenerator = new Random();
+        while (chosenFrequencies.size() < numberOfFrequencies) {
             index = randomGenerator.nextInt(allFrequencies.size());
             newFrequency = allFrequencies.get(index);
-
             if (!chosenFrequencies.contains(newFrequency)) {
                 chosenFrequencies.add(newFrequency);
             }
         }
-
-
         Log.e("test", "randomFrenquencies - po");
-
         return chosenFrequencies;
     }
 
-//    public void getNewFrequence() {
-//
-//        frequency = chosenFrequencies.get(frequencyIndex);
-//        stop = false;
-//    }
-
-//    public void getNewChannel() {
-//        createSamplesBoard();
-//        getNewSample();
-//    }
-
     private void getNewSample() {
         Log.e("test", "newSample pobrany - przed newSample");
-
-
         if (newSample != null) {
             newSample.clear();
         }
-
         sample.setSamplesList(samplesList);
-
         newSample = sample.getNewSample();
-
-        Log.e("test", "newSample pobrany - newSample pobrany - NEWSAMPLE IN TEST = " + newSample.toString());
-
-
         if (newSample != null) {
-
             frequency = Double.parseDouble(newSample.get(0));
             channel = newSample.get(1);
-
-
             Log.e("test", "samplesList size w przed getSamplesList() = " + samplesList.size());
-
             samplesList = sample.getSamplesList();
-
             Log.e("test", "samplesList size po getSamplesList() = " + samplesList.size());
-
             stop = false;
-
             Log.e("test", "newSample pobrany - po; frequency = " + frequency + " channel = " + channel);
-
-
-
-            result();
-
         } else {
+            //koniec badania
+            koniecBadania = true;
+//            toast2.show();
+            showResult();
 
-            playThread.interrupt();
-            toast2.show();
-            //koniec programu
+
         }
-
-
     }
 
-    public void result(){
-
-    }
-
-//    public void createSamplesBoard() {
-//
-//        samplesBoard = new String[numberOfSamples * 2][2];
-//
-//        for (int j = 0; j < numberOfSamples; j++) {
-//
-//            tempFrequency = chosenFrequencies.get(j).toString();
-//            samplesBoard[0][j + k] = tempFrequency;
-//            samplesBoard[0][j + k + 1] = tempFrequency;
-//            k++;
-//        }
-//
-//        for (int j = 0; j < samplesBoard[0].length; j++) {
-//
-//            if (j % 2 == 0 || j == 0) {
-//                samplesBoard[1][j] = "Left";
-//            } else if (j % 2 != 0) {
-//                samplesBoard[1][j] = "Right";
-//            }
-//        }
-//    }
-
-    public void addPoint(double frequency, double amplitude, String channel) {
+    public void addPoint() {
         // DODAJ PUNKT DO WYKRESU
-
         Log.e("test", "addPoint");
+
+        Log.e("test", "freq = " + frequency);
+        Log.e("test", "amp = " + amplitude);
+        Log.e("test", "chan = " + channel);
+
+        xAxis.add(frequency);
+        yAxis.add(amplitude);
+        channels.add(channel);
+
+        Log.e("test", "AP XF = " + xAxis.size());
+        Log.e("test", "AP XA = " + yAxis.size());
+        Log.e("test", "AP C = " + channels.size());
     }
 
+    public void showResult() {
+//        chart = new Chart(xAxis, yAxis, channels);
+//        chart.setxAxis(xAxis);
+//        chart.setyAxis(yAxis);
+//        chart.setChannels(channels);
+
+
+
+        Log.e("test", "SR XF = " + xAxis.toString());
+        Log.e("test", "SR XA = " + yAxis.toString());
+        Log.e("test", "SR C = " + channels .toString());
+
+
+
+        Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
+//        intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+//        Bundle bundle = new Bundle();
+
+
+        intentResult.putExtra("xAxis", xAxis);
+        intentResult.putExtra("yAxis", yAxis);
+        intentResult.putExtra("channels", channels);
+
+
+        startActivity(intentResult);
+    }
 
     @Override
     protected void onPause() {
         super.onPause();
-
         if (play != null) {
             play.release();
         }
-
         if (stop) {
             toast1.show();
             stop = false;
         }
-
         try {
             playThread.interrupt();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
@@ -325,64 +289,26 @@ public class AudioTestActivity extends AppCompatActivity
         setContentView(R.layout.activity_audio_test);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
         //obsluga lewego paska
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //tworzę nowe listy x i y do wykresów
+        allFrequencies = new ArrayList<>();
+//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
+//        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
+//        ));
+        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
+        ));
+
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
+        channels = new ArrayList<>();
 
-
-//
-//  TOASTY
-
-//
-//        Context context = getApplicationContext();
-//        CharSequence text = "Załadowano dane. Można zacząć badanie.";
-//        CharSequence text2 = "Generowanie dźwięku";
-//        CharSequence text3 = "Zapisano pomiar. Wybierz nowy dźwięk.";
-//        int duration = Toast.LENGTH_SHORT;
-//
-//        toast1 = Toast.makeText(context, text, duration);
-//        toast2 = Toast.makeText(context,text2, duration);
-//        toast3 = Toast.makeText(context,text3, duration);
-
-
-        if (series != null)
-            series.clearSeriesValues();
-
-
-        ////////////////////////////////////////////
-
-        allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList( 2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
-//        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
-        ));
-//        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
-//        ));
-        chosenFrequencies = new ArrayList<>();
-        ////
-        chosenFrequencies = allFrequencies;//// tylko do testowania, usunąć przy losowaniu częstotliwości
-        ////
-        randomGenerator = new Random();
-
-        allChannels = new ArrayList<>();
-        allChannels.addAll(Arrays.asList("Right", "Left"));
-
-        samplesList = new ArrayList<Sample>();
-
-        initPlaySoundButton();
-        initStopSoundButton();
-
-        //toasts
         Context context = getApplicationContext();
         CharSequence text = "Stop wciśnięty";
         CharSequence text2 = "Koniec badania";
@@ -392,157 +318,13 @@ public class AudioTestActivity extends AppCompatActivity
         toast1 = Toast.makeText(context, text, duration);
         toast2 = Toast.makeText(context, text2, duration);
 
+        hardResetValues();
+
+        initPlaySoundButton();
+        initStopSoundButton();
+        initCancelButton();
 
     }
-
-//    public void buttonGeneruj(){
-//        btn_generuj= findViewById(R.id.btn_generuj);
-//        btn_generuj.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                if (series != null)
-//                series.clearSeriesValues();
-//
-//
-//                listaF = new ArrayList<>();
-//                listaA = new ArrayList<>();
-//
-//                //dodaj element 0 do list
-//
-//                amplitude = 0;
-//
-//                    Play play = new Play(frequency, amplitude, 1, "Right");
-//
-//                    listaF.add(frequency);
-//                    listaA.add(amplitude);
-//
-//                btn_generuj.setVisibility(View.INVISIBLE);
-//                btn_Play_bad.setVisibility(View.VISIBLE);
-//                btn_Stop_bad.setVisibility(View.VISIBLE);
-//                btn_rysuj.setVisibility(View.INVISIBLE);
-//
-//                    toast1.show();
-//            }
-//        });
-//    }
-//
-//
-//
-//    public void buttonStart(){
-//        btn_Play_bad = findViewById(R.id.btn_glosniej);
-//        btn_Play_bad.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                btn_generuj.setVisibility(View.INVISIBLE);
-//                btn_Play_bad.setVisibility(View.VISIBLE);
-//                btn_Stop_bad.setVisibility(View.VISIBLE);
-//                btn_rysuj.setVisibility(View.INVISIBLE);
-//
-//                //tyle razy ile wcisnieto przycisk tyle podglosnij i dodaj do list F i A
-//
-////                while (b = true){
-//
-//                    amplitude += 0.05;
-//
-//                    Play play = new Play(frequency, amplitude, 1, "Right");
-//
-//                    //toast2.show();
-//
-//                    listaF.add(frequency);
-//                    listaA.add(amplitude);
-//
-////                    break;
-////                }
-//            }
-//        });
-//    }
-//
-//
-//
-//
-//    public void buttonStop(){
-//        btn_Stop_bad = findViewById(R.id.btn_slysze);
-//        btn_Stop_bad.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-////                b = false;
-//
-//                //pobierz te wartości częstotliwości i amplitudy, przy których użytkownik wcisnął "słyszę"
-//                frequency = listaF.get(listaF.size() - 1);
-//                amplitude = listaA.get(listaA.size() - 1);
-//
-//                //dodaj nowe wartości do list wykorzystywanych do tworzenia wykresów
-//                listaX.add(frequency);
-//                listaY.add(amplitude);
-//
-//                btn_generuj.setVisibility(View.VISIBLE);
-//                btn_Play_bad.setVisibility(View.INVISIBLE);
-//                btn_Stop_bad.setVisibility(View.INVISIBLE);
-//                btn_rysuj.setVisibility(View.VISIBLE);
-//
-//                toast3.show();
-//            }
-//        });
-//    }
-//
-//
-//    public void buttonRysuj(){
-//        btn_rysuj= findViewById(R.id.btn_doWykresu);
-//        btn_rysuj.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//                rysuj();
-//          }
-//        });
-//    }
-//
-//    public void rysuj(){
-//
-//        series = new XYSeries("Audiogram");
-//
-//        //dodaj każdy punkt pomiarowy do serii danych do wykresu
-//        for (int i = 0; i<listaX.size();i++){
-//            series.add(listaX.get(i),listaY.get(i));
-//
-//        }
-//
-//        XYSeriesRenderer renderer = new XYSeriesRenderer();
-//        renderer.setLineWidth(3);
-//        renderer.setColor(Color.BLUE);
-//        renderer.setPointStyle(PointStyle.CIRCLE);
-//
-//        XYMultipleSeriesRenderer mrenderer = new XYMultipleSeriesRenderer();
-//        mrenderer.addSeriesRenderer(renderer);
-//        mrenderer.setYAxisMin(1.5);
-//        mrenderer.setYAxisMax(0);
-//        mrenderer.setXAxisMin(0);
-//        mrenderer.setXAxisMax(18000);
-//        mrenderer.setMarginsColor(Color.WHITE);
-//        mrenderer.setShowGrid(true);
-//        mrenderer.setMarginsColor(Color.WHITE);
-//        mrenderer.setGridColor(Color.LTGRAY);
-//        mrenderer.setAxesColor(Color.BLACK);
-//        mrenderer.setXLabelsColor(Color.BLACK);
-//        mrenderer.setYLabelsColor(0, Color.BLACK);
-//        mrenderer.setYLabelsAlign(Paint.Align.CENTER);
-//        mrenderer.setLabelsTextSize(30);
-//        mrenderer.setLegendTextSize(30);
-//        mrenderer.setFitLegend(true);
-//        mrenderer.setShowLegend(false);
-//
-//        XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
-//        dataset.addSeries(series);
-//
-//        chartLayout = findViewById(R.id.llv);
-//        chartView = ChartFactory.getLineChartView(this,dataset,mrenderer);
-//        chartLayout.addView(chartView);
-//        chartView.repaint();
-//
-//    }
 
     @Override
     public void onBackPressed() {
@@ -589,29 +371,27 @@ public class AudioTestActivity extends AppCompatActivity
 
 
         if (id == R.id.nav_start) {
-
             Intent intentLauncher = new Intent(AudioTestActivity.this, MainActivity.class);
+            intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLauncher);
 
         } else if (id == R.id.nav_kalibruj) {
-
             Intent intentKal = new Intent(AudioTestActivity.this, CalibrationActivity.class);
+            intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentKal);
 
         } else if (id == R.id.nav_info) {
-
             Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAppInfo.class);
+            intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_powrot) {
-
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);
             startActivity(intent);
 
         }
-
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

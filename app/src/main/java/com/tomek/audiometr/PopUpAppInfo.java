@@ -13,27 +13,6 @@ import android.widget.ImageView;
  * klssa obslugujaca popUp'a trzeciego (dot. informacji o programie)
  */
 
-//public class PopUpAppInfo extends AppCompatActivity {
-//    Dialog myDialog;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//        myDialog = new Dialog(this);
-//
-//
-//    }
-//    public void ShowPopup(){
-//
-//        myDialog.setContentView(R.layout.pop_up_audio_test_info);
-//
-//        myDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-//        myDialog.show();
-//
-//    }
-//}
-
 public class PopUpAppInfo extends Activity {
 
     private ImageView mImageView;

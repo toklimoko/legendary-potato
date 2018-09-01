@@ -31,6 +31,7 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="wybierz_dzwiek">Wybierz dźwięk:</string>
     <string name="audiometr">Audiometr</string>
     <string name="ok">OK</string>
+    <string name="anuluj">Anuluj badanie</string>
 
 
 </resources>

@@ -14,7 +14,7 @@ public class Sample {
 
     private double frequency = 0.0;
     private String channel = "";
-    private int numberOfSamples;
+    private int numberOfFrequencies;
     private ArrayList<Integer> chosenFrequencies;
     private ArrayList<String> channels = new ArrayList<String>();
 
@@ -32,8 +32,8 @@ public class Sample {
     private boolean done = false;
 
 
-    public Sample(int numberOfSamples, ArrayList<Integer> chosenFrequencies) {
-        this.numberOfSamples = numberOfSamples;
+    public Sample(int numberOfFrequencies, ArrayList<Integer> chosenFrequencies) {
+        this.numberOfFrequencies = numberOfFrequencies;
         this.chosenFrequencies = chosenFrequencies;
 
         Log.e("test", "sample - konstruktor nc");
@@ -51,16 +51,16 @@ public class Sample {
 
     public ArrayList<String> getNewSample() {
 
-        channels = new ArrayList<String>();
+        channels = new ArrayList<>();
         channels.addAll(Arrays.asList("Left", "Right"));
 
         done = false;
         k = false;
 
-        if (samplesList.size() + 1 > numberOfSamples * 2) {
+        if (samplesList.size() + 1 > numberOfFrequencies * 2) {
 
 
-            Log.e("test", "samplesList.size() =  " + (samplesList.size() + 1) + " numberOfSamples = " + (numberOfSamples * 2));
+            Log.e("test", "samplesList.size() =  " + (samplesList.size() + 1) + " numberOfFrequencies = " + (numberOfFrequencies * 2));
 
             return null;
         }
@@ -118,7 +118,7 @@ public class Sample {
 
     public int randomFrequency() {
 
-        indexF = randomGenerator.nextInt(numberOfSamples);
+        indexF = randomGenerator.nextInt(numberOfFrequencies);
         newFrequency = chosenFrequencies.get(indexF); //losuj częstotliwość
 
         Log.e("test", "random Frequency in Sample ");
@@ -145,15 +145,6 @@ public class Sample {
         Log.e("test", "samplesList ma sampla? " + samplesList.contains(sample));
         Log.e("test", "samplesList ma temporarySampla? " + samplesList.contains(temporarySample));
 
-//        if (samplesList.contains(sample)) {
-//            Log.e("test", "exists");
-//
-//            return true;
-//        }
-//
-//        Log.e("test", "doesnt exist");
-//
-//        return false;
         int k = 0;
 
         for (int i = 0; i < samplesList.size(); i++){

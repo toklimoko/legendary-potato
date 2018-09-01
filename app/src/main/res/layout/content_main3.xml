@@ -48,6 +48,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="_Słyszę_" />
+
+        <Button
+            android:id="@+id/btn_koniec"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/anuluj" />
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
