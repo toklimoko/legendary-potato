@@ -23,6 +23,8 @@ import java.util.ArrayList;
 
 public class ResultActivity extends Activity {
 
+    private double amplitudeLimit;
+
     private LinearLayout chartLayout;
 
     private GraphicalView chartView;
@@ -46,11 +48,13 @@ public class ResultActivity extends Activity {
         xAxis = (ArrayList<Double>) getIntent().getSerializableExtra("xAxis");
         yAxis = (ArrayList<Double>) getIntent().getSerializableExtra("yAxis");
         channels = (ArrayList<String>) getIntent().getSerializableExtra("channels");
+        amplitudeLimit = (double) getIntent().getSerializableExtra("amplitudeLimit");
 
         Log.e("test", "Result Activity");
         Log.e("test", "xAxis = " + xAxis.toString());
         Log.e("test", "yAxis = " + yAxis.toString());
         Log.e("test", "channels = " + channels.toString());
+        Log.e("test", "amplitudeLimit = " + amplitudeLimit);
 
         drawChart();
 
@@ -87,8 +91,8 @@ public class ResultActivity extends Activity {
         XYMultipleSeriesRenderer mrenderer = new XYMultipleSeriesRenderer();
         mrenderer.addSeriesRenderer(rendererR);
         mrenderer.addSeriesRenderer(rendererL);
-//        mrenderer.setYAxisMin(1.5);
         mrenderer.setYAxisMax(0);
+        mrenderer.setYAxisMin(amplitudeLimit);
         mrenderer.setXAxisMin(0);
         mrenderer.setXAxisMax(18000);
         mrenderer.setMarginsColor(Color.WHITE);
@@ -97,12 +101,22 @@ public class ResultActivity extends Activity {
         mrenderer.setGridColor(Color.LTGRAY);
         mrenderer.setAxesColor(Color.BLACK);
         mrenderer.setXLabelsColor(Color.BLACK);
-        mrenderer.setYLabelsColor(3, Color.BLACK);
-        mrenderer.setYLabelsAlign(Paint.Align.CENTER);
+        mrenderer.setYLabelsColor(0, Color.BLACK);
+        mrenderer.setYLabelsAlign(Paint.Align.RIGHT);
         mrenderer.setLabelsTextSize(30);
         mrenderer.setLegendTextSize(40);
         mrenderer.setFitLegend(true);
         mrenderer.setShowLegend(true);
+        mrenderer.setMargins(new int[]{150,120,150,50}); // {up,left,down,right}
+        mrenderer.setLegendHeight(5);
+        mrenderer.setXTitle("Częstotliwość");
+        mrenderer.setYTitle("Amplituda");
+
+        mrenderer.setAxisTitleTextSize(50);
+        mrenderer.setPanEnabled(true, false);
+        mrenderer.setZoomEnabled(false, false);
+        mrenderer.setChartTitle("Twój audiogram");
+        mrenderer.setChartTitleTextSize(100);
 
         XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(seriesR);

@@ -22,9 +22,10 @@
         android:id="@+id/chartLayout"
         android:layout_width="match_parent"
         android:layout_height="409dp"
-        android:layout_marginTop="8dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/okButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/xButton"></LinearLayout>
 
     <Button

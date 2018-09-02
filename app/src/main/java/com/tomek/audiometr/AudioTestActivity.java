@@ -32,7 +32,9 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
-    private int numberOfFrequencies = 5;
+    private int numberOfFrequencies = 18;
+    private double step = 0.05;
+    private double amplitudeLimit = 0.5;
 
     private Toast toast1;
     private Toast toast2;
@@ -75,19 +77,19 @@ public class AudioTestActivity extends AppCompatActivity
                     play.playSound();
                     play = null;
 
-//                    amplitude += 0.005;
-                    amplitude += 0.05;
+                    amplitude += step;
 
                     Log.d("Amplitude = ", "Amplitude = " + amplitude);
-                    if (stop || amplitude >= 0.5) {
+                    if (amplitude >= amplitudeLimit) {
                         addPoint(); //add result to a chart
                         Log.e("test", "playAsync - if - przed stopButtonAction");
 
                         if (koniecBadania) {
                             hardResetValues();
                         } else {
-                            stopButtonAction();
                             resetValues();
+                            getNewSample();
+                            playAsync();
                         }
                         break;
                     }
@@ -138,6 +140,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     public void stopButtonAction() {
         stop = true;
+        addPoint();
         resetValues();
         Log.e("test", "stopButtonAction - przed");
         getNewSample();
@@ -255,12 +258,11 @@ public class AudioTestActivity extends AppCompatActivity
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
 //        intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-//        Bundle bundle = new Bundle();
-
 
         intentResult.putExtra("xAxis", xAxis);
         intentResult.putExtra("yAxis", yAxis);
         intentResult.putExtra("channels", channels);
+        intentResult.putExtra("amplitudeLimit", amplitudeLimit);
 
 
         startActivity(intentResult);
