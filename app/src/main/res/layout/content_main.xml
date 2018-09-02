@@ -83,10 +83,11 @@
 
         <ImageButton
             android:id="@+id/btn_kal"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
             android:layout_marginBottom="240dp"
-            android:layout_marginStart="45dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="4dp"
             android:adjustViewBounds="false"
             android:background="@color/transparent"
             android:cropToPadding="false"
@@ -122,18 +123,18 @@
 
         <ImageButton
             android:id="@+id/btn_badanie"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_marginBottom="240dp"
-            android:layout_marginStart="50dp"
+            android:layout_marginStart="45dp"
             android:adjustViewBounds="false"
             android:background="@color/popUp"
             android:cropToPadding="false"
-            android:scaleType="centerInside"
+            android:scaleType="fitXY"
             android:tint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/play_icon" />
+            app:srcCompat="@drawable/forward_icon" />
     </FrameLayout>
 
     <!--<LinearLayout-->

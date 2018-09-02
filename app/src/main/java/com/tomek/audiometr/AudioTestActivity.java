@@ -2,9 +2,11 @@ package com.tomek.audiometr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,11 +17,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
-
-import org.achartengine.GraphicalView;
-import org.achartengine.model.XYSeries;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,16 +33,23 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
-    private int numberOfFrequencies = 18;
+    private int numberOfFrequencies = 2;
     private double step = 0.05;
     private double amplitudeLimit = 0.5;
 
     private Toast toast1;
     private Toast toast2;
 
-    private Button buttonStart;
-    private Button buttonSlysze;
-    private Button buttonCancel;
+    private ImageButton buttonStart;
+    private ImageButton buttonSlysze;
+    private ImageButton buttonCancel;
+    private ImageButton buttonResult;
+    private ImageButton buttonDots;
+
+    private TextView textViewStart;
+    private TextView textViewSlysze;
+    private TextView textViewCancel;
+    private TextView textViewResult;
 
     private Vibrator vibe;
     private Thread playThread;
@@ -103,6 +111,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "playButtonAction - przed w metodzie");
         stop = false;
         koniecBadania = false;
+        showAudioTestMode();
         onPause();
         resetValues();
         getNewSample();
@@ -154,17 +163,58 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Log.e("test", "initCancelButton - przed");
-                stop = true;
                 cancelButtonAction();
                 Log.e("test", "initCancelButton - przed");
             }
         });
     }
 
+
+
     public void cancelButtonAction() {
+
+        stop = true;
+        showStartMode();
         onPause();
         Log.e("test", "onPause z cancelButtonAction - po");
         hardResetValues();
+    }
+
+    public void resultButtonAction() {
+        //koniec badania
+        koniecBadania = true;
+//            toast2.show();
+        showResultMode();
+        showResult();
+    }
+
+    public void initResultButton() {
+        buttonResult = findViewById(R.id.btn_result);
+        buttonResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("test", "initResultButton - przed");
+                resultButtonAction();
+                Log.e("test", "initResultButton - przed");
+            }
+        });
+    }
+
+    public void initDotsButton(){
+        buttonDots = findViewById(R.id.btn_dots);
+        buttonDots.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dotsButtonAction();
+            }
+        });
+    }
+
+    public void dotsButtonAction(){
+
+        Intent intentInfo = new Intent(this, PopUpAudioTest.class);
+        startActivity(intentInfo);
+
     }
 
     public void hardResetValues() {
@@ -174,6 +224,9 @@ public class AudioTestActivity extends AppCompatActivity
 //        chosenFrequencies = allFrequencies;//// tylko do testowania, usunąć przy losowaniu częstotliwości
 //        ////
         samplesList = new ArrayList<>();
+        xAxis = new ArrayList<>();
+        yAxis = new ArrayList<>();
+        channels = new ArrayList<>();
 
     }
 
@@ -215,10 +268,8 @@ public class AudioTestActivity extends AppCompatActivity
             stop = false;
             Log.e("test", "newSample pobrany - po; frequency = " + frequency + " channel = " + channel);
         } else {
-            //koniec badania
-            koniecBadania = true;
-//            toast2.show();
-            showResult();
+
+            resultButtonAction();
 
 
         }
@@ -242,10 +293,6 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     public void showResult() {
-//        chart = new Chart(xAxis, yAxis, channels);
-//        chart.setxAxis(xAxis);
-//        chart.setyAxis(yAxis);
-//        chart.setChannels(channels);
 
 
 
@@ -253,10 +300,8 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "SR XA = " + yAxis.toString());
         Log.e("test", "SR C = " + channels .toString());
 
-
-
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
-//        intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
 
         intentResult.putExtra("xAxis", xAxis);
@@ -266,7 +311,44 @@ public class AudioTestActivity extends AppCompatActivity
 
 
         startActivity(intentResult);
+
+
     }
+
+    public void showStartMode(){
+        buttonStart.setVisibility(View.VISIBLE);
+        textViewStart.setVisibility(View.VISIBLE);
+        buttonSlysze.setVisibility(View.GONE);
+        textViewSlysze.setVisibility(View.GONE);
+        buttonCancel.setVisibility(View.GONE);
+        textViewCancel.setVisibility(View.GONE);
+        buttonResult.setVisibility(View.GONE);
+        textViewResult.setVisibility(View.GONE);
+    }
+
+    public void showAudioTestMode(){
+        buttonStart.setVisibility(View.GONE);
+        textViewStart.setVisibility(View.GONE);
+        buttonSlysze.setVisibility(View.VISIBLE);
+        textViewSlysze.setVisibility(View.VISIBLE);
+        buttonCancel.setVisibility(View.VISIBLE);
+        textViewCancel.setVisibility(View.VISIBLE);
+        buttonResult.setVisibility(View.GONE);
+        textViewResult.setVisibility(View.GONE);
+    }
+
+    public void showResultMode(){
+        buttonStart.setVisibility(View.GONE);
+        textViewStart.setVisibility(View.GONE);
+        buttonSlysze.setVisibility(View.GONE);
+        textViewSlysze.setVisibility(View.GONE);
+        buttonCancel.setVisibility(View.VISIBLE);
+        textViewCancel.setVisibility(View.VISIBLE);
+        buttonResult.setVisibility(View.VISIBLE);
+        textViewResult.setVisibility(View.VISIBLE);
+    }
+
+
 
     @Override
     protected void onPause() {
@@ -275,7 +357,6 @@ public class AudioTestActivity extends AppCompatActivity
             play.release();
         }
         if (stop) {
-            toast1.show();
             stop = false;
         }
         try {
@@ -300,11 +381,16 @@ public class AudioTestActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        textViewStart = findViewById(R.id.tv_start);
+        textViewSlysze = findViewById(R.id.tv_slysze);
+        textViewCancel = findViewById(R.id.tv_koniec);
+        textViewResult = findViewById(R.id.tv_result);
+
         allFrequencies = new ArrayList<>();
-//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
+        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
 //        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
 //        ));
-        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
+//        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
         ));
 
         xAxis = new ArrayList<>();
@@ -325,6 +411,10 @@ public class AudioTestActivity extends AppCompatActivity
         initPlaySoundButton();
         initStopSoundButton();
         initCancelButton();
+        initResultButton();
+        initDotsButton();
+
+        showStartMode();
 
     }
 
@@ -341,7 +431,7 @@ public class AudioTestActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main3, menu);
+        getMenuInflater().inflate(R.menu.menu_audio_test, menu);
         return true;
     }
 
