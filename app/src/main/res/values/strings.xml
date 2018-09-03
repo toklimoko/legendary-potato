@@ -29,12 +29,15 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="wybierz_dzwiek">Wybierz dźwięk:</string>
     <string name="audiometr">Audiometr</string>
     <string name="ok">OK</string>
-    <string name="exit">Wyjdź</string>
+    <string name="exit">Wróć</string>
     <string name="slysze">Słyszę</string>
     <string name="wynik">Wynik badania</string>
     <string name="autor">Autor: Tomasz Klimek</string>
     <string name="eMail">E-mail: toklimoko@gmail.com</string>
     <string name="version">Wersja: 092018_1</string>
+    <string name="tv_audioTest_1">Aby rozpocząć badanie dotknij poniższy przycisk</string>
+    <string name="tv_audioTest_2">Gdy usłyszysz dźwięk dotknij "Słyszę"</string>
+    <string name="tv_audioTest_3">Koniec badania</string>
 
 
 </resources>

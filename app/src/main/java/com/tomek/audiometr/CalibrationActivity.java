@@ -23,7 +23,7 @@ public class CalibrationActivity extends AppCompatActivity
 
 
     private ImageButton btnKal;
-    private ImageButton buttonDots;
+    private ImageButton buttonHelp;
     private Toast toast;
     private Vibrator vibe;
 
@@ -93,20 +93,20 @@ public class CalibrationActivity extends AppCompatActivity
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
 
         initPlaySoundButton();
-        initDotsButton();
+        initHelpButton();
     }
 
-    public void initDotsButton() {
-        buttonDots = findViewById(R.id.btn_dots_cal);
-        buttonDots.setOnClickListener(new View.OnClickListener() {
+    public void initHelpButton() {
+        buttonHelp = findViewById(R.id.btn_help_cal);
+        buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dotsButtonAction();
+                helpButtonAction();
             }
         });
     }
 
-    public void dotsButtonAction() {
+    public void helpButtonAction() {
         vibe.vibrate(50);
         Intent intentInfo = new Intent(this, PopUpCalibration.class);
         startActivity(intentInfo);
@@ -137,32 +137,32 @@ public class CalibrationActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_calibration, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings2) {
-
-            //"po co kalibracja?"
-            Intent intentKalInfo = new Intent(CalibrationActivity.this, PopUpCalibration.class);
-            startActivity(intentKalInfo);
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_calibration, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings2) {
+//
+//            //"po co kalibracja?"
+//            Intent intentKalInfo = new Intent(CalibrationActivity.this, PopUpCalibration.class);
+//            startActivity(intentKalInfo);
+//
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -172,19 +172,19 @@ public class CalibrationActivity extends AppCompatActivity
 
         if (id == R.id.nav_start) {
 
-            Intent intentLauncher = new Intent(CalibrationActivity.this, MainActivity.class);
+            Intent intentLauncher = new Intent(this, MainActivity.class);
             intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLauncher);
 
         } else if (id == R.id.nav_kalibruj) {
 
-            Intent intentKal = new Intent(CalibrationActivity.this, CalibrationActivity.class);
+            Intent intentKal = new Intent(this, CalibrationActivity.class);
             intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentKal);
 
         } else if (id == R.id.nav_info) {
 
-            Intent intentInfo = new Intent(CalibrationActivity.this, PopUpAppInfo.class);
+            Intent intentInfo = new Intent(this, PopUpAppInfo.class);
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 

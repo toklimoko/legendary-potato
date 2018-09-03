@@ -36,19 +36,19 @@
         <activity
             android:name=".PopUpAudioTest"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.CustomTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PopUpCalibration"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.CustomTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".PopUpAppInfo"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.CustomTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ResultActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.CustomTheme" />
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

@@ -121,7 +121,6 @@ public class ResultActivity extends Activity {
         mrenderer.setAxisTitleTextSize(50);
         mrenderer.setPanEnabled(true, false);
         mrenderer.setZoomEnabled(false, false);
-        mrenderer.setChartTitle("Twój audiogram");
         mrenderer.setChartTitleTextSize(100);
 
         XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();

@@ -2,11 +2,9 @@ package com.tomek.audiometr;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.Image;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +30,7 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
-    private int numberOfFrequencies = 10;
+    private int numberOfFrequencies = 2;
     private double step = 0.05;
     private double amplitudeLimit = 0.5;
     private double frequencyLimitMin = 0;
@@ -47,12 +43,13 @@ public class AudioTestActivity extends AppCompatActivity
     private ImageButton buttonSlysze;
     private ImageButton buttonCancel;
     private ImageButton buttonResult;
-    private ImageButton buttonDots;
+    private ImageButton buttonHelp;
 
     private TextView textViewStart;
     private TextView textViewSlysze;
     private TextView textViewCancel;
     private TextView textViewResult;
+    private TextView textViewAudioTest;
 
     private Vibrator vibe;
     private Thread playThread;
@@ -82,7 +79,7 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void run() {
 
-                // play the loop until the thread is interrupted or condition is met
+                  // play the loop until the thread is interrupted or condition is met
                 while (!Thread.currentThread().isInterrupted()) {
                     play = new Play(frequency, amplitude, duration, channel);
                     play.playSound();
@@ -100,6 +97,7 @@ public class AudioTestActivity extends AppCompatActivity
                         } else {
                             resetValues();
                             getNewSample();
+
                             playAsync();
                         }
                         break;
@@ -109,6 +107,16 @@ public class AudioTestActivity extends AppCompatActivity
         });
         playThread.start();
     }
+
+//    public void holdOn(){
+//        int time = 2;
+//        try {
+//            Thread.sleep(time*1000);
+//            Log.e("test", "ZZZ");
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void playButtonAction() {
         Log.e("test", "playButtonAction - przed w metodzie");
@@ -183,6 +191,7 @@ public class AudioTestActivity extends AppCompatActivity
         onPause();
         Log.e("test", "onPause z cancelButtonAction - po");
         hardResetValues();
+
     }
 
     public void resultButtonAction() {
@@ -206,17 +215,17 @@ public class AudioTestActivity extends AppCompatActivity
         });
     }
 
-    public void initDotsButton(){
-        buttonDots = findViewById(R.id.btn_dots);
-        buttonDots.setOnClickListener(new View.OnClickListener() {
+    public void initHelpButton(){
+        buttonHelp = findViewById(R.id.btn_help);
+        buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                dotsButtonAction();
+                helpButtonAction();
             }
         });
     }
 
-    public void dotsButtonAction(){
+    public void helpButtonAction(){
         vibe.vibrate(50);
         Intent intentInfo = new Intent(this, PopUpAudioTest.class);
         startActivity(intentInfo);
@@ -281,11 +290,9 @@ public class AudioTestActivity extends AppCompatActivity
             stop = false;
             Log.e("test", "newSample pobrany - po; frequency = " + frequency + " channel = " + channel);
         } else {
-
             resultButtonAction();
-
-
         }
+
     }
 
     public void addPoint() {
@@ -339,6 +346,7 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.GONE);
         buttonResult.setVisibility(View.GONE);
         textViewResult.setVisibility(View.GONE);
+        textViewAudioTest.setText(R.string.tv_audioTest_1);
     }
 
     public void showAudioTestMode(){
@@ -350,6 +358,7 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.VISIBLE);
         buttonResult.setVisibility(View.GONE);
         textViewResult.setVisibility(View.GONE);
+        textViewAudioTest.setText(R.string.tv_audioTest_2);
     }
 
     public void showResultMode(){
@@ -361,9 +370,8 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.VISIBLE);
         buttonResult.setVisibility(View.VISIBLE);
         textViewResult.setVisibility(View.VISIBLE);
+        textViewAudioTest.setText(R.string.tv_audioTest_3);
     }
-
-
 
     @Override
     protected void onPause() {
@@ -402,12 +410,13 @@ public class AudioTestActivity extends AppCompatActivity
         textViewSlysze = findViewById(R.id.tv_slysze);
         textViewCancel = findViewById(R.id.tv_koniec);
         textViewResult = findViewById(R.id.tv_result);
+        textViewAudioTest = findViewById(R.id.textViewAudioTest);
 
         allFrequencies = new ArrayList<>();
-//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
+        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
 //        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
 //        ));
-        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
+//        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
         ));
 
         xAxis = new ArrayList<>();
@@ -429,7 +438,7 @@ public class AudioTestActivity extends AppCompatActivity
         initStopSoundButton();
         initCancelButton();
         initResultButton();
-        initDotsButton();
+        initHelpButton();
 
         showStartMode();
 
@@ -444,33 +453,33 @@ public class AudioTestActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_audio_test, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings3) {
-
-            //"jak wykonać badanie?"
-            Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAudioTest.class);
-            startActivity(intentInfo);
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_audio_test, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings3) {
+//
+//            //"jak wykonać badanie?"
+//            Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAudioTest.class);
+//            startActivity(intentInfo);
+//
+//            return true;
+//        }
+//
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -480,17 +489,17 @@ public class AudioTestActivity extends AppCompatActivity
 
 
         if (id == R.id.nav_start) {
-            Intent intentLauncher = new Intent(AudioTestActivity.this, MainActivity.class);
+            Intent intentLauncher = new Intent(this, MainActivity.class);
             intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLauncher);
 
         } else if (id == R.id.nav_kalibruj) {
-            Intent intentKal = new Intent(AudioTestActivity.this, CalibrationActivity.class);
+            Intent intentKal = new Intent(this, CalibrationActivity.class);
             intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentKal);
 
         } else if (id == R.id.nav_info) {
-            Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAppInfo.class);
+            Intent intentInfo = new Intent(this, PopUpAppInfo.class);
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 
