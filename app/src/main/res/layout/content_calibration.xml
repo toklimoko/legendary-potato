@@ -23,6 +23,19 @@
         app:srcCompat="@drawable/tapeta2" />
 
 
+    <ImageButton
+        android:id="@+id/btn_dots_cal"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/popUp"
+        android:scaleType="fitXY"
+        android:tint="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/dots_icon" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="280dp"

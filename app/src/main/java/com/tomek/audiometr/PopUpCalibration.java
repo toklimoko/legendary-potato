@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 public class PopUpCalibration extends Activity {
 
-    private ImageView mImageView;
+//    private ImageView mImageView;
 //    double screenFactor = 1;
 
     @Override
@@ -32,9 +32,12 @@ public class PopUpCalibration extends Activity {
 //
 //        getWindow().setLayout((int) (width*screenFactor),(int) (height*screenFactor));
 //
+//
+//        mImageView = findViewById(R.id.iv_ksiazka);
+//        mImageView.setImageResource(R.drawable.manual_icon);
 
-        mImageView = findViewById(R.id.iv_ksiazka);
-        mImageView.setImageResource(R.drawable.manual_icon);
+
+
     }
 
     public void closeButton(View v) {

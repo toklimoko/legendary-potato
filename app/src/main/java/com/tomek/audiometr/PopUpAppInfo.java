@@ -15,7 +15,8 @@ import android.widget.ImageView;
 
 public class PopUpAppInfo extends Activity {
 
-    private ImageView mImageView;
+    private ImageView imageViewBackground;
+    private ImageView imageViewLogo;
 //    double screenFactor = 1; //0.85
 
     @Override
@@ -23,19 +24,14 @@ public class PopUpAppInfo extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pop_up_app_info);
+        imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
+        imageViewBackground.setImageResource(R.drawable.tapeta2);
+        imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//
-//        int width = dm.widthPixels;
-//        int height = dm.heightPixels;
-//
-//        getWindow().setLayout((int) (width*screenFactor),(int) (height*screenFactor)); //1.1 ; 0.9
+        imageViewLogo = findViewById(R.id.iv_logo_pop_info);
+        imageViewLogo.setImageResource(R.drawable.logo);
+//        imageViewLogo.setScaleType();
 
-
-        mImageView = findViewById(R.id.iv_ksiazka);
-        mImageView.setImageResource(R.drawable.manual_icon);
-//        mImageView.setBackground(new ColorDrawable(Color.TRANSPARENT));
     }
 
     public void closeButton(View v) {

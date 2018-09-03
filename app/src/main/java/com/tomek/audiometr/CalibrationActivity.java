@@ -23,6 +23,7 @@ public class CalibrationActivity extends AppCompatActivity
 
 
     private ImageButton btnKal;
+    private ImageButton buttonDots;
     private Toast toast;
     private Vibrator vibe;
 
@@ -30,8 +31,8 @@ public class CalibrationActivity extends AppCompatActivity
 
     private Play play;
 
-    private void playAsync(){
-        if(play != null){
+    private void playAsync() {
+        if (play != null) {
             return;
         }
 
@@ -92,19 +93,36 @@ public class CalibrationActivity extends AppCompatActivity
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
 
         initPlaySoundButton();
+        initDotsButton();
+    }
+
+    public void initDotsButton() {
+        buttonDots = findViewById(R.id.btn_dots_cal);
+        buttonDots.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dotsButtonAction();
+            }
+        });
+    }
+
+    public void dotsButtonAction() {
+        vibe.vibrate(50);
+        Intent intentInfo = new Intent(this, PopUpCalibration.class);
+        startActivity(intentInfo);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
 
-        if(play != null) {
+        if (play != null) {
             play.release();
         }
 
         try {
             playThread.interrupt();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -137,7 +155,7 @@ public class CalibrationActivity extends AppCompatActivity
         if (id == R.id.action_settings2) {
 
             //"po co kalibracja?"
-            Intent intentKalInfo = new Intent(CalibrationActivity.this,PopUpCalibration.class);
+            Intent intentKalInfo = new Intent(CalibrationActivity.this, PopUpCalibration.class);
             startActivity(intentKalInfo);
 
             return true;
@@ -154,19 +172,19 @@ public class CalibrationActivity extends AppCompatActivity
 
         if (id == R.id.nav_start) {
 
-            Intent intentLauncher = new Intent(CalibrationActivity.this,MainActivity.class);
+            Intent intentLauncher = new Intent(CalibrationActivity.this, MainActivity.class);
             intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLauncher);
 
         } else if (id == R.id.nav_kalibruj) {
 
-            Intent intentKal = new Intent(CalibrationActivity.this,CalibrationActivity.class);
+            Intent intentKal = new Intent(CalibrationActivity.this, CalibrationActivity.class);
             intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentKal);
 
         } else if (id == R.id.nav_info) {
 
-            Intent intentInfo = new Intent(CalibrationActivity.this,PopUpAppInfo.class);
+            Intent intentInfo = new Intent(CalibrationActivity.this, PopUpAppInfo.class);
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 

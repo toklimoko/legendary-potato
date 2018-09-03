@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class AudioTestActivity extends AppCompatActivity
@@ -33,9 +34,11 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
-    private int numberOfFrequencies = 2;
+    private int numberOfFrequencies = 10;
     private double step = 0.05;
     private double amplitudeLimit = 0.5;
+    private double frequencyLimitMin = 0;
+    private double frequencyLimitMax = 18000;
 
     private Toast toast1;
     private Toast toast2;
@@ -109,6 +112,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     public void playButtonAction() {
         Log.e("test", "playButtonAction - przed w metodzie");
+        vibe.vibrate(50);
         stop = false;
         koniecBadania = false;
         showAudioTestMode();
@@ -148,6 +152,7 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     public void stopButtonAction() {
+        vibe.vibrate(50);
         stop = true;
         addPoint();
         resetValues();
@@ -172,7 +177,7 @@ public class AudioTestActivity extends AppCompatActivity
 
 
     public void cancelButtonAction() {
-
+        vibe.vibrate(50);
         stop = true;
         showStartMode();
         onPause();
@@ -181,6 +186,7 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     public void resultButtonAction() {
+        vibe.vibrate(50);
         //koniec badania
         koniecBadania = true;
 //            toast2.show();
@@ -211,7 +217,7 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     public void dotsButtonAction(){
-
+        vibe.vibrate(50);
         Intent intentInfo = new Intent(this, PopUpAudioTest.class);
         startActivity(intentInfo);
 
@@ -249,8 +255,15 @@ public class AudioTestActivity extends AppCompatActivity
             }
         }
         Log.e("test", "randomFrenquencies - po");
+
+        frequencyLimitMin = Collections.min(chosenFrequencies);
+        frequencyLimitMax = Collections.max(chosenFrequencies);
+        Log.e("test", "ATA frequencyLimitMin = " + frequencyLimitMin);
+        Log.e("test", "ATA frequencyLimitMax = " + frequencyLimitMax);
+
         return chosenFrequencies;
     }
+
 
     private void getNewSample() {
         Log.e("test", "newSample pobrany - przed newSample");
@@ -308,6 +321,8 @@ public class AudioTestActivity extends AppCompatActivity
         intentResult.putExtra("yAxis", yAxis);
         intentResult.putExtra("channels", channels);
         intentResult.putExtra("amplitudeLimit", amplitudeLimit);
+        intentResult.putExtra("frequencyLimitMin", frequencyLimitMin);
+        intentResult.putExtra("frequencyLimitMax", frequencyLimitMax);
 
 
         startActivity(intentResult);
@@ -381,16 +396,18 @@ public class AudioTestActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
+
         textViewStart = findViewById(R.id.tv_start);
         textViewSlysze = findViewById(R.id.tv_slysze);
         textViewCancel = findViewById(R.id.tv_koniec);
         textViewResult = findViewById(R.id.tv_result);
 
         allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
+//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
 //        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
 //        ));
-//        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
+        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
         ));
 
         xAxis = new ArrayList<>();

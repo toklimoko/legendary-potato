@@ -32,6 +32,9 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="exit">Wyjdź</string>
     <string name="slysze">Słyszę</string>
     <string name="wynik">Wynik badania</string>
+    <string name="autor">Autor: Tomasz Klimek</string>
+    <string name="eMail">E-mail: toklimoko@gmail.com</string>
+    <string name="version">Wersja: 092018_1</string>
 
 
 </resources>

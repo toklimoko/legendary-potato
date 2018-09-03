@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 public class PopUpAudioTest extends Activity {
 
-    private ImageView mImageView;
+//    private ImageView mImageView;
 //    double screenFactor = 1;
 
     @Override
@@ -24,17 +24,8 @@ public class PopUpAudioTest extends Activity {
 
         setContentView(R.layout.pop_up_audio_test_info);
 
-//        DisplayMetrics dm = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(dm);
-//
-//        int width = dm.widthPixels;
-//        int height = dm.heightPixels;
-//
-//        getWindow().setLayout((int) (width*screenFactor),(int) (height*screenFactor));
-
-
-        mImageView = findViewById(R.id.iv_ksiazka);
-        mImageView.setImageResource(R.drawable.manual_icon);
+//        mImageView = findViewById(R.id.iv_ksiazka);
+//        mImageView.setImageResource(R.drawable.manual_icon);
 
     }
 
