@@ -96,28 +96,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_main, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) { //obsluga paska bocznego
@@ -135,6 +113,11 @@ public class MainActivity extends AppCompatActivity
             Intent intentKal = new Intent(this,CalibrationActivity.class);
             intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentKal);
+
+        } else if (id == R.id.nav_audioTest) {
+            Intent intentTest = new Intent(this, AudioTestActivity.class);
+            intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentTest);
 
             //gdy wybrano jak badac - otworz okno popup
         } else if (id == R.id.nav_info) {

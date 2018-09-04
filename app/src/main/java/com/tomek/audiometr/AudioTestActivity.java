@@ -30,7 +30,7 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.05;
     private int duration = 1;
     private String channel = "Both";
-    private int numberOfFrequencies = 2;
+    private int numberOfFrequencies = 8;
     private double step = 0.05;
     private double amplitudeLimit = 0.5;
     private double frequencyLimitMin = 0;
@@ -79,7 +79,7 @@ public class AudioTestActivity extends AppCompatActivity
             @Override
             public void run() {
 
-                  // play the loop until the thread is interrupted or condition is met
+                // play the loop until the thread is interrupted or condition is met
                 while (!Thread.currentThread().isInterrupted()) {
                     play = new Play(frequency, amplitude, duration, channel);
                     play.playSound();
@@ -183,7 +183,6 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
 
-
     public void cancelButtonAction() {
         vibe.vibrate(50);
         stop = true;
@@ -215,7 +214,7 @@ public class AudioTestActivity extends AppCompatActivity
         });
     }
 
-    public void initHelpButton(){
+    public void initHelpButton() {
         buttonHelp = findViewById(R.id.btn_help);
         buttonHelp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +224,7 @@ public class AudioTestActivity extends AppCompatActivity
         });
     }
 
-    public void helpButtonAction(){
+    public void helpButtonAction() {
         vibe.vibrate(50);
         Intent intentInfo = new Intent(this, PopUpAudioTest.class);
         startActivity(intentInfo);
@@ -315,10 +314,9 @@ public class AudioTestActivity extends AppCompatActivity
     public void showResult() {
 
 
-
         Log.e("test", "SR XF = " + xAxis.toString());
         Log.e("test", "SR XA = " + yAxis.toString());
-        Log.e("test", "SR C = " + channels .toString());
+        Log.e("test", "SR C = " + channels.toString());
 
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
         intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -337,7 +335,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     }
 
-    public void showStartMode(){
+    public void showStartMode() {
         buttonStart.setVisibility(View.VISIBLE);
         textViewStart.setVisibility(View.VISIBLE);
         buttonSlysze.setVisibility(View.GONE);
@@ -349,7 +347,7 @@ public class AudioTestActivity extends AppCompatActivity
         textViewAudioTest.setText(R.string.tv_audioTest_1);
     }
 
-    public void showAudioTestMode(){
+    public void showAudioTestMode() {
         buttonStart.setVisibility(View.GONE);
         textViewStart.setVisibility(View.GONE);
         buttonSlysze.setVisibility(View.VISIBLE);
@@ -361,7 +359,7 @@ public class AudioTestActivity extends AppCompatActivity
         textViewAudioTest.setText(R.string.tv_audioTest_2);
     }
 
-    public void showResultMode(){
+    public void showResultMode() {
         buttonStart.setVisibility(View.GONE);
         textViewStart.setVisibility(View.GONE);
         buttonSlysze.setVisibility(View.GONE);
@@ -413,10 +411,10 @@ public class AudioTestActivity extends AppCompatActivity
         textViewAudioTest = findViewById(R.id.textViewAudioTest);
 
         allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
+//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
 //        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // tylko do testowania, usunąć, aktywować poniższe
 //        ));
-//        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
+        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
         ));
 
         xAxis = new ArrayList<>();
@@ -453,33 +451,6 @@ public class AudioTestActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_audio_test, menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings3) {
-//
-//            //"jak wykonać badanie?"
-//            Intent intentInfo = new Intent(AudioTestActivity.this, PopUpAudioTest.class);
-//            startActivity(intentInfo);
-//
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -498,6 +469,11 @@ public class AudioTestActivity extends AppCompatActivity
             intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentKal);
 
+        } else if (id == R.id.nav_audioTest) {
+            Intent intentTest = new Intent(this, AudioTestActivity.class);
+            intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentTest);
+
         } else if (id == R.id.nav_info) {
             Intent intentInfo = new Intent(this, PopUpAppInfo.class);
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -512,6 +488,7 @@ public class AudioTestActivity extends AppCompatActivity
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
+
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

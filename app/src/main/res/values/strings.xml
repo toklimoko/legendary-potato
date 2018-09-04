@@ -14,14 +14,15 @@
 
     <string name="title_activity_main2">Kalibracja</string>
     <string name="title_activity_main3">Badanie</string>
-    <string name="kalText2">1. Założyć słuchawki i jeśli posiadają one możliwość regulacji - ustawić ich głośność na maksimum.</string>
-    <string name="kalText3">2. Odtworzyć testowy dźwięk w celu ustawienia poziomu głośności urządzenia tak, by sygnał był prawie niesłyszalny.</string>
-    <string name="kalText1">Aby wyniki symulacji były jak najbardziej zbliżone do rzeczywistych należy:</string>
+    <string name="kalText2">1. Załóż słuchawki</string>
+    <string name="kalText3">2. Jeśli Twoje słuchawki posiadają własną regulację głośności - ustaw ją na maksimum</string>
+    <string name="kalText4">3. Kliknij przycisk \"Test\"</string>
+    <string name="kalText5">4. Ustaw głośność urządzenia tak, by dźwięk był prawie niesłyszalny</string>
+    <string name="kalText1">W celu zwiększenia dokładności badania, wykonaj kalibrację:</string>
     <string name="txtJakWykonacBadanie1">Badanie polega na określeniu progu słyszenia, czyli na znalezieniu najmniejszego natężenia słyszalnego sygnału o danej częstotliwości.</string>
-    <string name="txtJakWykonacBadanie2">W tym celu wybierz z listy próbę, wciśnij ZACZNIJ PRÓBĘ, aby załadować dane i następnie wciskaj GŁOŚNIEJ aż do momentu, gdy będziesz w stanie usłyszeć dźwięk. Aby zapisać pomiar wciśnij SŁYSZĘ. Gdy skończyłeś badanie wciśnij ZAKOŃCZ BADANIE.</string>
-    <string name="txtPoCoKalibracja1">Kalibracja pozwala ustalić stałą głośność urządzenia w celu wykonania jak najbardziej miarodajnego audiometrii tonalnej. Ze względu na zróżnicowanie parametrów urządzeń niemożliwe jest ominięcie tego procesu.</string>
+    <string name="txtPoCoKalibracja1">Kalibracja pozwala ustalić stałą głośność urządzenia w celu wykonania jak najbardziej miarodajnego badania audiometrią tonalną. Ze względu na zróżnicowanie parametrów urządzeń niemożliwe jest ominięcie tego procesu.</string>
     <string name="txtOpisAudiometrii">W audiometrii tonalnej badanie słuchu polega na pomiarze przy przewodnictwie powietrznym lub kostnym, ubytku słuchu dla tonów sinusoidalnych o różnych częstotliwościach. Wyniki są prezentowane w postaci krzywych – audiogramów, które przedstawiają próg słyszenia.</string>
-    <string name="txtInformacjeOProgramie2">Aplikacja AUDIOMETR pozwala na przeprowadzenie symulacji audiometrii tonalnej, dzięki czemu już dzisiaj możesz zbadać swój słuch!</string>
+    <string name="txtInformacjeOProgramie2">Aplikacja mobilna \"Audiometr\" pozwoli Ci w prosty i szybki sposób zbadać Twój słuch, bez wychodzenia z domu!</string>
     <string name="txtUwaga">Uwaga! Niniejszy program nie ma na celu zastąpienia badania słuchu wykonanego profesjonalną aparaturą. Nie wszystkie parametry są zgodne z rzeczywistością ze względu na zróżnicowanie parametrów urządzeń.
 Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą różnić się od rzeczywistości w zależności od urządzenia i sprzętu audio użytego w badaniu. </string>
     <string name="generuj">Zacznij badanie</string>
@@ -36,8 +37,14 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="eMail">E-mail: toklimoko@gmail.com</string>
     <string name="version">Wersja: 092018_1</string>
     <string name="tv_audioTest_1">Aby rozpocząć badanie dotknij poniższy przycisk</string>
-    <string name="tv_audioTest_2">Gdy usłyszysz dźwięk dotknij "Słyszę"</string>
+    <string name="tv_audioTest_2">Gdy usłyszysz dźwięk dotknij \"Słyszę\"</string>
     <string name="tv_audioTest_3">Koniec badania</string>
+    <string name="tv_calib3">O czym należy pamiętać?</string>
+    <string name="tv_calib4">Podczas wykonywania kalibracji należy pamiętać, aby (tak jak całe badanie) odbyła się ona w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas procesu kalibracji sterujemy jedynie głośnością urządzenia (przyciski boczne telefonu). W razie problemów kalibrację można przeprowadzać wielokrotnie.</string>
+    <string name="tv_test1">Jak wykonać badanie?</string>
+    <string name="tv_test2">Usiądź w cichym miejscu, załóż słuchawki na uszy. Kliknij przycisk \"Zacznij badanie\" i nasłuchuj kolejnych dźwięków. W chwili, gdy usłyszysz ton, dotknij przycisk \"Słyszę\". Badanie zakończy się automatycznie, po wygenerowaniu odpowiedniej ilości dźwięków.</string>
+    <string name="tv_test3">Pamiętaj, aby przed badaniem wykonać kalibrację urządzenia! Badanie powinno się odbyć w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas badania nie można zmieniać głośności aplikacji. W razie problemów badanie można wielokrotnie powtarzać.</string>
+    <string name="tv_test5">Uwaga</string>
 
 
 </resources>

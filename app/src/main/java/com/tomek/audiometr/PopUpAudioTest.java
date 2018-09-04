@@ -20,6 +20,7 @@ public class PopUpAudioTest extends Activity {
 //    double screenFactor = 1;
     private Vibrator vibe;
     private ImageView imageViewBackground;
+    private ImageView imageViewIcon;
 
 
     @Override
@@ -31,6 +32,10 @@ public class PopUpAudioTest extends Activity {
         imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
         imageViewBackground.setImageResource(R.drawable.tapeta3);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        imageViewIcon = findViewById(R.id.iv_logo_pop_info);
+        imageViewIcon.setImageResource(R.drawable.earphones_icon);
+        imageViewIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
 
 //        mImageView = findViewById(R.id.iv_ksiazka);

@@ -8,18 +8,27 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_start"
+            android:checkable="false"
             android:icon="@drawable/home_icon"
             android:title="Start" />
         <item
             android:id="@+id/nav_kalibruj"
+            android:checkable="false"
             android:icon="@drawable/calibration_icon"
             android:title="@string/kalibruj_txt" />
         <item
+            android:id="@+id/nav_audioTest"
+            android:checkable="false"
+            android:icon="@drawable/earphones_icon"
+            android:title="@string/title_activity_main3" />
+        <item
             android:id="@+id/nav_info"
+            android:checkable="false"
             android:icon="@drawable/document_icon"
             android:title="Informacje o programie" />
         <item
             android:id="@+id/nav_powrot"
+            android:checkable="false"
             android:icon="@drawable/close_icon"
             android:title="Zamknij" />
     </group>

@@ -3,6 +3,7 @@ package com.tomek.audiometr;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.CamcorderProfile;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -28,6 +29,7 @@ public class ResultActivity extends Activity {
     private double frequencyLimitMax;
 
     private LinearLayout chartLayout;
+    private ImageView imageViewBackground;
 
     private GraphicalView chartView;
     private XYSeries seriesR; //seria danych do wykresu
@@ -43,8 +45,6 @@ public class ResultActivity extends Activity {
 
         setContentView(R.layout.activity_result);
 
-//        chart = new Chart();
-
         chartLayout = findViewById(R.id.chartLayout);
 
         xAxis = (ArrayList<Double>) getIntent().getSerializableExtra("xAxis");
@@ -53,6 +53,10 @@ public class ResultActivity extends Activity {
         amplitudeLimit = (double) getIntent().getSerializableExtra("amplitudeLimit");
         frequencyLimitMin = (double) getIntent().getSerializableExtra("frequencyLimitMin");
         frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
+
+        imageViewBackground = findViewById(R.id.iv_resultBackground);
+        imageViewBackground.setImageResource(R.drawable.tapeta4);
+        imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         Log.e("test", "Result Activity");
         Log.e("test", "xAxis = " + xAxis.toString());
@@ -85,29 +89,32 @@ public class ResultActivity extends Activity {
         }
 
         XYSeriesRenderer rendererR = new XYSeriesRenderer();
-        rendererR.setLineWidth(3);
-        rendererR.setColor(Color.GREEN);
+        rendererR.setLineWidth(5);
+        rendererR.setColor(Color.argb(255,255,145,6));
         rendererR.setPointStyle(PointStyle.CIRCLE);
 
         XYSeriesRenderer rendererL = new XYSeriesRenderer();
-        rendererL.setLineWidth(3);
-        rendererL.setColor(Color.BLUE);
+        rendererL.setLineWidth(5);
+        rendererL.setColor(Color.argb(255,41,182,246));
         rendererL.setPointStyle(PointStyle.CIRCLE);
+
 
         XYMultipleSeriesRenderer mrenderer = new XYMultipleSeriesRenderer();
         mrenderer.addSeriesRenderer(rendererR);
         mrenderer.addSeriesRenderer(rendererL);
+        mrenderer.setApplyBackgroundColor(true);
+        mrenderer.setBackgroundColor(Color.TRANSPARENT);
         mrenderer.setYAxisMax(0);
         mrenderer.setYAxisMin(amplitudeLimit);
         mrenderer.setXAxisMin(frequencyLimitMin);
         mrenderer.setXAxisMax(frequencyLimitMax);
-        mrenderer.setMarginsColor(Color.WHITE);
+        mrenderer.setMarginsColor(getResources().getColor(R.color.transparent_background));
+//        mrenderer.setMarginsColor(Color.BLACK);
         mrenderer.setShowGrid(true);
-        mrenderer.setMarginsColor(Color.WHITE);
         mrenderer.setGridColor(Color.LTGRAY);
-        mrenderer.setAxesColor(Color.BLACK);
-        mrenderer.setXLabelsColor(Color.BLACK);
-        mrenderer.setYLabelsColor(0, Color.BLACK);
+        mrenderer.setAxesColor(Color.WHITE);
+        mrenderer.setXLabelsColor(Color.WHITE);
+//        mrenderer.setYLabelsColor(0, Color.BLACK);
         mrenderer.setYLabelsAlign(Paint.Align.RIGHT);
         mrenderer.setLabelsTextSize(30);
         mrenderer.setLegendTextSize(40);

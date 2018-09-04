@@ -18,6 +18,7 @@ public class PopUpCalibration extends Activity {
     //    private ImageView mImageView;
 //    double screenFactor = 1;
     private ImageView imageViewBackground;
+    private ImageView imageViewIcon;
     private Vibrator vibe;
 
     @Override
@@ -29,6 +30,10 @@ public class PopUpCalibration extends Activity {
         imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
         imageViewBackground.setImageResource(R.drawable.tapeta3);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        imageViewIcon = findViewById(R.id.iv_logo_pop_info);
+        imageViewIcon.setImageResource(R.drawable.calibration_icon);
+        imageViewIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
 //        DisplayMetrics dm = new DisplayMetrics();
 //        getWindowManager().getDefaultDisplay().getMetrics(dm);
