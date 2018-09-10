@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/tapeta2" />
+        app:srcCompat="@drawable/wall2" />
 
 
     <ImageButton
@@ -44,14 +44,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="124dp"
         android:gravity="center"
-        android:text="@string/kalText1"
+        android:text="@string/calText1"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" /> <!-- środkowanie w starszych wersjach-->
+        app:layout_constraintTop_toTopOf="parent" /> <!-- center in older APIs-->
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -63,7 +63,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
-        android:text="@string/kalText2"
+        android:text="@string/calText2"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="17sp"
@@ -78,7 +78,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
-        android:text="@string/kalText3"
+        android:text="@string/calText3"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="17sp"
@@ -93,7 +93,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/kalText4"
+        android:text="@string/calText4"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="17dp"
@@ -108,7 +108,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/kalText5"
+        android:text="@string/calText5"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="17dp"
@@ -127,7 +127,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/btn_kal"
+            android:id="@+id/btn_calibration"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginBottom="240dp"
@@ -148,7 +148,7 @@
             android:layout_gravity="bottom|center"
             android:clickable="false"
             android:fontFamily="sans-serif"
-            android:text="@string/startKal_txt"
+            android:text="@string/txtTest"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"

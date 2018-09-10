@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="center"
-        app:srcCompat="@drawable/tapeta2"
+        app:srcCompat="@drawable/wall2"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="0dp" />
 
@@ -118,7 +118,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="@string/txtUwaga"
+                android:text="@string/txtWarning"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
                 android:textSize="18sp" />

@@ -1,10 +1,11 @@
 package com.tomek.audiometr;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.CamcorderProfile;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
@@ -32,12 +33,14 @@ public class ResultActivity extends Activity {
     private ImageView imageViewBackground;
 
     private GraphicalView chartView;
-    private XYSeries seriesR; //seria danych do wykresu
-    private XYSeries seriesL; //seria danych do wykresu
+    private XYSeries seriesR;
+    private XYSeries seriesL;
 
-    private ArrayList<Double> xAxis; //lista wartości X do wykresu (częstotliwości dla każdej z prób)
-    private ArrayList<Double> yAxis; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
-    private ArrayList<String> channels; //lista wartości Y do wykresu (amplitudy końcowe dla każdej z prób)
+    private ArrayList<Double> xAxis;
+    private ArrayList<Double> yAxis;
+    private ArrayList<String> channels;
+
+    private Vibrator vibe;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +50,8 @@ public class ResultActivity extends Activity {
 
         chartLayout = findViewById(R.id.chartLayout);
 
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
+
         xAxis = (ArrayList<Double>) getIntent().getSerializableExtra("xAxis");
         yAxis = (ArrayList<Double>) getIntent().getSerializableExtra("yAxis");
         channels = (ArrayList<String>) getIntent().getSerializableExtra("channels");
@@ -55,19 +60,15 @@ public class ResultActivity extends Activity {
         frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
 
         imageViewBackground = findViewById(R.id.iv_resultBackground);
-        imageViewBackground.setImageResource(R.drawable.tapeta4);
+        imageViewBackground.setImageResource(R.drawable.wall4);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        Log.e("test", "Result Activity");
-        Log.e("test", "xAxis = " + xAxis.toString());
-        Log.e("test", "yAxis = " + yAxis.toString());
-        Log.e("test", "channels = " + channels.toString());
-        Log.e("test", "amplitudeLimit = " + amplitudeLimit);
-        Log.e("test", "frequencyLimitMin = " + frequencyLimitMin);
-        Log.e("test", "frequencyLimitMax = " + frequencyLimitMax);
+
+        Log.e("test", "ResultActivity: onCreate() // values: " + "\n" + "xAxis.toString() = " + xAxis.toString() + "\n"
+                + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n"
+                + "amplitudeLimit = " + amplitudeLimit + "; frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
 
         drawChart();
-
     }
 
     public void drawChart() {
@@ -90,12 +91,12 @@ public class ResultActivity extends Activity {
 
         XYSeriesRenderer rendererR = new XYSeriesRenderer();
         rendererR.setLineWidth(5);
-        rendererR.setColor(Color.argb(255,255,145,6));
+        rendererR.setColor(Color.argb(255, 255, 145, 6));
         rendererR.setPointStyle(PointStyle.CIRCLE);
 
         XYSeriesRenderer rendererL = new XYSeriesRenderer();
         rendererL.setLineWidth(5);
-        rendererL.setColor(Color.argb(255,41,182,246));
+        rendererL.setColor(Color.argb(255, 41, 182, 246));
         rendererL.setPointStyle(PointStyle.CIRCLE);
 
 
@@ -120,9 +121,9 @@ public class ResultActivity extends Activity {
         mrenderer.setLegendTextSize(40);
         mrenderer.setFitLegend(true);
         mrenderer.setShowLegend(true);
-        mrenderer.setMargins(new int[]{150,120,150,50}); // {up,left,down,right}
+        mrenderer.setMargins(new int[]{150, 120, 150, 50}); // {up,left,down,right}
         mrenderer.setLegendHeight(5);
-        mrenderer.setXTitle("Częstotliwość");
+        mrenderer.setXTitle("Częstotliwość [Hz]");
         mrenderer.setYTitle("Amplituda");
 
         mrenderer.setAxisTitleTextSize(50);
@@ -135,18 +136,13 @@ public class ResultActivity extends Activity {
         dataset.addSeries(seriesL);
 
         chartView = ChartFactory.getLineChartView(this, dataset, mrenderer);
-
-//        chartView = drawChart();
         chartLayout.addView(chartView);
-
         chartView.repaint();
-
-
     }
 
 
     public void closeButton(View v) {
-
+        vibe.vibrate(50);
         finish();
 
     }

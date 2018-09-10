@@ -16,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/tapeta3" />
+        app:srcCompat="@drawable/wall3" />
 
     <Button
         android:id="@+id/xButton"
@@ -62,12 +62,12 @@
         app:layout_constraintTop_toBottomOf="@+id/iv_logo_pop_info" />
 
     <TextView
-        android:id="@+id/tv_reklama"
+        android:id="@+id/tv_adv"
         android:layout_width="251dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:gravity="center"
-        android:text="@string/txtInformacjeOProgramie2"
+        android:text="@string/txtAbout"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="17sp"
@@ -84,22 +84,22 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
-        android:text="@string/txtUwaga"
+        android:text="@string/txtWarning"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_reklama" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_adv" />
 
     <TextView
-        android:id="@+id/tv_autor"
+        android:id="@+id/tv_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
-        android:text="@string/autor"
+        android:text="@string/author"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -119,7 +119,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_autor" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_author" />
 
     <Button
         android:id="@+id/okButton"

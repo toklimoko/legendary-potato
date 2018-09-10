@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/tapeta2" />
+        app:srcCompat="@drawable/wall2" />
 
 
     <ImageButton
@@ -67,7 +67,7 @@
             android:layout_gravity="bottom|center"
             android:clickable="false"
             android:fontFamily="sans-serif"
-            android:text="@string/generuj"
+            android:text="@string/begin"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
@@ -76,7 +76,7 @@
         </TextView>
 
         <ImageButton
-            android:id="@+id/btn_slysze"
+            android:id="@+id/btn_heard"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginBottom="240dp"
@@ -91,13 +91,13 @@
             app:srcCompat="@drawable/accept_icon" />
 
         <TextView
-            android:id="@+id/tv_slysze"
+            android:id="@+id/tv_heard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
             android:clickable="false"
             android:fontFamily="sans-serif"
-            android:text="@string/slysze"
+            android:text="@string/heard"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
@@ -127,7 +127,7 @@
             android:layout_gravity="bottom|center"
             android:clickable="false"
             android:fontFamily="sans-serif"
-            android:text="@string/wynik"
+            android:text="@string/result"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
@@ -148,7 +148,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageButton
-            android:id="@+id/btn_koniec"
+            android:id="@+id/btn_finish"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginBottom="240dp"
@@ -163,7 +163,7 @@
             app:srcCompat="@drawable/back_icon" />
 
         <TextView
-            android:id="@+id/tv_koniec"
+            android:id="@+id/tv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"

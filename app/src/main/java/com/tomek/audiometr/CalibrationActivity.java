@@ -12,17 +12,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class CalibrationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-
-    private ImageButton btnKal;
+    private ImageButton btnCalibration;
     private ImageButton buttonHelp;
     private Toast toast;
     private Vibrator vibe;
@@ -39,7 +36,7 @@ public class CalibrationActivity extends AppCompatActivity
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                play = new Play(2000, 0.01, 4, "Both"); //czestotliwosc = 2000 Hz - wartosc z zakresu najlepszej slyszalnosci ucha
+                play = new Play(2000, 0.01, 4, "Both");
                 play.playSound();
                 play = null;
             }
@@ -48,10 +45,9 @@ public class CalibrationActivity extends AppCompatActivity
         playThread.start();
     }
 
-
     public void initPlaySoundButton() {
-        btnKal = findViewById(R.id.btn_kal);
-        btnKal.setOnClickListener(new View.OnClickListener() {
+        btnCalibration = findViewById(R.id.btn_calibration);
+        btnCalibration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 playAsync();
@@ -61,13 +57,11 @@ public class CalibrationActivity extends AppCompatActivity
         });
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calibration);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        //toolbar.setLogo(R.drawable.logo); //dodawanie logo do toolbaru (pasek na gorze)
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -79,18 +73,15 @@ public class CalibrationActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        //mój kod START
-
         Context context = getApplicationContext();
         CharSequence text = "Powtórz w razie potrzeby";
         int duration = Toast.LENGTH_SHORT;
 
         toast = Toast.makeText(context, text, duration);
 
-        setVolumeControlStream(AudioManager.STREAM_MUSIC); //pozwala na kontrolę głośności
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         initPlaySoundButton();
         initHelpButton();
@@ -119,7 +110,6 @@ public class CalibrationActivity extends AppCompatActivity
         if (play != null) {
             play.release();
         }
-
         try {
             playThread.interrupt();
         } catch (Exception e) {
@@ -149,7 +139,7 @@ public class CalibrationActivity extends AppCompatActivity
             intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentLauncher);
 
-        } else if (id == R.id.nav_kalibruj) {
+        } else if (id == R.id.nav_calibration) {
 
             Intent intentKal = new Intent(this, CalibrationActivity.class);
             intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -166,7 +156,7 @@ public class CalibrationActivity extends AppCompatActivity
             intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentInfo);
 
-        } else if (id == R.id.nav_powrot) {
+        } else if (id == R.id.nav_exit) {
 
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

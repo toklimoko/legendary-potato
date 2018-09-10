@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -17,8 +16,6 @@ public class PopUpAppInfo extends Activity {
 
     private ImageView imageViewBackground;
     private ImageView imageViewLogo;
-//    double screenFactor = 1; //0.85
-
     private Vibrator vibe;
 
     @Override
@@ -27,12 +24,11 @@ public class PopUpAppInfo extends Activity {
 
         setContentView(R.layout.pop_up_app_info);
         imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
-        imageViewBackground.setImageResource(R.drawable.tapeta3);
+        imageViewBackground.setImageResource(R.drawable.wall3);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         imageViewLogo = findViewById(R.id.iv_logo_pop_info);
         imageViewLogo.setImageResource(R.drawable.logo);
-//        imageViewLogo.setScaleType();
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
 

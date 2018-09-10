@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/tapeta" />
+        app:srcCompat="@drawable/wall" />
 
     <ImageView
         android:id="@+id/imageView3"
@@ -45,7 +45,7 @@
         android:fontFamily="casual"
         android:gravity="center"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
-        android:text="@string/zacheta"
+        android:text="@string/txtInvitation"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         android:textColor="@color/lightText"
@@ -71,7 +71,7 @@
             android:layout_gravity="bottom|center"
             android:clickable="false"
             android:fontFamily="sans-serif"
-            android:text="@string/kalibruj_txt"
+            android:text="@string/txtCalibration"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"
@@ -81,7 +81,7 @@
         </TextView>
 
         <ImageButton
-            android:id="@+id/btn_kal"
+            android:id="@+id/btn_calibration"
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:layout_marginBottom="240dp"
@@ -121,7 +121,7 @@
         </TextView>
 
         <ImageButton
-            android:id="@+id/btn_badanie"
+            android:id="@+id/btn_audioTest"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginBottom="240dp"
@@ -135,37 +135,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/forward_icon" />
     </FrameLayout>
-
-    <!--<LinearLayout-->
-    <!--android:layout_width="251dp"-->
-    <!--android:layout_height="242dp"-->
-    <!--android:layout_marginBottom="24dp"-->
-    <!--android:layout_marginStart="8dp"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="vertical"-->
-    <!--android:visibility="gone"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent">-->
-
-    <!--<ImageButton-->
-    <!--android:id="@+id/button_x"-->
-    <!--android:layout_width="196dp"-->
-    <!--android:layout_height="178dp"-->
-    <!--android:background="@null"-->
-    <!--android:scaleType="fitXY"-->
-    <!--android:src="@drawacalibration_iconIcon"></ImageButton>-->
-
-    <!--<TextView-->
-    <!--android:layout_width="143dp"-->
-    <!--android:layout_height="54dp"-->
-    <!--android:layout_gravity="center"-->
-    <!--android:clickable="false"-->
-    <!--android:text="TEST TEST"-->
-    <!--android:textAlignment="center"-->
-    <!--android:textColor="@color/lightText"-->
-    <!--android:textSize="24sp"-->
-    <!--android:textStyle="bold"></TextView>-->
-
-    <!--</LinearLayout>-->
 
 </android.support.constraint.ConstraintLayout>
