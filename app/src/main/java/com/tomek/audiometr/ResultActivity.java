@@ -93,12 +93,13 @@ public class ResultActivity extends Activity {
         rendererR.setLineWidth(5);
         rendererR.setColor(Color.argb(255, 255, 145, 6));
         rendererR.setPointStyle(PointStyle.CIRCLE);
+        rendererR.setPointStrokeWidth(20);
 
         XYSeriesRenderer rendererL = new XYSeriesRenderer();
         rendererL.setLineWidth(5);
         rendererL.setColor(Color.argb(255, 41, 182, 246));
-        rendererL.setPointStyle(PointStyle.CIRCLE);
-
+        rendererL.setPointStyle(PointStyle.X);
+        rendererL.setPointStrokeWidth(30);
 
         XYMultipleSeriesRenderer mrenderer = new XYMultipleSeriesRenderer();
         mrenderer.addSeriesRenderer(rendererR);

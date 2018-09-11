@@ -15,7 +15,7 @@ public class Play {
     private double frequency = 0.0;
     private double amplitude = 0.0;
     private int duration = 1;
-    private String channel = "Both"; //domyslnie
+    private String channel = "Both";
 
     private double amplitudeL = 0.0;
     private double amplitudeR = 0.0;
@@ -26,13 +26,11 @@ public class Play {
     public Play(double frequency, double amplitude, int duration, String channel) {
         this.frequency = frequency;
         this.amplitude = amplitude;
-        this.duration = duration * 44100; //44100 - tyle bitów to jedna sekunda
+        this.duration = duration * 44100; //44100 bits per 1 second
         this.channel = channel;
     }
 
-    // generowanie sgnału sinusoidalnego z wykorzystaniem klasy AudioTrack
     public void playSound() {
-        // AudioTrack definition
         int mBufferSize = AudioTrack.getMinBufferSize(44100,
                 AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_8BIT);
@@ -51,12 +49,11 @@ public class Play {
             mBuffer[i] = (short) (mSound[i] * Short.MAX_VALUE);
         }
 
-        // definicja wartości "gain" kanałów
         if (channel.equals("Left")) {
             amplitudeL = amplitude;
         } else if (channel.equals("Right")) {
             amplitudeR = amplitude;
-        } else if (channel.equals("Both")){
+        } else if (channel.equals("Both")) {
             amplitudeR = amplitude;
             amplitudeL = amplitude;
         }
@@ -66,7 +63,7 @@ public class Play {
 
         try {
             mAudioTrack.play();
-        } catch(IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
 
@@ -74,7 +71,7 @@ public class Play {
 
         try {
             mAudioTrack.stop();
-        } catch (IllegalStateException e){
+        } catch (IllegalStateException e) {
             e.printStackTrace();
         }
         mAudioTrack.release();
@@ -85,7 +82,7 @@ public class Play {
         if (mAudioTrack != null) {
             try {
                 mAudioTrack.stop();
-            } catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 e.printStackTrace();
             }
             mAudioTrack.release();
