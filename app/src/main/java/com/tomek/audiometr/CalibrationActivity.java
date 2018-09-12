@@ -146,7 +146,7 @@ public class CalibrationActivity extends AppCompatActivity
             startActivity(intentKal);
 
         } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, AudioTestActivity.class);
+            Intent intentTest = new Intent(this, ChoiceActivity.class);
             intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentTest);
 

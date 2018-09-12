@@ -38,18 +38,18 @@ public class MainActivity extends AppCompatActivity
         vibe.vibrate(50);
     }
 
-    public void initAudioTestButton() {
+    public void initChoiceButton() {
         btnAudioTest = findViewById(R.id.btn_audioTest);
         btnAudioTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                audioTestButtonAction();
+                choiceButtonAction();
             }
         });
     }
 
-    public void audioTestButtonAction() {
-        Intent intentBad = new Intent(MainActivity.this, AudioTestActivity.class);
+    public void choiceButtonAction() {
+        Intent intentBad = new Intent(MainActivity.this, ChoiceActivity.class);
         intentBad.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intentBad);
         vibe.vibrate(50);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         initCalibrationButton();
-        initAudioTestButton();
+        initChoiceButton();
     }
 
     @Override
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intentKal);
 
         } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, AudioTestActivity.class);
+            Intent intentTest = new Intent(this, ChoiceActivity.class);
             intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentTest);
 

@@ -29,6 +29,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ChoiceActivity"
+            android:label="@string/title_activity_main3"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".AudioTestActivity"
             android:label="@string/title_activity_main3"
             android:screenOrientation="portrait"

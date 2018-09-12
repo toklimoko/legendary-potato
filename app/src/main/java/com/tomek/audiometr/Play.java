@@ -39,10 +39,8 @@ public class Play {
                 AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT,
                 mBufferSize, AudioTrack.MODE_STREAM);
 
-        // Sine wave
         double[] mSound = new double[duration];
         short[] mBuffer = new short[duration];
-
 
         for (int i = 0; i < mSound.length; i++) {
             mSound[i] = Math.sin((2 * Math.PI * i / (44100 / frequency)));
@@ -60,7 +58,6 @@ public class Play {
 
         mAudioTrack.setStereoVolume((float) amplitudeL, (float) amplitudeR);
 
-
         try {
             mAudioTrack.play();
         } catch (IllegalStateException e) {
@@ -75,7 +72,6 @@ public class Play {
             e.printStackTrace();
         }
         mAudioTrack.release();
-
     }
 
     void release() {

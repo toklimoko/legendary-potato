@@ -28,7 +28,7 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitude = 0.0;
     private int duration = 1;
     private String channel = "Both";
-    private int numberOfFrequencies = 9; // equivalent to numberOfFrequencies*2 attempts
+    private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
     private double step = 0.01;
     private double amplitudeLimit = 0.1;
     private double frequencyLimitMin = 0;
@@ -410,7 +410,7 @@ public class AudioTestActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
         textViewStart = findViewById(R.id.tv_start);
         textViewHeard = findViewById(R.id.tv_heard);
@@ -418,17 +418,14 @@ public class AudioTestActivity extends AppCompatActivity
         textViewResult = findViewById(R.id.tv_result);
         textViewAudioTest = findViewById(R.id.textViewAudioTest);
 
-        allFrequencies = new ArrayList<>();
-//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć, aktywować poniższe
-//        allFrequencies.addAll(Arrays.asList(700, 800, 900, 1000, 1500, 2000, 2500, 2700, 3000, 3200, 3500, 3800, 4000, 6000, 7000, 7300 // only for debugging
-//        ));
-//        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 400, 500, 700, 1000, 1500, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000
-//        ));
-        allFrequencies.addAll(Arrays.asList(125,250, 500, 1000, 2000, 3000, 4000, 6000, 8000));
-
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
+
+        allFrequencies = new ArrayList<>();
+//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć
+        allFrequencies = (ArrayList<Integer>) getIntent().getSerializableExtra("allFrequencies");
+        numberOfFrequencies = allFrequencies.size();
 
         hardResetValues();
 
@@ -439,6 +436,8 @@ public class AudioTestActivity extends AppCompatActivity
         initHelpButton();
 
         showStartMode();
+
+        Log.e("test", "AudioTestActivity: onCreate() // values: allFrequencies.toString() = " + allFrequencies.toString() + "\n numberOfFrequencies = " + numberOfFrequencies);
     }
 
     @Override
@@ -468,7 +467,7 @@ public class AudioTestActivity extends AppCompatActivity
             startActivity(intentKal);
 
         } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, AudioTestActivity.class);
+            Intent intentTest = new Intent(this, ChoiceActivity.class);
             intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intentTest);
 

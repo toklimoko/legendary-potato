@@ -42,6 +42,12 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="tv_test2">Usiądź w cichym miejscu, załóż słuchawki na uszy. Kliknij przycisk \"Zacznij badanie\" i nasłuchuj kolejnych dźwięków. W chwili, gdy usłyszysz ton, dotknij przycisk \"Słyszę\". Badanie zakończy się automatycznie, po wygenerowaniu odpowiedniej ilości dźwięków.</string>
     <string name="tv_test3">Pamiętaj, aby przed badaniem wykonać kalibrację urządzenia! Badanie powinno się odbyć w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas badania nie można zmieniać głośności aplikacji. W razie problemów badanie można wielokrotnie powtarzać.</string>
     <string name="tv_test5">Uwaga</string>
+    <string name="tv_choice_1">Wybierz rodzaj badania:</string>
+    <string name="go">Dalej</string>
+    <string name="tv_basicTest">Badanie podstawowe</string>
+    <string name="tv_extendedTest">Badanie rozszerzone</string>
+    <string name="tv_basicTestTime">Czas trwania: do 3 min</string>
+    <string name="tv_extendedTestTime">Czas trwania: do 7 min</string>
 
 
 </resources>

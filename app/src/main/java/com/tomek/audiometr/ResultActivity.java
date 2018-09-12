@@ -128,7 +128,7 @@ public class ResultActivity extends Activity {
         mrenderer.setYTitle("Amplituda");
 
         mrenderer.setAxisTitleTextSize(50);
-        mrenderer.setPanEnabled(true, false);
+        mrenderer.setPanEnabled(false, false);
         mrenderer.setZoomEnabled(false, false);
         mrenderer.setChartTitleTextSize(100);
 
