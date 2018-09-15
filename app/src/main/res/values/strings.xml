@@ -13,11 +13,12 @@
 
     <string name="title_activity_main2">Kalibracja</string>
     <string name="title_activity_main3">Badanie</string>
-    <string name="calText2">1. Załóż słuchawki</string>
-    <string name="calText3">2. Jeśli Twoje słuchawki posiadają własną regulację głośności - ustaw ją na maksimum</string>
-    <string name="calText4">3. Kliknij przycisk \"Test\"</string>
-    <string name="calText5">4. Ustaw głośność urządzenia tak, by dźwięk był prawie niesłyszalny</string>
-    <string name="calText1">W celu zwiększenia dokładności badania, wykonaj kalibrację:</string>
+    <string name="calText1">1. Udaj się w ciche miejsce</string>
+    <string name="calText2">2. Podłącz słuchawki</string>
+    <string name="calText3">3. Przyłóż jedną słuchawkę do mikrofonu urządzenia (jeśli Twoje słuchawki mają własny mikrofon, to do niego)</string>
+    <string name="calText4">4. Naciśnij przycisk \"Kalibruj\"</string>
+    <string name="calText5">5. Poczekaj, aż zakończy się kalibracja</string>
+    <string name="calText0">Wykonaj kalibrację, by zwiększyć dokładność badania:</string>
     <string name="txtAboutAudioTest">Badanie polega na określeniu progu słyszenia, czyli na znalezieniu najmniejszego natężenia słyszalnego sygnału o danej częstotliwości.</string>
     <string name="txtUseOfCalibration">Kalibracja pozwala ustalić stałą głośność urządzenia w celu wykonania jak najbardziej miarodajnego badania audiometrią tonalną. Ze względu na zróżnicowanie parametrów urządzeń niemożliwe jest ominięcie tego procesu.</string>
     <string name="txtAudiometry">W audiometrii tonalnej badanie słuchu polega na pomiarze przy przewodnictwie powietrznym lub kostnym, ubytku słuchu dla tonów sinusoidalnych o różnych częstotliwościach. Wyniki są prezentowane w postaci krzywych – audiogramów, które przedstawiają próg słyszenia.</string>
@@ -48,6 +49,7 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="tv_extendedTest">Badanie rozszerzone</string>
     <string name="tv_basicTestTime">Czas trwania: do 3 min</string>
     <string name="tv_extendedTestTime">Czas trwania: do 7 min</string>
+    <string name="calibrate">Kalibruj</string>
 
 
 </resources>

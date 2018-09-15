@@ -16,8 +16,6 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,17 +28,12 @@ public class ChoiceActivity extends AppCompatActivity
     private ImageButton buttonHelp;
 
     private RadioGroup radioGroup;
-    private RadioButton radioButton;
     private RadioButton radioButtonBasic;
     private RadioButton radioButtonExtended;
 
     private Vibrator vibe;
 
-    private Spinner spinner;
     private ArrayList<Integer> allFrequencies;
-
-    private static final String[] paths = {String.valueOf(R.string.begin), "Badanie rozszerzone"};
-
 
     public void checkButton(View v) {
         if (radioButtonBasic.isChecked()) {

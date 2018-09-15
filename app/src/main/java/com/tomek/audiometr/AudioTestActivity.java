@@ -2,6 +2,7 @@ package com.tomek.audiometr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -33,6 +33,8 @@ public class AudioTestActivity extends AppCompatActivity
     private double amplitudeLimit = 0.1;
     private double frequencyLimitMin = 0;
     private double frequencyLimitMax = 18000;
+    private double defMaxDecibels = 0.0;
+    private double maxDecibels = 0.0;
 
     private int index;
     private int newFrequency;
@@ -135,6 +137,7 @@ public class AudioTestActivity extends AppCompatActivity
         showAudioTestMode();
         onPause();
         resetValues();
+        loadPreferences();
         getNewSample();
         playAsync();
 
@@ -340,6 +343,17 @@ public class AudioTestActivity extends AppCompatActivity
 
         Log.e("test", "AudioTestActivity: showResult() --after // values: xAxis.toString() = " + xAxis.toString() + "\t"
                 + "yAxis.toString() = " + yAxis.toString() + "\t" + "channels.toString() = " + channels.toString());
+
+    }
+
+    private double loadPreferences() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        String score = sharedPreferences.getString("maxDecibels", String.valueOf(defMaxDecibels));
+        maxDecibels = Double.parseDouble(score);
+
+        Log.e("test", "maxDecibels = " + maxDecibels);
+
+        return maxDecibels;
 
     }
 

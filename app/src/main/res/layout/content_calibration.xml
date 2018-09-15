@@ -42,9 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="124dp"
+        android:layout_marginTop="100dp"
         android:gravity="center"
-        android:text="@string/calText1"
+        android:text="@string/calText0"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="24sp"
@@ -57,19 +57,34 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView5"
+        android:id="@+id/tv_calib1tv"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
-        android:text="@string/calText2"
+        android:layout_marginTop="28dp"
+        android:text="@string/calText1"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/tv_db"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/calText2"
+        android:textAlignment="center"
+        android:textColor="@color/lightText"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_calib1tv" />
 
     <TextView
         android:id="@+id/textView6"
@@ -84,7 +99,7 @@
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_db" />
 
     <TextView
         android:id="@+id/textView10"
@@ -131,7 +146,7 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginBottom="240dp"
-            android:layout_marginStart="46dp"
+            android:layout_marginStart="44dp"
             android:adjustViewBounds="false"
             android:background="@color/transparent"
             android:cropToPadding="false"
@@ -148,7 +163,7 @@
             android:layout_gravity="bottom|center"
             android:clickable="false"
             android:fontFamily="sans-serif"
-            android:text="@string/txtTest"
+            android:text="@string/calibrate"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:textColor="@color/colorAccent"

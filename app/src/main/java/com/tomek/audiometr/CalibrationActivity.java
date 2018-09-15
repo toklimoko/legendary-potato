@@ -1,10 +1,17 @@
 package com.tomek.audiometr;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
+import android.media.MediaRecorder;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
+import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,17 +23,64 @@ import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class CalibrationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ImageButton btnCalibration;
     private ImageButton buttonHelp;
     private Toast toast;
+    private Toast toastEnd;
     private Vibrator vibe;
 
     private Thread playThread;
+    private Thread recordThread;
 
     private Play play;
+
+    private MediaRecorder mRecorder;
+    private AudioManager audioManager;
+
+    private double decibels;
+
+    private ArrayList<Double> list;
+
+    private static double mEMA = 0.0;
+    static final private double EMA_FILTER = 0.6;
+
+    private static final double referenceAmp = 1.0;
+
+    public double total = 0.0;
+    public double average = 0.0;
+
+    final Handler mHandler = new Handler();
+
+    final Runnable updater = new Runnable() {
+
+        public void run() {
+            if (play != null) {
+//                updateTv();
+                addPoint();
+            }
+        }
+    };
+
+    final Runnable getValue = new Runnable() {
+
+        public void run() {
+            averageDecibels();
+            toastEnd.show();
+            savePreference("maxDecibels", String.valueOf(average));
+        }
+    };
+
+    private void savePreference(String key, String value) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
 
     private void playAsync() {
         if (play != null) {
@@ -36,22 +90,172 @@ public class CalibrationActivity extends AppCompatActivity
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                play = new Play(2000, 0.01, 4, "Both");
+                list.clear();
+                play = new Play(1000, 1, 4, "Both");
                 play.playSound();
                 play = null;
+                mHandler.post(getValue);
             }
         });
 
         playThread.start();
     }
 
-    public void initPlaySoundButton() {
+    private void recordAsync() {
+
+        if (recordThread == null) {
+
+            recordThread = new Thread() {
+                public void run() {
+
+                    while (recordThread != null) {
+                        if (play != null) {
+                            try {
+                                Thread.sleep(200);
+                                Log.i("test", "Tock");
+                            } catch (InterruptedException e) {
+                            }
+                            mHandler.post(updater);
+                        }
+                    }
+                }
+            };
+            recordThread.start();
+            Log.d("test", "start recordThread()");
+        }
+    }
+
+    public void onResume() {
+        super.onResume();
+        startRecorder();
+    }
+
+    public void onPause() {
+        super.onPause();
+        if (recordThread != null) {
+            stopRecorder();
+        }
+        if (play != null) {
+            play.release();
+        }
+        try {
+            playThread.interrupt();
+            recordThread.interrupt();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startRecorder() {
+        if (mRecorder == null) {
+            mRecorder = new MediaRecorder();
+//            mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+            if (audioManager.getProperty(AudioManager.PROPERTY_SUPPORT_AUDIO_SOURCE_UNPROCESSED) != null) {
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.UNPROCESSED);
+            } else {
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+            }
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.setOutputFile("/dev/null");
+            try {
+                mRecorder.prepare();
+            } catch (java.io.IOException ioe) {
+                android.util.Log.e("[Monkey]", "IOException: " + android.util.Log.getStackTraceString(ioe));
+
+            } catch (java.lang.SecurityException e) {
+                android.util.Log.e("[Monkey]", "SecurityException: " + android.util.Log.getStackTraceString(e));
+            }
+            list = new ArrayList<>();
+            try {
+                mRecorder.start();
+            } catch (java.lang.SecurityException e) {
+                android.util.Log.e("[Monkey]", "SecurityException: " + android.util.Log.getStackTraceString(e));
+            }
+
+            //mEMA = 0.0; //delete
+        }
+
+    }
+
+    public void stopRecorder() {
+        if (mRecorder != null) {
+            mRecorder.stop();
+            mRecorder.release();
+            mRecorder = null;
+        }
+    }
+
+//    public void updateTv() {
+//        mStatusView.setText(Double.toString((soundDb())) + " dB");
+//    }
+
+    public void addPoint() {
+        decibels = soundDb();
+        if (decibels != Double.NEGATIVE_INFINITY) {
+            list.add(decibels);
+            Log.e("test", "soundDb = " + decibels);
+        }
+        Log.e("test", "List = " + list);
+
+    }
+
+    public double averageDecibels() {
+        total = 0.0;
+
+        for (int i = 0; i < list.size(); i++) {
+            total = total + list.get(i);
+        }
+
+        Log.e("test", "list.size() = " + list.size());
+
+        average = total / list.size();
+
+        Log.e("test", "Average = " + average);
+        return average;
+    }
+
+    public double soundDb() {
+        decibels = 20 * Math.log10(getAmplitudeEMA() / referenceAmp);
+        return decibels;
+    }
+
+    public double getAmplitude() {
+        if (mRecorder != null)
+            return (mRecorder.getMaxAmplitude());
+        else
+            return 0;
+
+    }
+
+    public double getAmplitudeEMA() {
+        double amp = getAmplitude();
+        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+        return mEMA;
+    }
+
+    public void setMaxVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                0);
+
+    }
+
+    public void calibrateButtonAction() {
+        setMaxVolume();
+        playAsync();
+        recordAsync();
+        toast.show();
+    }
+
+    public void initCalibrateButton() {
         btnCalibration = findViewById(R.id.btn_calibration);
         btnCalibration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playAsync();
-                toast.show();
+                calibrateButtonAction();
                 vibe.vibrate(50);
             }
         });
@@ -74,16 +278,25 @@ public class CalibrationActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         Context context = getApplicationContext();
-        CharSequence text = "Powtórz w razie potrzeby";
+        CharSequence text = "Trwa kalibracja...";
+        CharSequence textEnd = "Zakończono kalibrację";
         int duration = Toast.LENGTH_SHORT;
 
         toast = Toast.makeText(context, text, duration);
+        toastEnd = Toast.makeText(context, textEnd, duration);
 
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        initPlaySoundButton();
+        if (ActivityCompat.checkSelfPermission(CalibrationActivity.this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(CalibrationActivity.this, new String[]{Manifest.permission.RECORD_AUDIO}, 0);
+        }
+
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+
+        initCalibrateButton();
         initHelpButton();
     }
 
@@ -101,20 +314,6 @@ public class CalibrationActivity extends AppCompatActivity
         vibe.vibrate(50);
         Intent intentInfo = new Intent(this, PopUpCalibration.class);
         startActivity(intentInfo);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (play != null) {
-            play.release();
-        }
-        try {
-            playThread.interrupt();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
