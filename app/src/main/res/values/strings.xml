@@ -51,6 +51,8 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="tv_extendedTestTime">Czas trwania: do 7 min</string>
     <string name="calibrate">Kalibruj</string>
     <string name="save">Zapisz</string>
+    <string name="dialogQuestion">Przed wykonaniem badania zaleca się kalibrację urządzenia!</string>
+    <string name="skip">Pomiń</string>
 
 
 </resources>

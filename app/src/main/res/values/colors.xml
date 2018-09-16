@@ -14,8 +14,9 @@
     <color name="transparent">#007a7a7a</color>
     <color name="SplashFirstColor">@android:color/holo_orange_dark</color>
     <color name="SplashSecondColor">#000000</color>
-    <color name="SplashHalfTransparentColor">#bd000000</color>
+    <color name="SplashHalfTransparentColor">#2cffffff</color>
     <color name="transparent_background">#00FF0000</color>
+    <color name="dialog_background_color">#000000</color>
 
 
     <!--<color name="colorPrimary">@android:color/holo_orange_dark</color>-->

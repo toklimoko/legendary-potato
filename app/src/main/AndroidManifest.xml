@@ -58,6 +58,11 @@
             android:name=".ResultActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Dialog"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.DialogTheme"
+            android:noHistory="true"/>
     </application>
 
 </manifest>

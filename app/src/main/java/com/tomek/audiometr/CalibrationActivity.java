@@ -53,7 +53,7 @@ public class CalibrationActivity extends AppCompatActivity
 
     public double total = 0.0;
     public double tempAverage = 0.0;
-    public int average = 0;
+    public double average = 0;
 
     final Handler mHandler = new Handler();
 
@@ -73,6 +73,7 @@ public class CalibrationActivity extends AppCompatActivity
             averageDecibels();
             toastEnd.show();
             savePreference("maxDecibels", String.valueOf(average));
+            savePreference("calibrated", "true");
         }
     };
 
@@ -91,7 +92,9 @@ public class CalibrationActivity extends AppCompatActivity
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                list.clear();
+                if (list != null) {
+                    list.clear();
+                }
                 play = new Play(1000, 1, 4, "Both");
                 play.playSound();
                 play = null;
@@ -108,6 +111,8 @@ public class CalibrationActivity extends AppCompatActivity
 
             recordThread = new Thread() {
                 public void run() {
+
+                    startRecorder();
 
                     while (recordThread != null) {
                         if (play != null) {
@@ -126,10 +131,10 @@ public class CalibrationActivity extends AppCompatActivity
         }
     }
 
-    public void onResume() {
-        super.onResume();
-        startRecorder();
-    }
+//    public void onResume() {
+//        super.onResume();
+//        startRecorder();
+//    }
 
     public void onPause() {
         super.onPause();
@@ -212,8 +217,9 @@ public class CalibrationActivity extends AppCompatActivity
 
         tempAverage = total / list.size();
 
-        average = (int) Math.round(tempAverage);
-        Log.e("test", "Average = " + average + "; tempAverage = " + tempAverage);
+//        average = (int) Math.round(tempAverage);
+        average = tempAverage;
+        Log.e("test", "Average = " + average);
         return average;
     }
 

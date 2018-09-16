@@ -18,6 +18,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -200,7 +201,7 @@ public class AudioTestActivity extends AppCompatActivity
         showAudioTestMode();
         onPause();
         resetValues();
-        loadPreferences();
+        loadDecibels();
         findClosestInTable();
         getNewSample();
         playAsync();
@@ -412,16 +413,28 @@ public class AudioTestActivity extends AppCompatActivity
 
     }
 
-    private double loadPreferences() {
+    private double loadDecibels() {
         SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        String score = sharedPreferences.getString("maxDecibels", String.valueOf(defMaxDecibels));
-        maxDecibels = Double.parseDouble(score);
+        String scoreDecibels = sharedPreferences.getString("maxDecibels", String.valueOf(defMaxDecibels));
+        maxDecibels = Double.parseDouble(scoreDecibels);
         maxDecibels = maxDecibels*(-1);
 
-        Log.e("test", "maxDecibels = " + maxDecibels);
 
         return maxDecibels;
 
+    }
+
+    private ArrayList<Integer> loadFrequencies(){
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        String scoreFrequencies = sharedPreferences.getString("allFrequencies", "");
+        scoreFrequencies = scoreFrequencies.replaceAll("[\\[\\](){} ]","");
+        ArrayList<String> frequenciesListString = new ArrayList<>(Arrays.asList(scoreFrequencies.split(",")));
+        allFrequencies = new ArrayList<>();
+        for(int i = 0; i < frequenciesListString.size(); i++) {
+            allFrequencies.add(Integer.parseInt(frequenciesListString.get(i)));
+        }
+        return allFrequencies;
     }
 
     public void showStartMode() {
@@ -503,9 +516,11 @@ public class AudioTestActivity extends AppCompatActivity
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
 
-        allFrequencies = new ArrayList<>();
 //        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć
-        allFrequencies = (ArrayList<Integer>) getIntent().getSerializableExtra("allFrequencies");
+//        allFrequencies = (ArrayList<Integer>) getIntent().getSerializableExtra("allFrequencies");
+
+        loadFrequencies();
+
         numberOfFrequencies = allFrequencies.size();
 
         hardResetValues();

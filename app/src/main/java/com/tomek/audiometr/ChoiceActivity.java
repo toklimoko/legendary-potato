@@ -2,6 +2,7 @@ package com.tomek.audiometr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -43,17 +44,24 @@ public class ChoiceActivity extends AppCompatActivity
         }
     }
 
-    public void basicAudioTest(){
+    public void basicAudioTest() {
         allFrequencies = new ArrayList<>();
         allFrequencies.addAll(Arrays.asList(125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000));
         Log.e("test", "checkedBasic = " + radioButtonBasic.isChecked());
 
     }
 
-    public void extendedAudioTest(){
+    public void extendedAudioTest() {
         allFrequencies = new ArrayList<>();
         allFrequencies.addAll(Arrays.asList(100, 125, 150, 200, 300, 400, 500, 700, 1000, 2000, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000, 16000, 17000, 18000));
         Log.e("test", "checkedExtended = " + radioButtonExtended.isChecked());
+    }
+
+    private void savePreference(String key, ArrayList<Integer> list) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, String.valueOf(list));
+        editor.apply();
     }
 
     public void initGoButton() {
@@ -74,12 +82,37 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: goButtonAction() --before");
 
         vibe.vibrate(50);
-        Intent intentAudioTest = new Intent(this, AudioTestActivity.class);
-        intentAudioTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intentAudioTest.putExtra("allFrequencies", allFrequencies);
-        startActivity(intentAudioTest);
+
+        boolean calibrated = loadIfCalibrated();
+
+        Log.e("boolean calibrated", String.valueOf(calibrated));
+
+        if (calibrated) {
+            Intent intentAudioTest = new Intent(this, AudioTestActivity.class);
+            intentAudioTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intentAudioTest.putExtra("allFrequencies", allFrequencies);
+            savePreference("allFrequencies", allFrequencies);
+            startActivity(intentAudioTest);
+        } else {
+            Intent intentDialog = new Intent(this, Dialog.class);
+            intentDialog.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intentDialog);
+        }
+
 
         Log.e("test", "ChoiceActivity: goButtonAction() --after");
+    }
+
+    private boolean loadIfCalibrated() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        String score = sharedPreferences.getString("calibrated", "");
+
+        Log.e("score", score);
+
+        if (score.equals("true")) {
+            return true;
+        }
+        return false;
     }
 
 

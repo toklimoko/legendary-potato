@@ -2,6 +2,7 @@ package com.tomek.audiometr;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
@@ -55,6 +56,13 @@ public class MainActivity extends AppCompatActivity
         vibe.vibrate(50);
     }
 
+    private void savePreference(String key, String value) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +86,8 @@ public class MainActivity extends AppCompatActivity
 
         initCalibrationButton();
         initChoiceButton();
+
+        savePreference("calibrated","false");
     }
 
     @Override
