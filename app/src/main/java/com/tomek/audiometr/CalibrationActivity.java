@@ -52,7 +52,8 @@ public class CalibrationActivity extends AppCompatActivity
     private static final double referenceAmp = 1.0;
 
     public double total = 0.0;
-    public double average = 0.0;
+    public double tempAverage = 0.0;
+    public int average = 0;
 
     final Handler mHandler = new Handler();
 
@@ -209,14 +210,15 @@ public class CalibrationActivity extends AppCompatActivity
 
         Log.e("test", "list.size() = " + list.size());
 
-        average = total / list.size();
+        tempAverage = total / list.size();
 
-        Log.e("test", "Average = " + average);
+        average = (int) Math.round(tempAverage);
+        Log.e("test", "Average = " + average + "; tempAverage = " + tempAverage);
         return average;
     }
 
     public double soundDb() {
-        decibels = 20 * Math.log10(getAmplitudeEMA() / referenceAmp);
+        decibels = 20 * Math.log10(getAmplitude() / referenceAmp);
         return decibels;
     }
 

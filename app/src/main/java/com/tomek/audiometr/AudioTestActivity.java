@@ -26,6 +26,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     private double frequency = 0.0;
     private double amplitude = 0.0;
+    private double decibels = 0.0;
     private int duration = 1;
     private String channel = "Both";
     private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
@@ -34,9 +35,12 @@ public class AudioTestActivity extends AppCompatActivity
     private double frequencyLimitMin = 0;
     private double frequencyLimitMax = 18000;
     private double defMaxDecibels = 0.0;
-    private double maxDecibels = 0.0;
+    private double maxDecibels = 40.0;
+    private double decibelsInTable = 0.0;
+    private int indexOfMaxDecibels = 0;
+    private int level = 0;
 
-    private int index;
+    private int index = 0;
     private int newFrequency;
     private boolean stop = false;
     private boolean endOfTest = false;
@@ -68,6 +72,27 @@ public class AudioTestActivity extends AppCompatActivity
     private ArrayList<Double> xAxis;
     private ArrayList<Double> yAxis;
     private ArrayList<String> channels;
+    
+    private Double[][] table;
+
+    private Double[][] writeTable() {
+
+        table = new Double[31][2];
+
+        double value = -150.0;
+
+        for (int i = 0; i < table.length; i++) {
+            for (int j = 0; j < table[i].length; j++) {
+                if (j == 0) {
+                    table[i][j] = value;
+                    value += 5;
+                } else if (j == 1) {
+                    table[i][j] = Math.pow(10, (table[i][0]) / 20);
+                }
+            }
+        }
+        return table;
+    }
 
     private void playAsync() {
         Log.e("test", "AudioTestActivity: playAsync() --before");
@@ -76,22 +101,28 @@ public class AudioTestActivity extends AppCompatActivity
             return;
         }
 
+        amplitude = 0.0;
+        level = 0;
+        index = 0;
+
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
 
                 // play the loop until the thread is interrupted or condition is met
                 while (!Thread.currentThread().isInterrupted()) {
+                    amplitude = getAmplitude(level);
+
                     play = new Play(frequency, amplitude, duration, channel);
                     play.playSound();
                     play = null;
 
-                    amplitude += step;
+                    level++;
 
-                    Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude);
+                    Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude +"\t level = " + level);
 
-                    if (amplitude >= amplitudeLimit) {
-                        addPoint(); //add result to a chart
+                    if (index > (table.length-1) || level > 9 ) {
+                        addPoint();
 
                         if (endOfTest) {
                             hardResetValues();
@@ -113,6 +144,38 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: playAsync() --after");
     }
 
+    public void findClosestInTable(){
+
+        double myDecibels = maxDecibels;
+        double distance = Math.abs(table[0][0] - maxDecibels);
+        int idx = 0;
+        for (int c = 1; c < table.length; c++) {
+            double cdistance = Math.abs(table[c][0] - myDecibels);
+            if (cdistance < distance) {
+                idx = c;
+                distance = cdistance;
+            }
+        }
+        decibelsInTable = table[idx][0];
+        indexOfMaxDecibels = idx;
+
+        Log.e("test", "Found closest decibels in table = " + decibelsInTable + "IndexOfMaxDecibels = " + indexOfMaxDecibels);
+    }
+    
+    public double getAmplitude(int level){
+
+        index = indexOfMaxDecibels + level;
+
+        amplitude = table[index][1];
+
+        decibels = table[index][0]-decibelsInTable;
+
+        Log.e("test", "Frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
+
+        return amplitude;
+    }
+
+    
     public void initPlaySoundButton() {
         Log.e("test", "AudioTestActivity: initPlaySoundButton() --before");
 
@@ -138,6 +201,7 @@ public class AudioTestActivity extends AppCompatActivity
         onPause();
         resetValues();
         loadPreferences();
+        findClosestInTable();
         getNewSample();
         playAsync();
 
@@ -251,6 +315,8 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: resetValues() --before");
 
         amplitude = 0.0;
+        level = 0;
+        index = 0;
         sample = new Sample(numberOfFrequencies, chosenFrequencies);
 
         Log.e("test", "AudioTestActivity: resetValues() --after");
@@ -318,10 +384,10 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: addPoint() --before");
 
         xAxis.add(frequency);
-        yAxis.add(amplitude);
+        yAxis.add(decibels);
         channels.add(channel);
 
-        Log.e("test", "AudioTestActivity: addPoint() --after // values: added frequency = " + frequency + "; added amplitude = " + amplitude + "; added channel = " + channel + "\t"
+        Log.e("test", "AudioTestActivity: addPoint() --after // values: added frequency = " + frequency + "; added decibels = " + decibels + "; added channel = " + channel + "\t"
                 + "xAxis.size() = " + xAxis.size() + "; yAxis.size() = " + yAxis.size() + "; channels.size() = " + channels.size());
 
     }
@@ -335,7 +401,7 @@ public class AudioTestActivity extends AppCompatActivity
         intentResult.putExtra("xAxis", xAxis);
         intentResult.putExtra("yAxis", yAxis);
         intentResult.putExtra("channels", channels);
-        intentResult.putExtra("amplitudeLimit", amplitudeLimit);
+        intentResult.putExtra("decibelsLimit", decibelsInTable);
         intentResult.putExtra("frequencyLimitMin", frequencyLimitMin);
         intentResult.putExtra("frequencyLimitMax", frequencyLimitMax);
 
@@ -350,6 +416,7 @@ public class AudioTestActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
         String score = sharedPreferences.getString("maxDecibels", String.valueOf(defMaxDecibels));
         maxDecibels = Double.parseDouble(score);
+        maxDecibels = maxDecibels*(-1);
 
         Log.e("test", "maxDecibels = " + maxDecibels);
 
@@ -450,6 +517,8 @@ public class AudioTestActivity extends AppCompatActivity
         initHelpButton();
 
         showStartMode();
+
+        writeTable();
 
         Log.e("test", "AudioTestActivity: onCreate() // values: allFrequencies.toString() = " + allFrequencies.toString() + "\n numberOfFrequencies = " + numberOfFrequencies);
     }
