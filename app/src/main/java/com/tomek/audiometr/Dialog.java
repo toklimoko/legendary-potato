@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class Dialog extends Activity {
 
     private ConstraintLayout constraintLayout;
-    private ArrayList<Integer> allFrequencies;
     private Vibrator vibe;
 
     @Override
@@ -30,9 +29,6 @@ public class Dialog extends Activity {
         constraintLayout.setBackgroundColor(getResources().getColor(R.color.dialog_background_color));
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-//        allFrequencies = (ArrayList<Integer>) getIntent().getSerializableExtra("allFrequencies");
-
     }
 
     public void goCalibrate(View v){
@@ -46,7 +42,6 @@ public class Dialog extends Activity {
         vibe.vibrate(50);
         Intent intent = new Intent(getApplicationContext(),AudioTestActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        intent.putExtra("allFrequencies", allFrequencies);
         startActivity(intent);
     }
 

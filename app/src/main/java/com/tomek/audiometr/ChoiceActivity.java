@@ -134,7 +134,7 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: helpButtonAction() --before");
 
         vibe.vibrate(50);
-        Intent intentInfo = new Intent(this, PopUpAudioTest.class);
+        Intent intentInfo = new Intent(this, PopUpChoice.class);
         startActivity(intentInfo);
 
         Log.e("test", "ChoiceActivity: helpButtonAction() --after");

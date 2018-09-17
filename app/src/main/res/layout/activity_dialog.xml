@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.tomek.audiometr.Dialog"
-    android:background="@color/SplashSecondColor"
+    android:background="@color/dialog_background_color"
     android:elevation="30dp">
 
     <ImageView
@@ -48,14 +48,14 @@
         android:id="@+id/goToCalibButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="12dp"
         android:backgroundTint="@color/popUp"
         android:onClick="goCalibrate"
         android:text="@string/calibrate"
         android:textColor="@color/colorAccent"
         android:textSize="20dp"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         tools:text="@string/calibrate" />
 
@@ -63,16 +63,16 @@
         android:id="@+id/skipButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="12dp"
         android:backgroundTint="@color/popUp"
         android:onClick="skipDialog"
-        android:text="@string/go"
+        android:text="@string/skip"
         android:textColor="@color/colorAccent"
         android:textSize="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:text="@string/go" />
+        tools:text="@string/skip" />
 
 
 </android.support.constraint.ConstraintLayout>

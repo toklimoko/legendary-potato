@@ -31,7 +31,7 @@ public class PopUpAudioTest extends Activity {
         imageViewIcon.setImageResource(R.drawable.earphones_icon);
         imageViewIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     public void closeButton(View v) {

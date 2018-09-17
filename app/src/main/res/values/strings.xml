@@ -20,7 +20,7 @@
     <string name="calText5">5. Poczekaj, aż zakończy się kalibracja</string>
     <string name="calText0">Wykonaj kalibrację, by zwiększyć dokładność badania:</string>
     <string name="txtAboutAudioTest">Badanie polega na określeniu progu słyszenia, czyli na znalezieniu najmniejszego natężenia słyszalnego sygnału o danej częstotliwości.</string>
-    <string name="txtUseOfCalibration">Kalibracja pozwala ustalić stałą głośność urządzenia w celu wykonania jak najbardziej miarodajnego badania audiometrią tonalną. Ze względu na zróżnicowanie parametrów urządzeń niemożliwe jest ominięcie tego procesu.</string>
+    <string name="txtUseOfCalibration">Kalibracja pozwala ustalić maksymalną głośność urządzenia w celu wykonania jak najbardziej miarodajnego badania audiometrią tonalną. Ze względu na zróżnicowanie parametrów urządzeń niemożliwe jest ominięcie tego procesu.</string>
     <string name="txtAudiometry">W audiometrii tonalnej badanie słuchu polega na pomiarze przy przewodnictwie powietrznym lub kostnym, ubytku słuchu dla tonów sinusoidalnych o różnych częstotliwościach. Wyniki są prezentowane w postaci krzywych – audiogramów, które przedstawiają próg słyszenia.</string>
     <string name="txtAbout">Aplikacja mobilna \"Audiometr\" pozwoli Ci w prosty i szybki sposób zbadać Twój słuch, bez wychodzenia z domu!</string>
     <string name="txtWarning">Uwaga! Niniejszy program nie ma na celu zastąpienia badania słuchu wykonanego profesjonalną aparaturą. Nie wszystkie parametry są zgodne z rzeczywistością ze względu na zróżnicowanie parametrów urządzeń.
@@ -34,11 +34,14 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="author">Autor: Tomasz Klimek</string>
     <string name="eMail">E-mail: toklimoko@gmail.com</string>
     <string name="version">Wersja: 092018_1</string>
-    <string name="tv_audioTest_1">Aby rozpocząć badanie dotknij poniższy przycisk</string>
+    <string name="tv_audioTest_1">Aby rozpocząć badanie: </string>
+    <string name="tv_audioTest_11">1. Udaj się w ciche miejsce</string>
+    <string name="tv_audioTest_12">2. Załóż poprawnie słuchawki</string>
+    <string name="tv_audioTest_13">3. Dotknij poniższy przycisk</string>
     <string name="tv_audioTest_2">Za każdym razem, gdy usłyszysz dźwięk dotknij \"Słyszę\"</string>
     <string name="tv_audioTest_3">Koniec badania</string>
     <string name="tv_calib3">O czym należy pamiętać?</string>
-    <string name="tv_calib4">Podczas wykonywania kalibracji należy pamiętać, aby (tak jak całe badanie) odbyła się ona w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas procesu kalibracji sterujemy jedynie głośnością urządzenia (przyciski boczne telefonu). W razie problemów kalibrację można przeprowadzać wielokrotnie.</string>
+    <string name="tv_calib4">Podczas wykonywania kalibracji należy pamiętać, aby (tak jak całe badanie) odbyła się ona w zacisznym miejscu. Należy trzymać stałą odległość między słuchawką a mikrofonem i unikać stukania. W razie problemów kalibrację można przeprowadzać wielokrotnie.</string>
     <string name="tv_test1">Jak wykonać badanie?</string>
     <string name="tv_test2">Usiądź w cichym miejscu, załóż słuchawki na uszy. Kliknij przycisk \"Zacznij badanie\" i nasłuchuj kolejnych dźwięków. W chwili, gdy usłyszysz ton, dotknij przycisk \"Słyszę\". Badanie zakończy się automatycznie, po wygenerowaniu odpowiedniej ilości dźwięków.</string>
     <string name="tv_test3">Pamiętaj, aby przed badaniem wykonać kalibrację urządzenia! Badanie powinno się odbyć w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas badania nie można zmieniać głośności aplikacji. W razie problemów badanie można wielokrotnie powtarzać.</string>
@@ -53,6 +56,10 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="save">Zapisz</string>
     <string name="dialogQuestion">Przed wykonaniem badania zaleca się kalibrację urządzenia!</string>
     <string name="skip">Pomiń</string>
+    <string name="basic_test">Badanie podstawowe</string>
+    <string name="extended_test">Badanie rozszerzone</string>
+    <string name="basic_test1">Obejmuje test w podstawowym zakresie 9 częstotliwości: 125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000 Hz. Badanie trwa maksymalnie 3 minuty.</string>
+    <string name="extended_test1">Obejmuje test w rozszerzonym zakresie 22 częstotliwości i pozwala na dokładniejszy wynik. Badanie trwa maksymalnie 7 minut.</string>
 
 
 </resources>

@@ -1,8 +1,10 @@
 package com.tomek.audiometr;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.View;
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity
     public ImageButton btnCalibration;
     public ImageButton btnAudioTest;
     public Vibrator vibe;
+    private AudioManager audioManager;
 
     public void initCalibrationButton() {
         btnCalibration = findViewById(R.id.btn_calibration);
@@ -63,6 +66,15 @@ public class MainActivity extends AppCompatActivity
         editor.apply();
     }
 
+    public void setMinVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
+                0);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +92,10 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+
         if (getIntent().getBooleanExtra("EXIT", false)) {
+            setMinVolume();
             finish();
         }
 
@@ -92,6 +107,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        setMinVolume();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -125,7 +141,7 @@ public class MainActivity extends AppCompatActivity
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_exit) {
-
+            setMinVolume();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);

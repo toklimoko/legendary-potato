@@ -3,6 +3,7 @@ package com.tomek.audiometr;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -46,6 +48,8 @@ public class AudioTestActivity extends AppCompatActivity
     private boolean stop = false;
     private boolean endOfTest = false;
 
+    private AudioManager audioManager;
+
     private ImageButton buttonStart;
     private ImageButton buttonHeard;
     private ImageButton buttonCancel;
@@ -57,6 +61,8 @@ public class AudioTestActivity extends AppCompatActivity
     private TextView textViewCancel;
     private TextView textViewResult;
     private TextView textViewAudioTest;
+
+    private TableLayout tableLayout;
 
     private Vibrator vibe;
     private Thread playThread;
@@ -200,6 +206,7 @@ public class AudioTestActivity extends AppCompatActivity
         endOfTest = false;
         showAudioTestMode();
         onPause();
+        setMaxVolume();
         resetValues();
         loadDecibels();
         findClosestInTable();
@@ -216,7 +223,6 @@ public class AudioTestActivity extends AppCompatActivity
         buttonHeard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                stop = true;
                 stopButtonAction();
             }
         });
@@ -232,6 +238,7 @@ public class AudioTestActivity extends AppCompatActivity
         addPoint();
         resetValues();
         getNewSample();
+        setMaxVolume();
         playAsync();
 
         Log.e("test", "AudioTestActivity: stopButtonAction() --after");
@@ -396,6 +403,8 @@ public class AudioTestActivity extends AppCompatActivity
     public void showResult() {
         Log.e("test", "AudioTestActivity: showResult() --before");
 
+        setMinVolume();
+
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
         intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
@@ -419,7 +428,6 @@ public class AudioTestActivity extends AppCompatActivity
         maxDecibels = Double.parseDouble(scoreDecibels);
         maxDecibels = maxDecibels*(-1);
 
-
         return maxDecibels;
 
     }
@@ -437,6 +445,24 @@ public class AudioTestActivity extends AppCompatActivity
         return allFrequencies;
     }
 
+    public void setMaxVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                0);
+
+    }
+
+    public void setMinVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
+                0);
+
+    }
+
     public void showStartMode() {
         buttonStart.setVisibility(View.VISIBLE);
         textViewStart.setVisibility(View.VISIBLE);
@@ -446,6 +472,7 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.GONE);
         buttonResult.setVisibility(View.GONE);
         textViewResult.setVisibility(View.GONE);
+        tableLayout.setVisibility(View.VISIBLE);
         textViewAudioTest.setText(R.string.tv_audioTest_1);
     }
 
@@ -458,6 +485,7 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.VISIBLE);
         buttonResult.setVisibility(View.GONE);
         textViewResult.setVisibility(View.GONE);
+        tableLayout.setVisibility(View.GONE);
         textViewAudioTest.setText(R.string.tv_audioTest_2);
     }
 
@@ -470,6 +498,8 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.VISIBLE);
         buttonResult.setVisibility(View.VISIBLE);
         textViewResult.setVisibility(View.VISIBLE);
+        tableLayout.setVisibility(View.VISIBLE);
+        tableLayout.setVisibility(View.GONE);
         textViewAudioTest.setText(R.string.tv_audioTest_3);
     }
 
@@ -487,6 +517,7 @@ public class AudioTestActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+        setMinVolume();
     }
 
     @Override
@@ -506,11 +537,14 @@ public class AudioTestActivity extends AppCompatActivity
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
+        audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
+
         textViewStart = findViewById(R.id.tv_start);
         textViewHeard = findViewById(R.id.tv_heard);
         textViewCancel = findViewById(R.id.tv_back);
         textViewResult = findViewById(R.id.tv_result);
         textViewAudioTest = findViewById(R.id.textViewAudioTest);
+        tableLayout = findViewById(R.id.tl_audioTest);
 
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
@@ -540,12 +574,14 @@ public class AudioTestActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        setMinVolume();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
+
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -575,6 +611,7 @@ public class AudioTestActivity extends AppCompatActivity
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_exit) {
+            setMinVolume();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);

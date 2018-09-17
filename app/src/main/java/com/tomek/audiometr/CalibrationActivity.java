@@ -133,7 +133,7 @@ public class CalibrationActivity extends AppCompatActivity
 
 //    public void onResume() {
 //        super.onResume();
-//        startRecorder();
+////        startRecorder();
 //    }
 
     public void onPause() {
@@ -150,6 +150,7 @@ public class CalibrationActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+        setMinVolume();
     }
 
     public void startRecorder() {
@@ -219,6 +220,14 @@ public class CalibrationActivity extends AppCompatActivity
 
 //        average = (int) Math.round(tempAverage);
         average = tempAverage;
+
+
+        //TODO remove bug
+        //avoiding a bug (do calibration, minimize app, go back to app, do calibration one more time = no values being added to list; onResume?
+        if(Float.isNaN((float) average)){
+            average = -80;
+        }
+
         Log.e("test", "Average = " + average);
         return average;
     }
@@ -250,6 +259,16 @@ public class CalibrationActivity extends AppCompatActivity
                 0);
 
     }
+
+    public void setMinVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
+                0);
+
+    }
+
 
     public void calibrateButtonAction() {
         setMaxVolume();
@@ -293,7 +312,7 @@ public class CalibrationActivity extends AppCompatActivity
         toast = Toast.makeText(context, text, duration);
         toastEnd = Toast.makeText(context, textEnd, duration);
 
-        setVolumeControlStream(AudioManager.STREAM_MUSIC);
+//        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
@@ -326,6 +345,7 @@ public class CalibrationActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
+        setMinVolume();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -364,7 +384,7 @@ public class CalibrationActivity extends AppCompatActivity
             startActivity(intentInfo);
 
         } else if (id == R.id.nav_exit) {
-
+            setMinVolume();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intent.putExtra("EXIT", true);

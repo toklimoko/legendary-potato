@@ -30,7 +30,7 @@ public class PopUpAppInfo extends Activity {
         imageViewLogo = findViewById(R.id.iv_logo_pop_info);
         imageViewLogo.setImageResource(R.drawable.logo);
 
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE); //wibracje
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
     }
 
