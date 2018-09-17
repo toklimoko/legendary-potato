@@ -17,21 +17,13 @@ public class SplashScreen extends Activity {
 
     private ConstraintLayout constraintLayout;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash_screen);
-
-        constraintLayout = findViewById(R.id.cl_splashScreen);
-
-        constraintLayout.setBackgroundColor(getResources().getColor(R.color.SplashSecondColor));
-
-        Thread myThread = new Thread(){
+    private void thread() {
+        Thread splashThread = new Thread() {
             @Override
             public void run() {
                 try {
                     sleep(700);
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
                     finish();
                 } catch (InterruptedException e) {
@@ -39,7 +31,17 @@ public class SplashScreen extends Activity {
                 }
             }
         };
-        myThread.start();
+        splashThread.start();
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_splash_screen);
+        constraintLayout = findViewById(R.id.cl_splashScreen);
+        constraintLayout.setBackgroundColor(getResources().getColor(R.color.SplashSecondColor));
+
+        thread();
     }
 
 }

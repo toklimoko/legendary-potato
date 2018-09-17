@@ -18,6 +18,13 @@ public class PopUpAppInfo extends Activity {
     private ImageView imageViewLogo;
     private Vibrator vibe;
 
+
+    public void closeButton(View v) {
+        vibe.vibrate(50);
+        finish();
+
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +41,4 @@ public class PopUpAppInfo extends Activity {
 
     }
 
-    public void closeButton(View v) {
-        vibe.vibrate(50);
-        finish();
-
-    }
 }

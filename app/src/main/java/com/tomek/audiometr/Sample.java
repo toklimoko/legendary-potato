@@ -144,18 +144,18 @@ public class Sample {
 
         m = 0;
 
-        for (int i = 0; i < samplesList.size(); i++){
+        for (int i = 0; i < samplesList.size(); i++) {
             Log.e("test", "Sample: checkIfExists() --for loop // values: samplesList.toString() = " + samplesList.toString() + "; temporarySample.toString() = " + temporarySample.toString());
 
-            if (samplesList.get(i).toString().equals(sample.toString())){
+            if (samplesList.get(i).toString().equals(sample.toString())) {
                 m++;
             }
         }
 
-        if (m > 0){
+        if (m > 0) {
             Log.e("test", "Sample: checkIfExists() --after // msg: sample already exists");
             return true;
-        }else{
+        } else {
             Log.e("test", "Sample: checkIfExists() --after // msg: sample doesn't exist");
             return false;
         }

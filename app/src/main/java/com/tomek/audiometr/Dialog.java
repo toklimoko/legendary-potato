@@ -19,18 +19,6 @@ public class Dialog extends Activity {
     private ConstraintLayout constraintLayout;
     private Vibrator vibe;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dialog);
-
-        constraintLayout = findViewById(R.id.cl_dialog);
-
-        constraintLayout.setBackgroundColor(getResources().getColor(R.color.dialog_background_color));
-
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-    }
-
     public void goCalibrate(View v){
         vibe.vibrate(50);
         Intent intent = new Intent(getApplicationContext(),CalibrationActivity.class);
@@ -43,6 +31,18 @@ public class Dialog extends Activity {
         Intent intent = new Intent(getApplicationContext(),AudioTestActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_dialog);
+
+        constraintLayout = findViewById(R.id.cl_dialog);
+
+        constraintLayout.setBackgroundColor(getResources().getColor(R.color.dialog_background_color));
+
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
 }

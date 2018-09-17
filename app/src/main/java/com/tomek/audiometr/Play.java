@@ -74,7 +74,7 @@ public class Play {
         mAudioTrack.release();
     }
 
-    void release() {
+    public void release() {
         if (mAudioTrack != null) {
             try {
                 mAudioTrack.stop();

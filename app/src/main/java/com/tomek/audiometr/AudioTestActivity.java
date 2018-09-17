@@ -33,8 +33,6 @@ public class AudioTestActivity extends AppCompatActivity
     private int duration = 1;
     private String channel = "Both";
     private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
-    private double step = 0.01;
-    private double amplitudeLimit = 0.1;
     private double frequencyLimitMin = 0;
     private double frequencyLimitMax = 18000;
     private double defMaxDecibels = 0.0;
@@ -42,7 +40,6 @@ public class AudioTestActivity extends AppCompatActivity
     private double decibelsInTable = 0.0;
     private int indexOfMaxDecibels = 0;
     private int level = 0;
-
     private int index = 0;
     private int newFrequency;
     private boolean stop = false;
@@ -101,6 +98,219 @@ public class AudioTestActivity extends AppCompatActivity
         return table;
     }
 
+    private double loadDecibels() {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        String scoreDecibels = sharedPreferences.getString("maxDecibels", String.valueOf(defMaxDecibels));
+        maxDecibels = Double.parseDouble(scoreDecibels);
+        maxDecibels = maxDecibels*(-1);
+
+        return maxDecibels;
+    }
+
+    private void findClosestInTable(){
+
+        double myDecibels = maxDecibels;
+        double distance = Math.abs(table[0][0] - maxDecibels);
+        int idx = 0;
+        for (int c = 1; c < table.length; c++) {
+            double cdistance = Math.abs(table[c][0] - myDecibels);
+            if (cdistance < distance) {
+                idx = c;
+                distance = cdistance;
+            }
+        }
+        decibelsInTable = table[idx][0];
+        indexOfMaxDecibels = idx;
+
+        Log.e("test", "Found closest decibels in table = " + decibelsInTable + "IndexOfMaxDecibels = " + indexOfMaxDecibels);
+    }
+
+    private ArrayList<Integer> loadFrequencies(){
+
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        String scoreFrequencies = sharedPreferences.getString("allFrequencies", "");
+        scoreFrequencies = scoreFrequencies.replaceAll("[\\[\\](){} ]","");
+        ArrayList<String> frequenciesListString = new ArrayList<>(Arrays.asList(scoreFrequencies.split(",")));
+        allFrequencies = new ArrayList<>();
+        for(int i = 0; i < frequenciesListString.size(); i++) {
+            allFrequencies.add(Integer.parseInt(frequenciesListString.get(i)));
+        }
+        return allFrequencies;
+    }
+
+    private ArrayList<Integer> randomFrequencies() {
+        Log.e("test", "AudioTestActivity: randomFrequencies() --before");
+
+        index = 0;
+        newFrequency = 0;
+        randomGenerator = new Random();
+        while (chosenFrequencies.size() < numberOfFrequencies) {
+            index = randomGenerator.nextInt(allFrequencies.size());
+            newFrequency = allFrequencies.get(index);
+            if (!chosenFrequencies.contains(newFrequency)) {
+                chosenFrequencies.add(newFrequency);
+            }
+        }
+        frequencyLimitMin = Collections.min(chosenFrequencies);
+        frequencyLimitMax = Collections.max(chosenFrequencies);
+
+        Log.e("test", "AudioTestActivity: randomFrequencies() --after // values: chosenFrequencies = " + chosenFrequencies.toString() + "\t"
+                + "frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
+
+        return chosenFrequencies;
+    }
+
+    private void getNewSample() {
+        Log.e("test", "AudioTestActivity: getNewSample() --before");
+
+        if (newSample != null) {
+            newSample.clear();
+        }
+        sample.setSamplesList(samplesList);
+        newSample = sample.getNewSample();
+        if (newSample != null) {
+            frequency = Double.parseDouble(newSample.get(0));
+            channel = newSample.get(1);
+            samplesList = sample.getSamplesList();
+            stop = false;
+
+            Log.e("test", "AudioTestActivity: getNewSample() --after // values: sampleList.size() = " + samplesList.size() + "; received frequency = " + frequency + "; received channel = " + channel);
+
+        } else {
+            Log.e("test", "AudioTestActivity: getNewSample() --after // msg: newSample is null = all attempts made");
+
+            resultButtonAction();
+        }
+    }
+
+    private double getAmplitude(int level){
+
+        index = indexOfMaxDecibels + level;
+        amplitude = table[index][1];
+        decibels = table[index][0]-decibelsInTable;
+
+        Log.e("test", "Frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
+
+        return amplitude;
+    }
+
+    private void addPoint() {
+        Log.e("test", "AudioTestActivity: addPoint() --before");
+
+        xAxis.add(frequency);
+        yAxis.add(decibels);
+        channels.add(channel);
+
+        Log.e("test", "AudioTestActivity: addPoint() --after // values: added frequency = " + frequency + "; added decibels = " + decibels + "; added channel = " + channel + "\t"
+                + "xAxis.size() = " + xAxis.size() + "; yAxis.size() = " + yAxis.size() + "; channels.size() = " + channels.size());
+
+    }
+
+    private void showResult() {
+        Log.e("test", "AudioTestActivity: showResult() --before");
+
+        setMinVolume();
+
+        Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
+        intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        intentResult.putExtra("xAxis", xAxis);
+        intentResult.putExtra("yAxis", yAxis);
+        intentResult.putExtra("channels", channels);
+        intentResult.putExtra("decibelsLimit", decibelsInTable);
+        intentResult.putExtra("frequencyLimitMin", frequencyLimitMin);
+        intentResult.putExtra("frequencyLimitMax", frequencyLimitMax);
+
+        startActivity(intentResult);
+
+        Log.e("test", "AudioTestActivity: showResult() --after // values: xAxis.toString() = " + xAxis.toString() + "\t"
+                + "yAxis.toString() = " + yAxis.toString() + "\t" + "channels.toString() = " + channels.toString());
+    }
+
+    private void resetValues() {
+        Log.e("test", "AudioTestActivity: resetValues() --before");
+
+        amplitude = 0.0;
+        level = 0;
+        index = 0;
+        sample = new Sample(numberOfFrequencies, chosenFrequencies);
+
+        Log.e("test", "AudioTestActivity: resetValues() --after");
+    }
+
+    private void hardResetValues() {
+        Log.e("test", "AudioTestActivity: hardResetValues() --before");
+
+        resetValues();
+        chosenFrequencies = new ArrayList<>();
+        samplesList = new ArrayList<>();
+        xAxis = new ArrayList<>();
+        yAxis = new ArrayList<>();
+        channels = new ArrayList<>();
+
+        Log.e("test", "AudioTestActivity: hardResetValues() --after");
+    }
+
+
+    private void setMaxVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
+                0);
+
+    }
+
+    private void setMinVolume() {
+
+        audioManager.setStreamVolume(
+                AudioManager.STREAM_MUSIC,
+                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
+                0);
+
+    }
+
+    private void showStartMode() {
+        buttonStart.setVisibility(View.VISIBLE);
+        textViewStart.setVisibility(View.VISIBLE);
+        buttonHeard.setVisibility(View.GONE);
+        textViewHeard.setVisibility(View.GONE);
+        buttonCancel.setVisibility(View.GONE);
+        textViewCancel.setVisibility(View.GONE);
+        buttonResult.setVisibility(View.GONE);
+        textViewResult.setVisibility(View.GONE);
+        tableLayout.setVisibility(View.VISIBLE);
+        textViewAudioTest.setText(R.string.tv_audioTest_1);
+    }
+
+    private void showAudioTestMode() {
+        buttonStart.setVisibility(View.GONE);
+        textViewStart.setVisibility(View.GONE);
+        buttonHeard.setVisibility(View.VISIBLE);
+        textViewHeard.setVisibility(View.VISIBLE);
+        buttonCancel.setVisibility(View.VISIBLE);
+        textViewCancel.setVisibility(View.VISIBLE);
+        buttonResult.setVisibility(View.GONE);
+        textViewResult.setVisibility(View.GONE);
+        tableLayout.setVisibility(View.GONE);
+        textViewAudioTest.setText(R.string.tv_audioTest_2);
+    }
+
+    private void showResultMode() {
+        buttonStart.setVisibility(View.GONE);
+        textViewStart.setVisibility(View.GONE);
+        buttonHeard.setVisibility(View.GONE);
+        textViewHeard.setVisibility(View.GONE);
+        buttonCancel.setVisibility(View.VISIBLE);
+        textViewCancel.setVisibility(View.VISIBLE);
+        buttonResult.setVisibility(View.VISIBLE);
+        textViewResult.setVisibility(View.VISIBLE);
+        tableLayout.setVisibility(View.VISIBLE);
+        tableLayout.setVisibility(View.GONE);
+        textViewAudioTest.setText(R.string.tv_audioTest_3);
+    }
+
+
     private void playAsync() {
         Log.e("test", "AudioTestActivity: playAsync() --before");
 
@@ -151,39 +361,8 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: playAsync() --after");
     }
 
-    public void findClosestInTable(){
 
-        double myDecibels = maxDecibels;
-        double distance = Math.abs(table[0][0] - maxDecibels);
-        int idx = 0;
-        for (int c = 1; c < table.length; c++) {
-            double cdistance = Math.abs(table[c][0] - myDecibels);
-            if (cdistance < distance) {
-                idx = c;
-                distance = cdistance;
-            }
-        }
-        decibelsInTable = table[idx][0];
-        indexOfMaxDecibels = idx;
-
-        Log.e("test", "Found closest decibels in table = " + decibelsInTable + "IndexOfMaxDecibels = " + indexOfMaxDecibels);
-    }
-    
-    public double getAmplitude(int level){
-
-        index = indexOfMaxDecibels + level;
-
-        amplitude = table[index][1];
-
-        decibels = table[index][0]-decibelsInTable;
-
-        Log.e("test", "Frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
-
-        return amplitude;
-    }
-
-    
-    public void initPlaySoundButton() {
+    private void initPlaySoundButton() {
         Log.e("test", "AudioTestActivity: initPlaySoundButton() --before");
 
         buttonStart = findViewById(R.id.btn_start);
@@ -198,7 +377,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: initPlaySoundButton() --after");
     }
 
-    public void playButtonAction() {
+    private void playButtonAction() {
         Log.e("test", "AudioTestActivity: playButtonAction() --before");
 
         vibe.vibrate(50);
@@ -216,7 +395,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: playButtonAction() --after");
     }
 
-    public void initStopSoundButton() {
+    private void initStopSoundButton() {
         Log.e("test", "AudioTestActivity: initStopSoundButton() --before");
 
         buttonHeard = findViewById(R.id.btn_heard);
@@ -230,7 +409,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: initStopSoundButton() --after");
     }
 
-    public void stopButtonAction() {
+    private void stopButtonAction() {
         Log.e("test", "AudioTestActivity: stopButtonAction() --before");
 
         vibe.vibrate(50);
@@ -244,7 +423,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: stopButtonAction() --after");
     }
 
-    public void initCancelButton() {
+    private void initCancelButton() {
         Log.e("test", "AudioTestActivity: initCancelButton() --before");
 
         buttonCancel = findViewById(R.id.btn_finish);
@@ -258,7 +437,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: initCancelButton() --after");
     }
 
-    public void cancelButtonAction() {
+    private void cancelButtonAction() {
         Log.e("test", "AudioTestActivity: cancelButtonAction() --before");
 
         vibe.vibrate(50);
@@ -270,7 +449,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: initCancelButton() --after");
     }
 
-    public void initResultButton() {
+    private void initResultButton() {
         Log.e("test", "AudioTestActivity: initResultButton() --before");
 
         buttonResult = findViewById(R.id.btn_result);
@@ -284,7 +463,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: initResultButton() --after");
     }
 
-    public void resultButtonAction() {
+    private void resultButtonAction() {
         Log.e("test", "AudioTestActivity: resultButtonAction() --before");
 
         vibe.vibrate(50);
@@ -295,7 +474,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: resultButtonAction() --after");
     }
 
-    public void initHelpButton() {
+    private void initHelpButton() {
         Log.e("test", "AudioTestActivity: initHelpButton() --before");
 
         buttonHelp = findViewById(R.id.btn_help);
@@ -309,7 +488,7 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: initHelpButton() --after");
     }
 
-    public void helpButtonAction() {
+    private void helpButtonAction() {
         Log.e("test", "AudioTestActivity: helpButtonAction() --before");
 
         vibe.vibrate(50);
@@ -319,189 +498,6 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: helpButtonAction() --after");
     }
 
-    public void resetValues() {
-        Log.e("test", "AudioTestActivity: resetValues() --before");
-
-        amplitude = 0.0;
-        level = 0;
-        index = 0;
-        sample = new Sample(numberOfFrequencies, chosenFrequencies);
-
-        Log.e("test", "AudioTestActivity: resetValues() --after");
-    }
-
-    public void hardResetValues() {
-        Log.e("test", "AudioTestActivity: hardResetValues() --before");
-
-        resetValues();
-        chosenFrequencies = new ArrayList<>();
-        samplesList = new ArrayList<>();
-        xAxis = new ArrayList<>();
-        yAxis = new ArrayList<>();
-        channels = new ArrayList<>();
-
-        Log.e("test", "AudioTestActivity: hardResetValues() --after");
-    }
-
-    public ArrayList<Integer> randomFrequencies() {
-        Log.e("test", "AudioTestActivity: randomFrequencies() --before");
-
-        index = 0;
-        newFrequency = 0;
-        randomGenerator = new Random();
-        while (chosenFrequencies.size() < numberOfFrequencies) {
-            index = randomGenerator.nextInt(allFrequencies.size());
-            newFrequency = allFrequencies.get(index);
-            if (!chosenFrequencies.contains(newFrequency)) {
-                chosenFrequencies.add(newFrequency);
-            }
-        }
-        frequencyLimitMin = Collections.min(chosenFrequencies);
-        frequencyLimitMax = Collections.max(chosenFrequencies);
-
-        Log.e("test", "AudioTestActivity: randomFrequencies() --after // values: chosenFrequencies = " + chosenFrequencies.toString() + "\t"
-                + "frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
-
-        return chosenFrequencies;
-    }
-
-    private void getNewSample() {
-        Log.e("test", "AudioTestActivity: getNewSample() --before");
-
-        if (newSample != null) {
-            newSample.clear();
-        }
-        sample.setSamplesList(samplesList);
-        newSample = sample.getNewSample();
-        if (newSample != null) {
-            frequency = Double.parseDouble(newSample.get(0));
-            channel = newSample.get(1);
-            samplesList = sample.getSamplesList();
-            stop = false;
-
-            Log.e("test", "AudioTestActivity: getNewSample() --after // values: sampleList.size() = " + samplesList.size() + "; received frequency = " + frequency + "; received channel = " + channel);
-
-        } else {
-            Log.e("test", "AudioTestActivity: getNewSample() --after // msg: newSample is null = all attempts made");
-
-            resultButtonAction();
-        }
-    }
-
-    public void addPoint() {
-        Log.e("test", "AudioTestActivity: addPoint() --before");
-
-        xAxis.add(frequency);
-        yAxis.add(decibels);
-        channels.add(channel);
-
-        Log.e("test", "AudioTestActivity: addPoint() --after // values: added frequency = " + frequency + "; added decibels = " + decibels + "; added channel = " + channel + "\t"
-                + "xAxis.size() = " + xAxis.size() + "; yAxis.size() = " + yAxis.size() + "; channels.size() = " + channels.size());
-
-    }
-
-    public void showResult() {
-        Log.e("test", "AudioTestActivity: showResult() --before");
-
-        setMinVolume();
-
-        Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
-        intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        intentResult.putExtra("xAxis", xAxis);
-        intentResult.putExtra("yAxis", yAxis);
-        intentResult.putExtra("channels", channels);
-        intentResult.putExtra("decibelsLimit", decibelsInTable);
-        intentResult.putExtra("frequencyLimitMin", frequencyLimitMin);
-        intentResult.putExtra("frequencyLimitMax", frequencyLimitMax);
-
-        startActivity(intentResult);
-
-        Log.e("test", "AudioTestActivity: showResult() --after // values: xAxis.toString() = " + xAxis.toString() + "\t"
-                + "yAxis.toString() = " + yAxis.toString() + "\t" + "channels.toString() = " + channels.toString());
-
-    }
-
-    private double loadDecibels() {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        String scoreDecibels = sharedPreferences.getString("maxDecibels", String.valueOf(defMaxDecibels));
-        maxDecibels = Double.parseDouble(scoreDecibels);
-        maxDecibels = maxDecibels*(-1);
-
-        return maxDecibels;
-
-    }
-
-    private ArrayList<Integer> loadFrequencies(){
-
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        String scoreFrequencies = sharedPreferences.getString("allFrequencies", "");
-        scoreFrequencies = scoreFrequencies.replaceAll("[\\[\\](){} ]","");
-        ArrayList<String> frequenciesListString = new ArrayList<>(Arrays.asList(scoreFrequencies.split(",")));
-        allFrequencies = new ArrayList<>();
-        for(int i = 0; i < frequenciesListString.size(); i++) {
-            allFrequencies.add(Integer.parseInt(frequenciesListString.get(i)));
-        }
-        return allFrequencies;
-    }
-
-    public void setMaxVolume() {
-
-        audioManager.setStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC),
-                0);
-
-    }
-
-    public void setMinVolume() {
-
-        audioManager.setStreamVolume(
-                AudioManager.STREAM_MUSIC,
-                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
-                0);
-
-    }
-
-    public void showStartMode() {
-        buttonStart.setVisibility(View.VISIBLE);
-        textViewStart.setVisibility(View.VISIBLE);
-        buttonHeard.setVisibility(View.GONE);
-        textViewHeard.setVisibility(View.GONE);
-        buttonCancel.setVisibility(View.GONE);
-        textViewCancel.setVisibility(View.GONE);
-        buttonResult.setVisibility(View.GONE);
-        textViewResult.setVisibility(View.GONE);
-        tableLayout.setVisibility(View.VISIBLE);
-        textViewAudioTest.setText(R.string.tv_audioTest_1);
-    }
-
-    public void showAudioTestMode() {
-        buttonStart.setVisibility(View.GONE);
-        textViewStart.setVisibility(View.GONE);
-        buttonHeard.setVisibility(View.VISIBLE);
-        textViewHeard.setVisibility(View.VISIBLE);
-        buttonCancel.setVisibility(View.VISIBLE);
-        textViewCancel.setVisibility(View.VISIBLE);
-        buttonResult.setVisibility(View.GONE);
-        textViewResult.setVisibility(View.GONE);
-        tableLayout.setVisibility(View.GONE);
-        textViewAudioTest.setText(R.string.tv_audioTest_2);
-    }
-
-    public void showResultMode() {
-        buttonStart.setVisibility(View.GONE);
-        textViewStart.setVisibility(View.GONE);
-        buttonHeard.setVisibility(View.GONE);
-        textViewHeard.setVisibility(View.GONE);
-        buttonCancel.setVisibility(View.VISIBLE);
-        textViewCancel.setVisibility(View.VISIBLE);
-        buttonResult.setVisibility(View.VISIBLE);
-        textViewResult.setVisibility(View.VISIBLE);
-        tableLayout.setVisibility(View.VISIBLE);
-        tableLayout.setVisibility(View.GONE);
-        textViewAudioTest.setText(R.string.tv_audioTest_3);
-    }
 
     @Override
     protected void onPause() {
@@ -549,9 +545,6 @@ public class AudioTestActivity extends AppCompatActivity
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
-
-//        allFrequencies.addAll(Arrays.asList(2000, 2500 // tylko do testowania, usunąć
-//        allFrequencies = (ArrayList<Integer>) getIntent().getSerializableExtra("allFrequencies");
 
         loadFrequencies();
 

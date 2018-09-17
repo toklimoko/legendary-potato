@@ -19,6 +19,11 @@ public class PopUpChoice extends Activity {
     private ImageView imageViewIcon;
     private Vibrator vibe;
 
+    public void closeButton(View v) {
+        vibe.vibrate(50);
+        finish();
+
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,9 +40,5 @@ public class PopUpChoice extends Activity {
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
     }
 
-    public void closeButton(View v) {
-        vibe.vibrate(50);
-        finish();
 
-    }
 }

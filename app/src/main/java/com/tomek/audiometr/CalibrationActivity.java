@@ -47,7 +47,7 @@ public class CalibrationActivity extends AppCompatActivity
     private ArrayList<Double> list;
 
     private static double mEMA = 0.0;
-    static final private double EMA_FILTER = 0.6;
+    static final private double emaFilter = 0.6;
 
     private static final double referenceAmp = 1.0;
 
@@ -55,19 +55,18 @@ public class CalibrationActivity extends AppCompatActivity
     public double tempAverage = 0.0;
     public double average = 0;
 
-    final Handler mHandler = new Handler();
+    private final Handler mHandler = new Handler();
 
-    final Runnable updater = new Runnable() {
+    private final Runnable updater = new Runnable() {
 
         public void run() {
             if (play != null) {
-//                updateTv();
                 addPoint();
             }
         }
     };
 
-    final Runnable getValue = new Runnable() {
+    private final Runnable getValue = new Runnable() {
 
         public void run() {
             averageDecibels();
@@ -77,12 +76,6 @@ public class CalibrationActivity extends AppCompatActivity
         }
     };
 
-    private void savePreference(String key, String value) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.apply();
-    }
 
     private void playAsync() {
         if (play != null) {
@@ -131,11 +124,11 @@ public class CalibrationActivity extends AppCompatActivity
         }
     }
 
-//    public void onResume() {
+    //    public void onResume() {
 //        super.onResume();
 ////        startRecorder();
 //    }
-
+    @Override
     public void onPause() {
         super.onPause();
         if (recordThread != null) {
@@ -153,7 +146,7 @@ public class CalibrationActivity extends AppCompatActivity
         setMinVolume();
     }
 
-    public void startRecorder() {
+    private void startRecorder() {
         if (mRecorder == null) {
             mRecorder = new MediaRecorder();
 //            mRecorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
@@ -179,13 +172,11 @@ public class CalibrationActivity extends AppCompatActivity
             } catch (java.lang.SecurityException e) {
                 android.util.Log.e("[Monkey]", "SecurityException: " + android.util.Log.getStackTraceString(e));
             }
-
-            //mEMA = 0.0; //delete
         }
 
     }
 
-    public void stopRecorder() {
+    private void stopRecorder() {
         if (mRecorder != null) {
             mRecorder.stop();
             mRecorder.release();
@@ -193,21 +184,7 @@ public class CalibrationActivity extends AppCompatActivity
         }
     }
 
-//    public void updateTv() {
-//        mStatusView.setText(Double.toString((soundDb())) + " dB");
-//    }
-
-    public void addPoint() {
-        decibels = soundDb();
-        if (decibels != Double.NEGATIVE_INFINITY) {
-            list.add(decibels);
-            Log.e("test", "soundDb = " + decibels);
-        }
-        Log.e("test", "List = " + list);
-
-    }
-
-    public double averageDecibels() {
+    private double averageDecibels() {
         total = 0.0;
 
         for (int i = 0; i < list.size(); i++) {
@@ -218,13 +195,12 @@ public class CalibrationActivity extends AppCompatActivity
 
         tempAverage = total / list.size();
 
-//        average = (int) Math.round(tempAverage);
         average = tempAverage;
 
 
         //TODO remove bug
         //avoiding a bug (do calibration, minimize app, go back to app, do calibration one more time = no values being added to list; onResume?
-        if(Float.isNaN((float) average)){
+        if (Float.isNaN((float) average)) {
             average = -80;
         }
 
@@ -232,26 +208,35 @@ public class CalibrationActivity extends AppCompatActivity
         return average;
     }
 
-    public double soundDb() {
+    private double soundDb() {
         decibels = 20 * Math.log10(getAmplitude() / referenceAmp);
         return decibels;
     }
 
-    public double getAmplitude() {
+    private double getAmplitude() {
         if (mRecorder != null)
             return (mRecorder.getMaxAmplitude());
         else
             return 0;
-
     }
 
-    public double getAmplitudeEMA() {
+    private double getAmplitudeEMA() {
         double amp = getAmplitude();
-        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA;
+        mEMA = emaFilter * amp + (1.0 - emaFilter) * mEMA;
         return mEMA;
     }
 
-    public void setMaxVolume() {
+    private void addPoint() {
+        decibels = soundDb();
+        if (decibels != Double.NEGATIVE_INFINITY) {
+            list.add(decibels);
+            Log.e("test", "soundDb = " + decibels);
+        }
+        Log.e("test", "List = " + list);
+
+    }
+
+    private void setMaxVolume() {
 
         audioManager.setStreamVolume(
                 AudioManager.STREAM_MUSIC,
@@ -260,24 +245,24 @@ public class CalibrationActivity extends AppCompatActivity
 
     }
 
-    public void setMinVolume() {
+    private void setMinVolume() {
 
         audioManager.setStreamVolume(
                 AudioManager.STREAM_MUSIC,
-                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
+                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 0.3),
                 0);
 
     }
 
-
-    public void calibrateButtonAction() {
-        setMaxVolume();
-        playAsync();
-        recordAsync();
-        toast.show();
+    private void savePreference(String key, String value) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
     }
 
-    public void initCalibrateButton() {
+
+    private void initCalibrateButton() {
         btnCalibration = findViewById(R.id.btn_calibration);
         btnCalibration.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -286,6 +271,29 @@ public class CalibrationActivity extends AppCompatActivity
                 vibe.vibrate(50);
             }
         });
+    }
+
+    private void calibrateButtonAction() {
+        setMaxVolume();
+        playAsync();
+        recordAsync();
+        toast.show();
+    }
+
+    private void initHelpButton() {
+        buttonHelp = findViewById(R.id.btn_help_cal);
+        buttonHelp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                helpButtonAction();
+            }
+        });
+    }
+
+    private void helpButtonAction() {
+        vibe.vibrate(50);
+        Intent intentInfo = new Intent(this, PopUpCalibration.class);
+        startActivity(intentInfo);
     }
 
     @Override
@@ -327,21 +335,6 @@ public class CalibrationActivity extends AppCompatActivity
         initHelpButton();
     }
 
-    public void initHelpButton() {
-        buttonHelp = findViewById(R.id.btn_help_cal);
-        buttonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helpButtonAction();
-            }
-        });
-    }
-
-    public void helpButtonAction() {
-        vibe.vibrate(50);
-        Intent intentInfo = new Intent(this, PopUpCalibration.class);
-        startActivity(intentInfo);
-    }
 
     @Override
     public void onBackPressed() {

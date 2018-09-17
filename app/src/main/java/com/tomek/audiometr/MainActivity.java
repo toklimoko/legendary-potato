@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
         audioManager.setStreamVolume(
                 AudioManager.STREAM_MUSIC,
-                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
+                (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) * 0.3),
                 0);
 
     }
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity
         initCalibrationButton();
         initChoiceButton();
 
-        savePreference("calibrated","false");
+        savePreference("calibrated", "false");
     }
 
     @Override

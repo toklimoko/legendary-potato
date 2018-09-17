@@ -44,27 +44,21 @@ public class ChoiceActivity extends AppCompatActivity
         }
     }
 
-    public void basicAudioTest() {
+    private void basicAudioTest() {
         allFrequencies = new ArrayList<>();
         allFrequencies.addAll(Arrays.asList(125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000));
         Log.e("test", "checkedBasic = " + radioButtonBasic.isChecked());
 
     }
 
-    public void extendedAudioTest() {
+    private void extendedAudioTest() {
         allFrequencies = new ArrayList<>();
         allFrequencies.addAll(Arrays.asList(100, 125, 150, 200, 300, 400, 500, 700, 1000, 2000, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000, 16000, 17000, 18000));
         Log.e("test", "checkedExtended = " + radioButtonExtended.isChecked());
     }
 
-    private void savePreference(String key, ArrayList<Integer> list) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, String.valueOf(list));
-        editor.apply();
-    }
 
-    public void initGoButton() {
+    private void initGoButton() {
         Log.e("test", "ChoiceActivity: initGoButton() --before");
 
         buttonGo = findViewById(R.id.btn_go);
@@ -78,7 +72,7 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: initGoButton() --after");
     }
 
-    public void goButtonAction() {
+    private void goButtonAction() {
         Log.e("test", "ChoiceActivity: goButtonAction() --before");
 
         vibe.vibrate(50);
@@ -115,8 +109,15 @@ public class ChoiceActivity extends AppCompatActivity
         return false;
     }
 
+    private void savePreference(String key, ArrayList<Integer> list) {
+        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, String.valueOf(list));
+        editor.apply();
+    }
 
-    public void initHelpButton() {
+
+    private void initHelpButton() {
         Log.e("test", "ChoiceActivity: initHelpButton() --before");
 
         buttonHelp = findViewById(R.id.btn_help);
@@ -130,7 +131,7 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: initHelpButton() --after");
     }
 
-    public void helpButtonAction() {
+    private void helpButtonAction() {
         Log.e("test", "ChoiceActivity: helpButtonAction() --before");
 
         vibe.vibrate(50);

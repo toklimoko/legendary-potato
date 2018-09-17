@@ -18,6 +18,11 @@ public class PopUpCalibration extends Activity {
     private ImageView imageViewIcon;
     private Vibrator vibe;
 
+    public void closeButton(View v) {
+        vibe.vibrate(50);
+        finish();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,8 +40,5 @@ public class PopUpCalibration extends Activity {
 
     }
 
-    public void closeButton(View v) {
-        vibe.vibrate(50);
-        finish();
-    }
+
 }

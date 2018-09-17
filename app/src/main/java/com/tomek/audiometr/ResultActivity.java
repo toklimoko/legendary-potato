@@ -54,40 +54,8 @@ public class ResultActivity extends Activity {
 
     private Vibrator vibe;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_result);
-
-        chartLayout = findViewById(R.id.chartLayout);
-
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        xAxis = (ArrayList<Double>) getIntent().getSerializableExtra("xAxis");
-        yAxis = (ArrayList<Double>) getIntent().getSerializableExtra("yAxis");
-        channels = (ArrayList<String>) getIntent().getSerializableExtra("channels");
-        decibelsLimit = -1*(double) getIntent().getSerializableExtra("decibelsLimit");
-        frequencyLimitMin = (double) getIntent().getSerializableExtra("frequencyLimitMin");
-        frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
-
-        imageViewBackground = findViewById(R.id.iv_resultBackground);
-        imageViewBackground.setImageResource(R.drawable.wall4);
-        imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
-
-        imageSaveIcon = findViewById(R.id.iv_save);
-        imageSaveIcon.setImageResource(R.drawable.save_icon);
-        imageSaveIcon.setScaleType(ImageView.ScaleType.FIT_XY);
-
-
-        Log.e("test", "ResultActivity: onCreate() // values: " + "\n" + "xAxis.toString() = " + xAxis.toString() + "\n"
-                + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n"
-                + "decibelsLimit = " + decibelsLimit + "; frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
-
-        drawChart();
-    }
-
-    public void drawChart() {
+    private void drawChart() {
 
         if (seriesR != null || seriesL != null) {
             seriesR.clearSeriesValues();
@@ -146,7 +114,7 @@ public class ResultActivity extends Activity {
         mRenderer.setAxisTitleTextSize(50);
         mRenderer.setPanEnabled(true, true);
         mRenderer.setZoomEnabled(true, true);
-        mRenderer.setZoomLimits(new double [] {frequencyLimitMin, frequencyLimitMax, decibelsLimit, 0});
+        mRenderer.setZoomLimits(new double[]{frequencyLimitMin, frequencyLimitMax, decibelsLimit, 0});
 //        mRenderer.setChartTitleTextSize(100);
 
         XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
@@ -188,7 +156,7 @@ public class ResultActivity extends Activity {
             PrintWriter pw = new PrintWriter(f);
 
 
-            for (int i = 0; i<xAxis.size(); i++){
+            for (int i = 0; i < xAxis.size(); i++) {
                 string = string + xAxis.get(i).toString() + "\t" + yAxis.get(i).toString() + "\t" + channels.get(i).toString() + "\n";
             }
 
@@ -199,7 +167,7 @@ public class ResultActivity extends Activity {
             f.close();
 
 
-            Toast.makeText(getApplicationContext(),"Zapisano w: " + path,
+            Toast.makeText(getApplicationContext(), "Zapisano w: " + path,
                     Toast.LENGTH_LONG).show();
 
 
@@ -219,5 +187,38 @@ public class ResultActivity extends Activity {
         vibe.vibrate(50);
         finish();
 
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.activity_result);
+
+        chartLayout = findViewById(R.id.chartLayout);
+
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        xAxis = (ArrayList<Double>) getIntent().getSerializableExtra("xAxis");
+        yAxis = (ArrayList<Double>) getIntent().getSerializableExtra("yAxis");
+        channels = (ArrayList<String>) getIntent().getSerializableExtra("channels");
+        decibelsLimit = -1 * (double) getIntent().getSerializableExtra("decibelsLimit");
+        frequencyLimitMin = (double) getIntent().getSerializableExtra("frequencyLimitMin");
+        frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
+
+        imageViewBackground = findViewById(R.id.iv_resultBackground);
+        imageViewBackground.setImageResource(R.drawable.wall4);
+        imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        imageSaveIcon = findViewById(R.id.iv_save);
+        imageSaveIcon.setImageResource(R.drawable.save_icon);
+        imageSaveIcon.setScaleType(ImageView.ScaleType.FIT_XY);
+
+
+        Log.e("test", "ResultActivity: onCreate() // values: " + "\n" + "xAxis.toString() = " + xAxis.toString() + "\n"
+                + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n"
+                + "decibelsLimit = " + decibelsLimit + "; frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
+
+        drawChart();
     }
 }
