@@ -3,6 +3,7 @@ package com.tomek.audiometr.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
@@ -18,7 +19,11 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.tomek.audiometr.algorithms.FrequenciesData;
 import com.tomek.audiometr.dialogs.Dialog;
+import com.tomek.audiometr.helpers.Drawer;
+import com.tomek.audiometr.helpers.Preferences;
+import com.tomek.audiometr.helpers.VolumeController;
 import com.tomek.audiometr.popups.PopUpAppInfo;
 import com.tomek.audiometr.popups.PopUpChoice;
 import com.tomek.audiometr.R;
@@ -37,31 +42,28 @@ public class ChoiceActivity extends AppCompatActivity
     private RadioButton radioButtonBasic;
     private RadioButton radioButtonExtended;
 
+    private VolumeController volumeController;
+
     private Vibrator vibe;
 
     private ArrayList<Integer> allFrequencies;
 
+    private FrequenciesData frequenciesData;
+
+    private Preferences preferences;
+
+    private Intent intent;
+
+
     public void checkButton(View v) {
         if (radioButtonBasic.isChecked()) {
-            basicAudioTest();
+            allFrequencies = frequenciesData.basicAudioTest();
+            Log.e("test", "Basic Audio Test has been chosen");
         } else if (radioButtonExtended.isChecked()) {
-            extendedAudioTest();
+            allFrequencies = frequenciesData.extendedAudioTest();
+            Log.e("test", "Extended Audio Test has been chosen");
         }
     }
-
-    private void basicAudioTest() {
-        allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000));
-        Log.e("test", "checkedBasic = " + radioButtonBasic.isChecked());
-
-    }
-
-    private void extendedAudioTest() {
-        allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(100, 125, 150, 200, 300, 400, 500, 700, 1000, 2000, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000, 16000, 17000, 18000));
-        Log.e("test", "checkedExtended = " + radioButtonExtended.isChecked());
-    }
-
 
     private void initGoButton() {
         Log.e("test", "ChoiceActivity: initGoButton() --before");
@@ -82,45 +84,23 @@ public class ChoiceActivity extends AppCompatActivity
 
         vibe.vibrate(50);
 
-        boolean calibrated = loadIfCalibrated();
+        boolean calibrated = preferences.loadCalibrated(getApplicationContext());
 
         Log.e("boolean calibrated", String.valueOf(calibrated));
 
+        preferences.saveFrequencies("allFrequencies", allFrequencies, getApplicationContext());
+
         if (calibrated) {
-            Intent intentAudioTest = new Intent(this, AudioTestActivity.class);
-            intentAudioTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        intentAudioTest.putExtra("allFrequencies", allFrequencies);
-            savePreference("allFrequencies", allFrequencies);
-            startActivity(intentAudioTest);
+            intent = new Intent(this, AudioTestActivity.class);
         } else {
-            Intent intentDialog = new Intent(this, Dialog.class);
-            intentDialog.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentDialog);
+            intent = new Intent(this, Dialog.class);
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
 
         Log.e("test", "ChoiceActivity: goButtonAction() --after");
     }
-
-    private boolean loadIfCalibrated() {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        String score = sharedPreferences.getString("calibrated", "");
-
-        Log.e("score", score);
-
-        if (score.equals("true")) {
-            return true;
-        }
-        return false;
-    }
-
-    private void savePreference(String key, ArrayList<Integer> list) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, String.valueOf(list));
-        editor.apply();
-    }
-
 
     private void initHelpButton() {
         Log.e("test", "ChoiceActivity: initHelpButton() --before");
@@ -140,8 +120,8 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: helpButtonAction() --before");
 
         vibe.vibrate(50);
-        Intent intentInfo = new Intent(this, PopUpChoice.class);
-        startActivity(intentInfo);
+        intent = new Intent(this, PopUpChoice.class);
+        startActivity(intent);
 
         Log.e("test", "ChoiceActivity: helpButtonAction() --after");
     }
@@ -162,14 +142,19 @@ public class ChoiceActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        volumeController = new VolumeController((AudioManager) this.getSystemService(Context.AUDIO_SERVICE));
+
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         radioGroup = findViewById(R.id.radioGroup);
         radioButtonBasic = findViewById(R.id.rb_basicTest);
         radioButtonExtended = findViewById(R.id.rb_extendedTest);
 
+        frequenciesData = new FrequenciesData();
+        preferences = new Preferences();
+
         initGoButton();
         initHelpButton();
-        basicAudioTest();
+        allFrequencies = frequenciesData.extendedAudioTest();
     }
 
     @Override
@@ -188,36 +173,13 @@ public class ChoiceActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_start) {
-            Intent intentLauncher = new Intent(this, MainActivity.class);
-            intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentLauncher);
+        Drawer drawer = new Drawer();
+        Intent intent = drawer.action(id, getApplicationContext(), volumeController);
+        startActivity(intent);
 
-        } else if (id == R.id.nav_calibration) {
-            Intent intentKal = new Intent(this, CalibrationActivity.class);
-            intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentKal);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
 
-        } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, ChoiceActivity.class);
-            intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentTest);
-
-        } else if (id == R.id.nav_info) {
-            Intent intentInfo = new Intent(this, PopUpAppInfo.class);
-            intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentInfo);
-
-        } else if (id == R.id.nav_exit) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

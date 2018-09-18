@@ -28,6 +28,7 @@ public class VolumeController {
                 AudioManager.STREAM_MUSIC,
                 (int) (audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)*0.3),
                 0);
+
     }
 
 

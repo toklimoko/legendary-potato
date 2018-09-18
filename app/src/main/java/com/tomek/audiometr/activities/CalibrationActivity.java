@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.tomek.audiometr.algorithms.LoudnessData;
 import com.tomek.audiometr.algorithms.Record;
+import com.tomek.audiometr.helpers.Drawer;
 import com.tomek.audiometr.helpers.Preferences;
 import com.tomek.audiometr.helpers.VolumeController;
 import com.tomek.audiometr.algorithms.Play;
@@ -55,8 +56,6 @@ public class CalibrationActivity extends AppCompatActivity
     private VolumeController volumeController;
 
     private ArrayList<Double> list;
-
-
 
     private static final double referenceAmp = 1.0;
     public double average = 0;
@@ -111,8 +110,6 @@ public class CalibrationActivity extends AppCompatActivity
         if (recordThread == null) {
 
             list = new ArrayList<>();
-
-
             recordThread = new Thread() {
                 public void run() {
 
@@ -254,40 +251,12 @@ public class CalibrationActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_start) {
+        Drawer drawer = new Drawer();
+        Intent intent = drawer.action(id, getApplicationContext(),volumeController);
+        startActivity(intent);
 
-            Intent intentLauncher = new Intent(this, MainActivity.class);
-            intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentLauncher);
-
-        } else if (id == R.id.nav_calibration) {
-
-            Intent intentKal = new Intent(this, CalibrationActivity.class);
-            intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentKal);
-
-        } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, ChoiceActivity.class);
-            intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentTest);
-
-        } else if (id == R.id.nav_info) {
-
-            Intent intentInfo = new Intent(this, PopUpAppInfo.class);
-            intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentInfo);
-
-        } else if (id == R.id.nav_exit) {
-            volumeController.setMin();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
 
         return true;
     }

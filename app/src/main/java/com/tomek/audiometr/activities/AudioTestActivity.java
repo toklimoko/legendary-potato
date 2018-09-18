@@ -19,7 +19,9 @@ import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
+import com.tomek.audiometr.algorithms.FrequenciesData;
 import com.tomek.audiometr.algorithms.LoudnessData;
+import com.tomek.audiometr.helpers.Drawer;
 import com.tomek.audiometr.helpers.Preferences;
 import com.tomek.audiometr.helpers.VolumeController;
 import com.tomek.audiometr.algorithms.Play;
@@ -76,7 +78,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     private Random randomGenerator;
     private Sample sample;
-    private VolumeController audioController;
+    private VolumeController volumeController;
 
     private ArrayList<Integer> allFrequencies;
     private ArrayList<Integer> chosenFrequencies;
@@ -90,45 +92,10 @@ public class AudioTestActivity extends AppCompatActivity
     private Double[][] dataTable;
     private LoudnessData loudnessData;
     private Preferences preferences;
+    private FrequenciesData frequenciesData;
 
 
 
-
-
-    private ArrayList<Integer> loadFrequencies(){
-
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        String scoreFrequencies = sharedPreferences.getString("allFrequencies", "");
-        scoreFrequencies = scoreFrequencies.replaceAll("[\\[\\](){} ]","");
-        ArrayList<String> frequenciesListString = new ArrayList<>(Arrays.asList(scoreFrequencies.split(",")));
-        allFrequencies = new ArrayList<>();
-        for(int i = 0; i < frequenciesListString.size(); i++) {
-            allFrequencies.add(Integer.parseInt(frequenciesListString.get(i)));
-        }
-        return allFrequencies;
-    }
-
-    private ArrayList<Integer> randomFrequencies() {
-        Log.e("test", "AudioTestActivity: randomFrequencies() --before");
-
-        index = 0;
-        newFrequency = 0;
-        randomGenerator = new Random();
-        while (chosenFrequencies.size() < numberOfFrequencies) {
-            index = randomGenerator.nextInt(allFrequencies.size());
-            newFrequency = allFrequencies.get(index);
-            if (!chosenFrequencies.contains(newFrequency)) {
-                chosenFrequencies.add(newFrequency);
-            }
-        }
-        frequencyLimitMin = Collections.min(chosenFrequencies);
-        frequencyLimitMax = Collections.max(chosenFrequencies);
-
-        Log.e("test", "AudioTestActivity: randomFrequencies() --after // values: chosenFrequencies = " + chosenFrequencies.toString() + "\t"
-                + "frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
-
-        return chosenFrequencies;
-    }
 
     private void getNewSample() {
         Log.e("test", "AudioTestActivity: getNewSample() --before");
@@ -179,7 +146,10 @@ public class AudioTestActivity extends AppCompatActivity
     private void showResult() {
         Log.e("test", "AudioTestActivity: showResult() --before");
 
-        audioController.setMin();
+        volumeController.setMin();
+
+        frequencyLimitMin = frequenciesData.xLimits(chosenFrequencies).get(0);
+        frequencyLimitMax = frequenciesData.xLimits(chosenFrequencies).get(1);
 
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
         intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -322,7 +292,7 @@ public class AudioTestActivity extends AppCompatActivity
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                randomFrequencies();
+                chosenFrequencies = frequenciesData.random(numberOfFrequencies,allFrequencies);
                 playButtonAction();
             }
         });
@@ -338,7 +308,7 @@ public class AudioTestActivity extends AppCompatActivity
         endOfTest = false;
         showAudioTestMode();
         onPause(); // po jaką cholerę
-        audioController.setMax();
+        volumeController.setMax();
         resetValues();
         maxDecibels = preferences.loadDecibels(getApplicationContext());
 
@@ -375,7 +345,7 @@ public class AudioTestActivity extends AppCompatActivity
         addPoint();
         resetValues();
         getNewSample();
-        audioController.setMax();
+        volumeController.setMax();
         playAsync();
 
         Log.e("test", "AudioTestActivity: stopButtonAction() --after");
@@ -471,7 +441,7 @@ public class AudioTestActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-        audioController.setMin();
+        volumeController.setMin();
 
         play = null;
     }
@@ -493,7 +463,7 @@ public class AudioTestActivity extends AppCompatActivity
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
 
-        audioController = new VolumeController((AudioManager) this.getSystemService(Context.AUDIO_SERVICE));
+        volumeController = new VolumeController((AudioManager) this.getSystemService(Context.AUDIO_SERVICE));
 
         textViewStart = findViewById(R.id.tv_start);
         textViewHeard = findViewById(R.id.tv_heard);
@@ -506,7 +476,11 @@ public class AudioTestActivity extends AppCompatActivity
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
 
-        loadFrequencies();
+        preferences = new Preferences();
+
+        frequenciesData = new FrequenciesData();
+
+        allFrequencies = preferences.loadFrequencies(getApplicationContext());
 
         numberOfFrequencies = allFrequencies.size();
 
@@ -530,7 +504,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        audioController.setMin();
+        volumeController.setMin();
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
@@ -546,37 +520,13 @@ public class AudioTestActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_start) {
-            Intent intentLauncher = new Intent(this, MainActivity.class);
-            intentLauncher.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentLauncher);
+        Drawer drawer = new Drawer();
+        Intent intent = drawer.action(id, getApplicationContext(),volumeController);
+        startActivity(intent);
 
-        } else if (id == R.id.nav_calibration) {
-            Intent intentKal = new Intent(this, CalibrationActivity.class);
-            intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentKal);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
 
-        } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, ChoiceActivity.class);
-            intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentTest);
-
-        } else if (id == R.id.nav_info) {
-            Intent intentInfo = new Intent(this, PopUpAppInfo.class);
-            intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentInfo);
-
-        } else if (id == R.id.nav_exit) {
-            audioController.setMin();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
-
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 

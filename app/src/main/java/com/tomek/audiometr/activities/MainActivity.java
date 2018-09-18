@@ -16,6 +16,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 
+import com.tomek.audiometr.helpers.Drawer;
+import com.tomek.audiometr.helpers.Preferences;
 import com.tomek.audiometr.helpers.VolumeController;
 import com.tomek.audiometr.popups.PopUpAppInfo;
 import com.tomek.audiometr.R;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity
     private Vibrator vibe;
     private AudioManager audioManager;
     private VolumeController volumeController;
+
+    private Preferences preferences;
 
     private void initCalibrationButton() {
         btnCalibration = findViewById(R.id.btn_calibration);
@@ -63,11 +67,24 @@ public class MainActivity extends AppCompatActivity
         vibe.vibrate(50);
     }
 
-    private void savePreference(String key, String value) {
-        SharedPreferences sharedPreferences = this.getSharedPreferences("PREF_NAME", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(key, value);
-        editor.apply();
+    private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            int i =0;
+            i = 1000;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        audioManager.requestAudioFocus(onAudioFocusChangeListener, 1, AudioManager.AUDIOFOCUS_GAIN);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        audioManager.abandonAudioFocus(onAudioFocusChangeListener);
     }
 
     @Override
@@ -98,7 +115,8 @@ public class MainActivity extends AppCompatActivity
         initCalibrationButton();
         initChoiceButton();
 
-        savePreference("calibrated", "false");
+        preferences = new Preferences();
+        preferences.savePreference("calibrated", "false", getApplicationContext());
     }
 
     @Override
@@ -117,55 +135,14 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_start) {
+        Drawer drawer = new Drawer();
+        Intent intent = drawer.action(id, getApplicationContext(),volumeController);
+        startActivity(intent);
 
-        } else if (id == R.id.nav_calibration) {
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        drawerLayout.closeDrawer(GravityCompat.START);
 
-            Intent intentKal = new Intent(this, CalibrationActivity.class);
-            intentKal.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentKal);
-
-        } else if (id == R.id.nav_audioTest) {
-            Intent intentTest = new Intent(this, ChoiceActivity.class);
-            intentTest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentTest);
-
-        } else if (id == R.id.nav_info) {
-
-            Intent intentInfo = new Intent(this, PopUpAppInfo.class);
-            intentInfo.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intentInfo);
-
-        } else if (id == R.id.nav_exit) {
-            volumeController.setMin();
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.putExtra("EXIT", true);
-            startActivity(intent);
-        }
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private AudioManager.OnAudioFocusChangeListener onAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
-        @Override
-        public void onAudioFocusChange(int focusChange) {
-            int i =0;
-            i = 1000;
-        }
-    };
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        audioManager.requestAudioFocus(onAudioFocusChangeListener, 1, AudioManager.AUDIOFOCUS_GAIN);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        audioManager.abandonAudioFocus(onAudioFocusChangeListener);
-    }
 }
