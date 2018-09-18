@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioFocusRequest;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -151,5 +152,27 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    AudioManager.OnAudioFocusChangeListener asd = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            int i =0;
+            i = 1000;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        am.requestAudioFocus(asd, 1, AudioManager.AUDIOFOCUS_GAIN);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        AudioManager am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        am.abandonAudioFocus(asd);
     }
 }

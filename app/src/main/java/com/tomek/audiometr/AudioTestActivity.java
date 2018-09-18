@@ -514,6 +514,8 @@ public class AudioTestActivity extends AppCompatActivity
             e.printStackTrace();
         }
         setMinVolume();
+
+        play = null;
     }
 
     @Override

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.tomek.audiometr.Dialog"
-    android:background="@color/dialog_background_color"
+    android:background="@color/transparent_background"
     android:elevation="30dp">
 
     <ImageView

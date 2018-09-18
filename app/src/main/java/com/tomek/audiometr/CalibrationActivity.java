@@ -124,10 +124,6 @@ public class CalibrationActivity extends AppCompatActivity
         }
     }
 
-    //    public void onResume() {
-//        super.onResume();
-////        startRecorder();
-//    }
     @Override
     public void onPause() {
         super.onPause();
@@ -144,6 +140,9 @@ public class CalibrationActivity extends AppCompatActivity
             e.printStackTrace();
         }
         setMinVolume();
+
+        recordThread = null;
+        play = null;
     }
 
     private void startRecorder() {

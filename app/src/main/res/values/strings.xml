@@ -14,7 +14,7 @@
     <string name="title_activity_main2">Kalibracja</string>
     <string name="title_activity_main3">Badanie</string>
     <string name="calText1">1. Udaj się w ciche miejsce</string>
-    <string name="calText2">2. Podłącz słuchawki</string>
+    <string name="calText2">2. Podłącz słuchawki \n (nie zakładaj ich!)</string>
     <string name="calText3">3. Przyłóż jedną słuchawkę do mikrofonu urządzenia (jeśli Twoje słuchawki mają własny mikrofon, to do niego)</string>
     <string name="calText4">4. Naciśnij przycisk \"Kalibruj\"</string>
     <string name="calText5">5. Poczekaj, aż zakończy się kalibracja</string>
@@ -33,7 +33,7 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="result">Wynik badania</string>
     <string name="author">Autor: Tomasz Klimek</string>
     <string name="eMail">E-mail: toklimoko@gmail.com</string>
-    <string name="version">Wersja: 092018_1</string>
+    <string name="version">Wersja: 092018_2</string>
     <string name="tv_audioTest_1">Aby rozpocząć badanie: </string>
     <string name="tv_audioTest_11">1. Udaj się w ciche miejsce</string>
     <string name="tv_audioTest_12">2. Załóż poprawnie słuchawki</string>
