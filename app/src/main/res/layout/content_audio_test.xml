@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.tomek.audiometr.activities.AudioTestActivity"
-    tools:showIn="@layout/app_bar_audio_test">
+    tools:showIn="@layout/activity_audio_test">
 
     <ImageView
         android:id="@+id/imageView2"
@@ -214,7 +214,7 @@
                 android:text="@string/tv_audioTest_11"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
         </TableRow>
 
         <TableRow
@@ -229,7 +229,7 @@
                 android:text="@string/tv_audioTest_12"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 tools:text="@string/tv_audioTest_12" />
         </TableRow>
 
@@ -245,7 +245,7 @@
                 android:text="@string/tv_audioTest_13"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
         </TableRow>
 
         <TableRow

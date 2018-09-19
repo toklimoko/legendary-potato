@@ -9,28 +9,29 @@
         <item
             android:id="@+id/nav_start"
             android:checkable="false"
-            android:icon="@drawable/home_icon"
-            android:title="Start" />
+            android:icon="@drawable/home_icon_small"
+            android:title="@string/start"
+            />
         <item
             android:id="@+id/nav_calibration"
             android:checkable="false"
-            android:icon="@drawable/calibration_icon"
+            android:icon="@drawable/calibration_icon_small"
             android:title="@string/txtCalibration" />
         <item
             android:id="@+id/nav_audioTest"
             android:checkable="false"
-            android:icon="@drawable/earphones_icon"
+            android:icon="@drawable/earphones_icon_small"
             android:title="@string/title_activity_main3" />
         <item
             android:id="@+id/nav_info"
             android:checkable="false"
-            android:icon="@drawable/document_icon"
-            android:title="Informacje o programie" />
+            android:icon="@drawable/document_icon_small"
+            android:title="@string/app_info" />
         <item
             android:id="@+id/nav_exit"
             android:checkable="false"
-            android:icon="@drawable/close_icon"
-            android:title="Zamknij" />
+            android:icon="@drawable/close_icon_small"
+            android:title="@string/close" />
     </group>
 
 </menu>

@@ -2,6 +2,11 @@ package com.tomek.audiometr.helpers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.ColorRes;
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.view.MenuItem;
 
 import com.tomek.audiometr.R;
 import com.tomek.audiometr.activities.CalibrationActivity;

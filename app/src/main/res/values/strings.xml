@@ -60,6 +60,9 @@ Celem programu jest wyznaczenie orientacyjnego audiogramu, zatem wyniki mogą r�
     <string name="extended_test">Badanie rozszerzone</string>
     <string name="basic_test1">Obejmuje test w podstawowym zakresie 9 częstotliwości: 125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000 Hz. Badanie trwa maksymalnie 3 minuty.</string>
     <string name="extended_test1">Obejmuje test w rozszerzonym zakresie 22 częstotliwości i pozwala na dokładniejszy wynik. Badanie trwa maksymalnie 7 minut.</string>
+    <string name="start">Start</string>
+    <string name="app_info">Informacje o programie</string>
+    <string name="close">Zamknij</string>
 
 
 </resources>
