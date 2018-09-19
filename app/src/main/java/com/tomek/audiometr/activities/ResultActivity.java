@@ -1,15 +1,12 @@
 package com.tomek.audiometr.activities;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.tomek.audiometr.R;
+import com.tomek.audiometr.algorithms.Files;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -26,11 +24,6 @@ import org.achartengine.model.XYSeries;
 import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -41,6 +34,8 @@ public class ResultActivity extends Activity {
     private double decibelsLimit;
     private double frequencyLimitMin;
     private double frequencyLimitMax;
+
+    private String path;
 
     private LinearLayout chartLayout;
     private ImageView imageViewBackground;
@@ -56,8 +51,9 @@ public class ResultActivity extends Activity {
 
     private Vibrator vibe;
 
+    private Files file;
 
-    private void drawChart() {
+    private void separateByChannels(){
 
         if (seriesR != null || seriesL != null) {
             seriesR.clearSeriesValues();
@@ -74,6 +70,9 @@ public class ResultActivity extends Activity {
                 seriesL.add(xAxis.get(i), yAxis.get(i));
             }
         }
+    }
+
+    private void drawChart() {
 
         XYSeriesRenderer rendererR = new XYSeriesRenderer();
         rendererR.setLineWidth(5);
@@ -132,56 +131,10 @@ public class ResultActivity extends Activity {
     public void saveResult(View view) {
         vibe.vibrate(50);
         Date currentTime = Calendar.getInstance().getTime();
-        saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv");
-    }
+        path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv",xAxis,yAxis,channels,getApplicationContext());
 
-    private void saveFile(String folder, String fileName) {
-
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-        }
-
-        String string = new String();
-        string = "Frequency [Hz]" + "\t" + "Decibels [dB]" + "\t" + "Ear" + "\n";
-        File root = android.os.Environment.getExternalStorageDirectory();
-        File dir = new File(root.getAbsolutePath() + folder);
-        dir.mkdirs();
-        File file = new File(dir, fileName);
-
-        String path = file.getAbsolutePath();
-        Log.i("test", "FILE LOCATION: " + path);
-
-
-        try {
-            FileOutputStream f = new FileOutputStream(file);
-            PrintWriter pw = new PrintWriter(f);
-
-
-            for (int i = 0; i < xAxis.size(); i++) {
-                string = string + xAxis.get(i).toString() + "\t" + yAxis.get(i).toString() + "\t" + channels.get(i).toString() + "\n";
-            }
-
-            pw.print(string);
-
-            pw.flush();
-            pw.close();
-            f.close();
-
-
-            Toast.makeText(getApplicationContext(), "Zapisano w: " + path,
-                    Toast.LENGTH_LONG).show();
-
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            Log.i("My", "File not found. Did you" +
-                    " add a WRITE_EXTERNAL_STORAGE permission to the manifest?");
-
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Toast.makeText(getApplicationContext(), "Zapisano w: " + path,
+                Toast.LENGTH_LONG).show();
     }
 
 
@@ -207,6 +160,9 @@ public class ResultActivity extends Activity {
         decibelsLimit = -1 * (double) getIntent().getSerializableExtra("decibelsLimit");
         frequencyLimitMin = (double) getIntent().getSerializableExtra("frequencyLimitMin");
         frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
+
+        separateByChannels();
+        file = new Files();
 
         imageViewBackground = findViewById(R.id.iv_resultBackground);
         imageViewBackground.setImageResource(R.drawable.wall4);

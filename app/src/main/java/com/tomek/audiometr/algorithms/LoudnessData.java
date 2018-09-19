@@ -44,7 +44,7 @@ public class LoudnessData {
     }
 
     public ArrayList<Double> find(Double maxDecibels) {
-        ArrayList<Double> temporary = new ArrayList<>();
+        ArrayList<Double> maxDecibelsData = new ArrayList<>();
 
         double myDecibels = maxDecibels;
         double distance = Math.abs(table[0][0] - maxDecibels);
@@ -61,10 +61,10 @@ public class LoudnessData {
 
         Log.e("test", "Found closest decibels in dataTable = " + decibelsInTable + "IndexOfMaxDecibels = " + indexOfMaxDecibels);
 
-        temporary.add(decibelsInTable);
-        temporary.add((double) indexOfMaxDecibels);
+        maxDecibelsData.add(decibelsInTable);
+        maxDecibelsData.add((double) indexOfMaxDecibels);
 
-        return temporary;
+        return maxDecibelsData;
     }
 
 

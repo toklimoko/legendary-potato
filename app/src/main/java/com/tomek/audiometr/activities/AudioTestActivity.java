@@ -2,7 +2,6 @@ package com.tomek.audiometr.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -25,16 +24,11 @@ import com.tomek.audiometr.helpers.Drawer;
 import com.tomek.audiometr.helpers.Preferences;
 import com.tomek.audiometr.helpers.VolumeController;
 import com.tomek.audiometr.algorithms.Play;
-import com.tomek.audiometr.popups.PopUpAppInfo;
 import com.tomek.audiometr.popups.PopUpAudioTest;
 import com.tomek.audiometr.R;
 import com.tomek.audiometr.algorithms.Sample;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Random;
 
 public class AudioTestActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -56,8 +50,6 @@ public class AudioTestActivity extends AppCompatActivity
     private boolean stop = false;
     private boolean endOfTest = false;
 
-//    private AudioManager audioManager;
-
     private ImageButton buttonStart;
     private ImageButton buttonHeard;
     private ImageButton buttonCancel;
@@ -76,7 +68,6 @@ public class AudioTestActivity extends AppCompatActivity
     private Thread playThread;
     private Play play;
 
-    private Random randomGenerator;
     private Sample sample;
     private VolumeController volumeController;
 
@@ -85,10 +76,12 @@ public class AudioTestActivity extends AppCompatActivity
     private ArrayList<Sample> samplesList;
     private ArrayList<String> newSample;
 
+    private ArrayList<Double> maxDecibelsData;
+
     private ArrayList<Double> xAxis;
     private ArrayList<Double> yAxis;
     private ArrayList<String> channels;
-    
+
     private Double[][] dataTable;
     private LoudnessData loudnessData;
     private Preferences preferences;
@@ -292,7 +285,7 @@ public class AudioTestActivity extends AppCompatActivity
         buttonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chosenFrequencies = frequenciesData.random(numberOfFrequencies,allFrequencies);
+
                 playButtonAction();
             }
         });
@@ -302,7 +295,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     private void playButtonAction() {
         Log.e("test", "AudioTestActivity: playButtonAction() --before");
-
+        chosenFrequencies = frequenciesData.random(numberOfFrequencies,allFrequencies);
         vibe.vibrate(50);
         stop = false;
         endOfTest = false;
@@ -311,12 +304,9 @@ public class AudioTestActivity extends AppCompatActivity
         volumeController.setMax();
         resetValues();
         maxDecibels = preferences.loadDecibels(getApplicationContext());
-
-        ArrayList<Double> temporary = new ArrayList<>();
-        temporary = loudnessData.find(maxDecibels);
-
-        decibelsInTable = temporary.get(0);
-        indexOfMaxDecibels = temporary.get(1);
+        maxDecibelsData = loudnessData.find(maxDecibels);
+        decibelsInTable = maxDecibelsData.get(0);
+        indexOfMaxDecibels = maxDecibelsData.get(1);
         getNewSample();
         playAsync();
 
@@ -396,7 +386,12 @@ public class AudioTestActivity extends AppCompatActivity
 
         vibe.vibrate(50);
         endOfTest = true;
-        showResultMode();
+        runOnUiThread(new Runnable() { //fixes e "Only the original thread that created a view hierarchy can touch its views."
+            @Override
+            public void run() {
+                showResultMode();
+            }
+        });
         showResult();
 
         Log.e("test", "AudioTestActivity: resultButtonAction() --after");
@@ -436,13 +431,14 @@ public class AudioTestActivity extends AppCompatActivity
         if (stop) {
             stop = false;
         }
-        try {
-            playThread.interrupt();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (playThread != null) {
+            try {
+                playThread.interrupt();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         volumeController.setMin();
-
         play = null;
     }
 

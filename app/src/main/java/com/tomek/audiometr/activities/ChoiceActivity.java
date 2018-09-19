@@ -154,7 +154,7 @@ public class ChoiceActivity extends AppCompatActivity
 
         initGoButton();
         initHelpButton();
-        allFrequencies = frequenciesData.extendedAudioTest();
+        allFrequencies = frequenciesData.basicAudioTest();
     }
 
     @Override
