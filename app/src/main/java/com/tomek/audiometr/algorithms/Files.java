@@ -23,12 +23,11 @@ public class Files {
     public Files() {
     }
 
-    public String saveFile(String folder, String fileName, ArrayList<Double> xAxis, ArrayList<Double> yAxis, ArrayList<String> channels, Context context) {
+    public String saveFile(String folder, String fileName, ArrayList<Double> xAxis, ArrayList<Double> yAxis, ArrayList<String> channels, Context context, Activity activity) {
 
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
 
         String string = new String();

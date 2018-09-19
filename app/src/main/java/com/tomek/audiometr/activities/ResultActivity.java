@@ -1,12 +1,15 @@
 package com.tomek.audiometr.activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -131,7 +134,7 @@ public class ResultActivity extends Activity {
     public void saveResult(View view) {
         vibe.vibrate(50);
         Date currentTime = Calendar.getInstance().getTime();
-        path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv",xAxis,yAxis,channels,getApplicationContext());
+        path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv",xAxis,yAxis,channels,getApplicationContext(), this);
 
         Toast.makeText(getApplicationContext(), "Zapisano w: " + path,
                 Toast.LENGTH_LONG).show();

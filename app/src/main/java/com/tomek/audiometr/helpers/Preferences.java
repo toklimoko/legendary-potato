@@ -16,7 +16,7 @@ public class Preferences {
 
 
     private double maxDecibels;
-    private double defMaxDecibels = 0.0;
+    private double defMaxDecibels = 75;
 
     public Preferences() {
     }

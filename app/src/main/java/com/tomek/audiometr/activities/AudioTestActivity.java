@@ -46,7 +46,6 @@ public class AudioTestActivity extends AppCompatActivity
     private double indexOfMaxDecibels = 0;
     private int level = 0;
     private int index = 0;
-    private int newFrequency;
     private boolean stop = false;
     private boolean endOfTest = false;
 
