@@ -68,8 +68,7 @@
                 android:text="@string/basic_test"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -79,7 +78,7 @@
                 android:text="@string/basic_test1"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -89,8 +88,7 @@
                 android:text="@string/extended_test"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView9"
@@ -100,7 +98,7 @@
                 android:text="@string/extended_test1"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -110,8 +108,7 @@
                 android:text="@string/tv_test5"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView14"
@@ -121,7 +118,7 @@
                 android:text="@string/txtWarning"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
         </LinearLayout>
 
     </ScrollView>

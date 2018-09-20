@@ -69,8 +69,7 @@
                 android:text="@string/txtUseOfCalibrationQ"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView7"
@@ -80,7 +79,7 @@
                 android:text="@string/txtUseOfCalibration"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
 
             <TextView
                 android:id="@+id/textView8"
@@ -90,8 +89,7 @@
                 android:text="@string/tv_calib3"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/textView9"
@@ -101,7 +99,7 @@
                 android:text="@string/tv_calib4"
                 android:textAlignment="center"
                 android:textColor="@color/lightText"
-                android:textSize="18sp" />
+                android:textSize="17sp" />
         </LinearLayout>
 
     </ScrollView>
