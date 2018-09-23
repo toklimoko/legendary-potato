@@ -6,6 +6,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +28,7 @@ import com.tomek.audiometr.algorithms.Play;
 import com.tomek.audiometr.popups.PopUpAudioTest;
 import com.tomek.audiometr.R;
 import com.tomek.audiometr.algorithms.Sample;
+import com.tomek.audiometr.popups.PopUpChoice;
 
 import java.util.ArrayList;
 
@@ -53,7 +55,6 @@ public class AudioTestActivity extends AppCompatActivity
     private ImageButton buttonHeard;
     private ImageButton buttonCancel;
     private ImageButton buttonResult;
-    private ImageButton buttonHelp;
 
     private TextView textViewStart;
     private TextView textViewHeard;
@@ -62,6 +63,9 @@ public class AudioTestActivity extends AppCompatActivity
     private TextView textViewAudioTest;
 
     private TableLayout tableLayout;
+    private DrawerLayout drawer;
+
+    private Intent intent;
 
     private Vibrator vibe;
     private Thread playThread;
@@ -396,30 +400,16 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: resultButtonAction() --after");
     }
 
-    private void initHelpButton() {
-        Log.e("test", "AudioTestActivity: initHelpButton() --before");
-
-        buttonHelp = findViewById(R.id.btn_help);
-        buttonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helpButtonAction();
-            }
-        });
-
-        Log.e("test", "AudioTestActivity: initHelpButton() --after");
-    }
-
-    private void helpButtonAction() {
-        Log.e("test", "AudioTestActivity: helpButtonAction() --before");
-
+    public void helpButton(View v){
         vibe.vibrate(50);
-        Intent intentInfo = new Intent(this, PopUpAudioTest.class);
-        startActivity(intentInfo);
-
-        Log.e("test", "AudioTestActivity: helpButtonAction() --after");
+        intent = new Intent(this, PopUpAudioTest.class);
+        startActivity(intent);
     }
 
+    public void drawerButton(View v){
+        vibe.vibrate(50);
+        drawer.openDrawer(Gravity.START);
+    }
 
     @Override
     protected void onPause() {
@@ -448,7 +438,7 @@ public class AudioTestActivity extends AppCompatActivity
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
@@ -485,7 +475,6 @@ public class AudioTestActivity extends AppCompatActivity
         initStopSoundButton();
         initCancelButton();
         initResultButton();
-        initHelpButton();
 
         showStartMode();
 
@@ -513,6 +502,8 @@ public class AudioTestActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+        vibe.vibrate(50);
         int id = item.getItemId();
 
         Drawer drawer = new Drawer();

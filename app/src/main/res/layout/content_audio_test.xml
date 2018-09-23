@@ -29,11 +29,26 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:background="@color/popUp"
+        android:onClick="helpButton"
         android:scaleType="fitXY"
         android:tint="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/help_icon" />
+
+    <ImageButton
+        android:id="@+id/btn_drawer"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="21dp"
+        android:layout_marginTop="21dp"
+        android:background="@color/popUp"
+        android:onClick="drawerButton"
+        android:scaleType="fitXY"
+        android:tint="@color/colorAccent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/drawer_icon" />
 
     <FrameLayout
         android:id="@+id/frameBeginButton"

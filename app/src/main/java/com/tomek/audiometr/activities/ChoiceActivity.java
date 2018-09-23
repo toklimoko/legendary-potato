@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -36,7 +38,8 @@ public class ChoiceActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ImageButton buttonGo;
-    private ImageButton buttonHelp;
+
+    private DrawerLayout drawer;
 
     private RadioGroup radioGroup;
     private RadioButton radioButtonBasic;
@@ -102,30 +105,16 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: goButtonAction() --after");
     }
 
-    private void initHelpButton() {
-        Log.e("test", "ChoiceActivity: initHelpButton() --before");
-
-        buttonHelp = findViewById(R.id.btn_help);
-        buttonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helpButtonAction();
-            }
-        });
-
-        Log.e("test", "ChoiceActivity: initHelpButton() --after");
-    }
-
-    private void helpButtonAction() {
-        Log.e("test", "ChoiceActivity: helpButtonAction() --before");
-
+    public void helpButton(View v){
         vibe.vibrate(50);
         intent = new Intent(this, PopUpChoice.class);
         startActivity(intent);
-
-        Log.e("test", "ChoiceActivity: helpButtonAction() --after");
     }
 
+    public void drawerButton(View v){
+        vibe.vibrate(50);
+        drawer.openDrawer(Gravity.START);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,7 +123,7 @@ public class ChoiceActivity extends AppCompatActivity
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
@@ -153,7 +142,6 @@ public class ChoiceActivity extends AppCompatActivity
         preferences = new Preferences();
 
         initGoButton();
-        initHelpButton();
         allFrequencies = frequenciesData.basicAudioTest();
     }
 
@@ -171,6 +159,7 @@ public class ChoiceActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        vibe.vibrate(50);
         int id = item.getItemId();
 
         Drawer drawer = new Drawer();

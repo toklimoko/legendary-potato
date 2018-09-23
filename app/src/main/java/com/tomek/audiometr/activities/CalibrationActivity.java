@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -39,7 +40,9 @@ public class CalibrationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private ImageButton btnCalibration;
-    private ImageButton buttonHelp;
+    private DrawerLayout drawer;
+
+
     private Toast toast;
     private Toast toastEnd;
     private Vibrator vibe;
@@ -68,7 +71,7 @@ public class CalibrationActivity extends AppCompatActivity
 
         public void run() {
             if (play != null) {
-                list = loudnessData.add(mRecorder,referenceAmp,list);
+                list = loudnessData.add(mRecorder, referenceAmp, list);
             }
         }
     };
@@ -113,7 +116,7 @@ public class CalibrationActivity extends AppCompatActivity
             recordThread = new Thread() {
                 public void run() {
 
-                    mRecorder = record.start(mRecorder,audioManager);
+                    mRecorder = record.start(mRecorder, audioManager);
 
                     while (recordThread != null) {
                         if (play != null) {
@@ -172,20 +175,15 @@ public class CalibrationActivity extends AppCompatActivity
         toast.show();
     }
 
-    private void initHelpButton() {
-        buttonHelp = findViewById(R.id.btn_help_cal);
-        buttonHelp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                helpButtonAction();
-            }
-        });
-    }
-
-    private void helpButtonAction() {
+    public void helpButton(View v) {
         vibe.vibrate(50);
         Intent intentInfo = new Intent(this, PopUpCalibration.class);
         startActivity(intentInfo);
+    }
+
+    public void drawerButton(View v){
+        vibe.vibrate(50);
+        drawer.openDrawer(Gravity.START);
     }
 
     @Override
@@ -195,7 +193,7 @@ public class CalibrationActivity extends AppCompatActivity
 //        Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
 //
-//        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        drawer = findViewById(R.id.drawer_layout);
 //        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
 //                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 //        drawer.addDrawerListener(toggle);
@@ -226,7 +224,6 @@ public class CalibrationActivity extends AppCompatActivity
 
 
         initCalibrateButton();
-        initHelpButton();
 
         loudnessData = new LoudnessData();
         record = new Record();
@@ -249,10 +246,13 @@ public class CalibrationActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+
+        vibe.vibrate(50);
+
         int id = item.getItemId();
 
         Drawer drawer = new Drawer();
-        Intent intent = drawer.action(id, getApplicationContext(),volumeController);
+        Intent intent = drawer.action(id, getApplicationContext(), volumeController);
         startActivity(intent);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
