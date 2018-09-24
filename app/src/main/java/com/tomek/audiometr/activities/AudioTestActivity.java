@@ -28,7 +28,7 @@ import com.tomek.audiometr.algorithms.Play;
 import com.tomek.audiometr.popups.PopUpAudioTest;
 import com.tomek.audiometr.R;
 import com.tomek.audiometr.algorithms.Sample;
-import com.tomek.audiometr.popups.PopUpChoice;
+
 
 import java.util.ArrayList;
 
@@ -49,7 +49,6 @@ public class AudioTestActivity extends AppCompatActivity
     private int level = 0;
     private int index = 0;
     private boolean stop = false;
-    private boolean endOfTest = false;
 
     private ImageButton buttonStart;
     private ImageButton buttonHeard;
@@ -91,8 +90,6 @@ public class AudioTestActivity extends AppCompatActivity
     private FrequenciesData frequenciesData;
 
 
-
-
     private void getNewSample() {
         Log.e("test", "AudioTestActivity: getNewSample() --before");
 
@@ -116,11 +113,11 @@ public class AudioTestActivity extends AppCompatActivity
         }
     }
 
-    private double getAmplitude(int level){
+    private double getAmplitude(int level) {
 
         index = (int) indexOfMaxDecibels + level;
         amplitude = dataTable[index][1];
-        decibels = dataTable[index][0]-decibelsInTable;
+        decibels = dataTable[index][0] - decibelsInTable;
 
         Log.e("test", "Frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
 
@@ -186,7 +183,6 @@ public class AudioTestActivity extends AppCompatActivity
 
         Log.e("test", "AudioTestActivity: hardResetValues() --after");
     }
-
 
 
     private void showStartMode() {
@@ -255,21 +251,11 @@ public class AudioTestActivity extends AppCompatActivity
 
                     level++;
 
-                    Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude +"\t level = " + level);
+                    Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
 
-                    if (index > (dataTable.length-1) || level > 9 ) {
-                        addPoint();
-
-                        if (endOfTest) {
-                            hardResetValues();
-                            Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: hardResetValue() called");
-                        } else {
-                            resetValues();
-                            getNewSample();
-                            playAsync();
-
-                            Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
-                        }
+                    if (index > (dataTable.length - 1) || level > 9) {
+                        addAndPlayNew();
+                        Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
                         break;
                     }
                 }
@@ -298,12 +284,10 @@ public class AudioTestActivity extends AppCompatActivity
 
     private void playButtonAction() {
         Log.e("test", "AudioTestActivity: playButtonAction() --before");
-        chosenFrequencies = frequenciesData.random(numberOfFrequencies,allFrequencies);
+        chosenFrequencies = frequenciesData.random(numberOfFrequencies, allFrequencies);
         vibe.vibrate(50);
         stop = false;
-        endOfTest = false;
         showAudioTestMode();
-        onPause(); // po jaką cholerę
         volumeController.setMax();
         resetValues();
         maxDecibels = preferences.loadDecibels(getApplicationContext());
@@ -335,13 +319,22 @@ public class AudioTestActivity extends AppCompatActivity
 
         vibe.vibrate(50);
         stop = true;
+        playThread.interrupt();
+        play.release();
+        play = null;
+        addAndPlayNew();
+        Log.e("test", "Play thread replayed");
+
+
+        Log.e("test", "AudioTestActivity: stopButtonAction() --after");
+    }
+
+    private void addAndPlayNew(){
         addPoint();
         resetValues();
         getNewSample();
         volumeController.setMax();
         playAsync();
-
-        Log.e("test", "AudioTestActivity: stopButtonAction() --after");
     }
 
     private void initCancelButton() {
@@ -388,7 +381,6 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: resultButtonAction() --before");
 
         vibe.vibrate(50);
-        endOfTest = true;
         runOnUiThread(new Runnable() { //fixes e "Only the original thread that created a view hierarchy can touch its views."
             @Override
             public void run() {
@@ -400,13 +392,13 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: resultButtonAction() --after");
     }
 
-    public void helpButton(View v){
+    public void helpButton(View v) {
         vibe.vibrate(50);
         intent = new Intent(this, PopUpAudioTest.class);
         startActivity(intent);
     }
 
-    public void drawerButton(View v){
+    public void drawerButton(View v) {
         vibe.vibrate(50);
         drawer.openDrawer(Gravity.START);
     }
@@ -507,7 +499,7 @@ public class AudioTestActivity extends AppCompatActivity
         int id = item.getItemId();
 
         Drawer drawer = new Drawer();
-        Intent intent = drawer.action(id, getApplicationContext(),volumeController);
+        Intent intent = drawer.action(id, getApplicationContext(), volumeController);
         startActivity(intent);
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
