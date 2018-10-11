@@ -233,13 +233,14 @@ public class AudioTestActivity extends AppCompatActivity
             return;
         }
 
-        amplitude = 0.0;
-        level = 0;
-        index = 0;
 
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
+
+                amplitude = 0.0;
+                level = 0;
+                index = 0;
 
                 // play the loop until the thread is interrupted or condition is met
                 while (!Thread.currentThread().isInterrupted()) {
@@ -253,7 +254,7 @@ public class AudioTestActivity extends AppCompatActivity
 
                     Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
 
-                    if (index > (dataTable.length - 1) || level > 9) {
+                    if (index > (dataTable.length - 1) || level > 9 || amplitude == 1) {
                         addAndPlayNew();
                         Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
                         break;
@@ -320,7 +321,9 @@ public class AudioTestActivity extends AppCompatActivity
         vibe.vibrate(50);
         stop = true;
         playThread.interrupt();
-        play.release();
+        if (play != null){
+            play.release();
+        }
         play = null;
         addAndPlayNew();
         Log.e("test", "Play thread replayed");

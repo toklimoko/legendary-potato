@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 
+import com.tomek.audiometr.dialogs.Dialog;
 import com.tomek.audiometr.helpers.Drawer;
 import com.tomek.audiometr.helpers.Preferences;
 import com.tomek.audiometr.helpers.VolumeController;
@@ -61,9 +63,22 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void choiceButtonAction() {
-        Intent intentBad = new Intent(MainActivity.this, ChoiceActivity.class);
-        intentBad.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intentBad);
+
+        Intent intent;
+
+        boolean calibrated = preferences.loadCalibrated(getApplicationContext());
+
+        Log.e("boolean calibrated", String.valueOf(calibrated));
+
+
+        if (calibrated) {
+            intent = new Intent(this, ChoiceActivity.class);
+        } else {
+            intent = new Intent(this, Dialog.class);
+        }
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
         vibe.vibrate(50);
     }
 

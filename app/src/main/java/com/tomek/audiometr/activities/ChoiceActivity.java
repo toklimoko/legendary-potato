@@ -86,18 +86,9 @@ public class ChoiceActivity extends AppCompatActivity
         Log.e("test", "ChoiceActivity: goButtonAction() --before");
 
         vibe.vibrate(50);
-
-        boolean calibrated = preferences.loadCalibrated(getApplicationContext());
-
-        Log.e("boolean calibrated", String.valueOf(calibrated));
-
         preferences.saveFrequencies("allFrequencies", allFrequencies, getApplicationContext());
 
-        if (calibrated) {
-            intent = new Intent(this, AudioTestActivity.class);
-        } else {
-            intent = new Intent(this, Dialog.class);
-        }
+        intent = new Intent(this, AudioTestActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
