@@ -66,16 +66,19 @@ public class MainActivity extends AppCompatActivity
 
         Intent intent;
 
-        boolean calibrated = preferences.loadCalibrated(getApplicationContext());
+        // CALIBRATION CHECK - WORKING
+//        boolean calibrated = preferences.loadCalibrated(getApplicationContext());
+//
+//        Log.e("boolean calibrated", String.valueOf(calibrated));
+//
+//
+//        if (calibrated) {
+//            intent = new Intent(this, ChoiceActivity.class);
+//        } else {
+//            intent = new Intent(this, Dialog.class);
+//        }
 
-        Log.e("boolean calibrated", String.valueOf(calibrated));
-
-
-        if (calibrated) {
-            intent = new Intent(this, ChoiceActivity.class);
-        } else {
-            intent = new Intent(this, Dialog.class);
-        }
+        intent = new Intent(this, ChoiceActivity.class);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

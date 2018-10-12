@@ -26,9 +26,11 @@ public class Play {
         this.amplitude = amplitude;
         this.duration = duration * 44100; //44100 bits per 1 second
         this.channel = channel;
+
+        init();
     }
 
-    public void playSound() {
+    private void init() {
         int mBufferSize = AudioTrack.getMinBufferSize(44100,
                 AudioFormat.CHANNEL_OUT_MONO,
                 AudioFormat.ENCODING_PCM_8BIT);
@@ -36,6 +38,10 @@ public class Play {
         mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 44100,
                 AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT,
                 mBufferSize, AudioTrack.MODE_STREAM);
+    }
+
+
+    public void playSound() {
 
         double[] mSound = new double[duration];
         short[] mBuffer = new short[duration];
@@ -64,12 +70,14 @@ public class Play {
 
         mAudioTrack.write(mBuffer, 0, mSound.length);
 
-        try {
-            mAudioTrack.stop();
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-        }
-        mAudioTrack.release();
+//        try {
+//            mAudioTrack.stop();
+//        } catch (IllegalStateException e) {
+//            e.printStackTrace();
+//        }
+//
+//        mAudioTrack.release();
+        release();
     }
 
     public void release() {

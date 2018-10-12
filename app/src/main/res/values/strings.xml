@@ -12,7 +12,7 @@
     <string name="txtAboutAudioTestQ">Jak wykonać badanie?</string>
 
     <string name="title_activity_main2">Kalibracja</string>
-    <string name="title_activity_main3">Badanie</string>
+    <string name="title_activity_main3">Wykonaj badanie</string>
     <string name="calText1">1. Udaj się w ciche miejsce</string>
     <string name="calText2">2. Podłącz słuchawki \n (nie zakładaj ich!)</string>
     <string name="calText3">3. Przyłóż jedną słuchawkę do mikrofonu urządzenia (jeśli słuchawki mają własny mikrofon, to przyłóż do niego)</string>
@@ -33,7 +33,7 @@ Celem aplikacji jest umożliwienie wyznaczenia orientacyjnego audiogramu, a wyni
     <string name="result">Wynik badania</string>
     <string name="author">Autor: Tomasz Klimek</string>
     <string name="eMail">E-mail: toklimoko@gmail.com</string>
-    <string name="version">Wersja: 092018_2</string>
+    <string name="version">Wersja: 102018_1</string>
     <string name="tv_audioTest_1">Aby rozpocząć badanie: </string>
     <string name="tv_audioTest_11">1. Udaj się w ciche miejsce</string>
     <string name="tv_audioTest_12">2. Załóż poprawnie słuchawki</string>

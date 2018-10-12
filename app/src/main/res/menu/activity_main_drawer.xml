@@ -16,7 +16,8 @@
             android:id="@+id/nav_calibration"
             android:checkable="false"
             android:icon="@drawable/calibration_icon_small"
-            android:title="@string/txtCalibration" />
+            android:title="@string/txtCalibration"
+            android:visible="false" />
         <item
             android:id="@+id/nav_audioTest"
             android:checkable="false"

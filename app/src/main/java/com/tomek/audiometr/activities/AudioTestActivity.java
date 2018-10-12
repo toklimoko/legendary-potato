@@ -43,7 +43,8 @@ public class AudioTestActivity extends AppCompatActivity
     private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
     private double frequencyLimitMin = 0;
     private double frequencyLimitMax = 18000;
-    private double maxDecibels = 40.0;
+    private double maxDecibels = -100.0;
+    private double maxLevel = 18;
     private double decibelsInTable = 0.0;
     private double indexOfMaxDecibels = 0;
     private int level = 0;
@@ -108,7 +109,7 @@ public class AudioTestActivity extends AppCompatActivity
 
         } else {
             Log.e("test", "AudioTestActivity: getNewSample() --after // msg: newSample is null = all attempts made");
-
+            playThread.interrupt();
             resultButtonAction();
         }
     }
@@ -233,7 +234,6 @@ public class AudioTestActivity extends AppCompatActivity
             return;
         }
 
-
         playThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -254,8 +254,11 @@ public class AudioTestActivity extends AppCompatActivity
 
                     Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
 
-                    if (index > (dataTable.length - 1) || level > 9 || amplitude == 1) {
+                    if (index > (dataTable.length - 1) || level > maxLevel || amplitude == 1) {
+                        playThread.interrupt();
                         addAndPlayNew();
+                            Log.e("test","playThread interrupted in if in while loop ");
+
                         Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
                         break;
                     }
@@ -291,7 +294,7 @@ public class AudioTestActivity extends AppCompatActivity
         showAudioTestMode();
         volumeController.setMax();
         resetValues();
-        maxDecibels = preferences.loadDecibels(getApplicationContext());
+//        maxDecibels = preferences.loadDecibels(getApplicationContext());
         maxDecibelsData = loudnessData.find(maxDecibels);
         decibelsInTable = maxDecibelsData.get(0);
         indexOfMaxDecibels = maxDecibelsData.get(1);
@@ -320,11 +323,11 @@ public class AudioTestActivity extends AppCompatActivity
 
         vibe.vibrate(50);
         stop = true;
-        playThread.interrupt();
         if (play != null){
+            playThread.interrupt();
             play.release();
+            play = null;
         }
-        play = null;
         addAndPlayNew();
         Log.e("test", "Play thread replayed");
 
@@ -359,9 +362,13 @@ public class AudioTestActivity extends AppCompatActivity
 
         vibe.vibrate(50);
         stop = true;
-        showStartMode();
-        onPause();
-        hardResetValues();
+//        showStartMode();
+//        onPause();
+//        hardResetValues();
+
+        Intent intent = new Intent(this, ChoiceActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
         Log.e("test", "AudioTestActivity: initCancelButton() --after");
     }
