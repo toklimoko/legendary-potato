@@ -59,6 +59,7 @@ public class ChoiceActivity extends AppCompatActivity
 
 
     public void checkButton(View v) {
+        vibe.vibrate(50);
         if (radioButtonBasic.isChecked()) {
             allFrequencies = frequenciesData.basicAudioTest();
             Log.e("test", "Basic Audio Test has been chosen");

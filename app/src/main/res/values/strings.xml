@@ -38,8 +38,8 @@ Celem aplikacji jest umożliwienie wyznaczenia orientacyjnego audiogramu, a wyni
     <string name="tv_audioTest_11">1. Udaj się w ciche miejsce</string>
     <string name="tv_audioTest_12">2. Załóż poprawnie słuchawki</string>
     <string name="tv_audioTest_13">3. Dotknij poniższy przycisk</string>
-    <string name="tv_audioTest_2">Za każdym razem, gdy usłyszysz dźwięk dotknij \"Słyszę\"</string>
-    <string name="tv_audioTest_3">Koniec badania</string>
+    <string name="tv_audioTest_2">Trwa badanie... \n \n Za każdym razem, gdy usłyszysz ton dotknij \"Słyszę\"</string>
+    <string name="tv_audioTest_3">\n \n Koniec badania</string>
     <string name="tv_calib3">O czym należy pamiętać?</string>
     <string name="tv_calib4">Podczas wykonywania kalibracji należy pamiętać, aby (tak jak całe badanie) odbyła się ona w zacisznym miejscu. Należy trzymać stałą odległość między słuchawką a mikrofonem i unikać stukania. W razie problemów kalibrację można przeprowadzać wielokrotnie.</string>
     <string name="tv_test1">Jak wykonać badanie?</string>
@@ -50,8 +50,8 @@ Celem aplikacji jest umożliwienie wyznaczenia orientacyjnego audiogramu, a wyni
     <string name="go">Dalej</string>
     <string name="tv_basicTest">Badanie podstawowe</string>
     <string name="tv_extendedTest">Badanie rozszerzone</string>
-    <string name="tv_basicTestTime">Czas trwania: do 3 min</string>
-    <string name="tv_extendedTestTime">Czas trwania: do 7 min</string>
+    <string name="tv_basicTestTime">Czas trwania: do 5 min</string>
+    <string name="tv_extendedTestTime">Czas trwania: do 13 min</string>
     <string name="calibrate">Kalibruj</string>
     <string name="save">Zapisz</string>
     <string name="dialogQuestion">Przed wykonaniem badania zaleca się kalibrację urządzenia!</string>

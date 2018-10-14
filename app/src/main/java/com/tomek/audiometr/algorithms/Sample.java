@@ -20,6 +20,8 @@ public class Sample {
 
     public ArrayList<Sample> samplesList = new ArrayList<>();
     public ArrayList<String> sampleData = new ArrayList<>();
+    public ArrayList<Integer> frequenciesList = new ArrayList<>();
+    public ArrayList<String> channelsList = new ArrayList<>();
 
     private Random randomGenerator;
     private Sample temporarySample;
@@ -111,6 +113,8 @@ public class Sample {
         samplesList.add(temporarySample);
         sampleData.add(String.valueOf(newFrequency));
         sampleData.add(newChannel);
+        frequenciesList.add(newFrequency);
+        channelsList.add(newChannel);
 
         Log.e("test", "Sample: addToLists() --after");
         return sampleData;
@@ -166,12 +170,20 @@ public class Sample {
         return samplesList;
     }
 
+    public ArrayList<Integer> getFrequenciesList(){
+        return frequenciesList;
+    }
+
+    public ArrayList<String> getChannelsList(){
+        return channelsList;
+    }
+
     public void setSamplesList(ArrayList<Sample> samplesList) {
         this.samplesList = samplesList;
     }
 
     @Override
     public String toString() {
-        return frequency + '\'' + channel;
+        return "\n" + frequency + "\t" + channel;
     }
 }

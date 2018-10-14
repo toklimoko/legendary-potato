@@ -50,6 +50,8 @@ public class AudioTestActivity extends AppCompatActivity
     private int level = 0;
     private int index = 0;
     private boolean stop = false;
+    private boolean saving = false;
+    private boolean stopAlgorithm = false;
 
     private ImageButton buttonStart;
     private ImageButton buttonHeard;
@@ -69,6 +71,8 @@ public class AudioTestActivity extends AppCompatActivity
 
     private Vibrator vibe;
     private Thread playThread;
+    private Thread algorithmThread;
+    private Thread savingThread;
     private Play play;
 
     private Sample sample;
@@ -77,7 +81,6 @@ public class AudioTestActivity extends AppCompatActivity
     private ArrayList<Integer> allFrequencies;
     private ArrayList<Integer> chosenFrequencies;
     private ArrayList<Sample> samplesList;
-    private ArrayList<String> newSample;
 
     private ArrayList<Double> maxDecibelsData;
 
@@ -90,37 +93,13 @@ public class AudioTestActivity extends AppCompatActivity
     private Preferences preferences;
     private FrequenciesData frequenciesData;
 
-
-    private void getNewSample() {
-        Log.e("test", "AudioTestActivity: getNewSample() --before");
-
-        if (newSample != null) {
-            newSample.clear();
-        }
-        sample.setSamplesList(samplesList);
-        newSample = sample.getNewSample();
-        if (newSample != null) {
-            frequency = Double.parseDouble(newSample.get(0));
-            channel = newSample.get(1);
-            samplesList = sample.getSamplesList();
-            stop = false;
-
-            Log.e("test", "AudioTestActivity: getNewSample() --after // values: sampleList.size() = " + samplesList.size() + "; received frequency = " + frequency + "; received channel = " + channel);
-
-        } else {
-            Log.e("test", "AudioTestActivity: getNewSample() --after // msg: newSample is null = all attempts made");
-            playThread.interrupt();
-            resultButtonAction();
-        }
-    }
-
     private double getAmplitude(int level) {
 
         index = (int) indexOfMaxDecibels + level;
         amplitude = dataTable[index][1];
         decibels = dataTable[index][0] - decibelsInTable;
 
-        Log.e("test", "Frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
+        Log.e("test", "Channel = " + channel + "\t frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
 
         return amplitude;
     }
@@ -167,13 +146,13 @@ public class AudioTestActivity extends AppCompatActivity
         amplitude = 0.0;
         level = 0;
         index = 0;
-        sample = new Sample(numberOfFrequencies, chosenFrequencies);
+
 
         Log.e("test", "AudioTestActivity: resetValues() --after");
     }
 
-    private void hardResetValues() {
-        Log.e("test", "AudioTestActivity: hardResetValues() --before");
+    private void resetLists() {
+        Log.e("test", "AudioTestActivity: resetLists() --before");
 
         resetValues();
         chosenFrequencies = new ArrayList<>();
@@ -182,7 +161,316 @@ public class AudioTestActivity extends AppCompatActivity
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
 
-        Log.e("test", "AudioTestActivity: hardResetValues() --after");
+        Log.e("test", "AudioTestActivity: resetLists() --after");
+    }
+
+
+    private void playAsync() {
+        Log.e("test", "AudioTestActivity: playAsync() --before");
+
+        if (play != null) {
+            return;
+        }
+
+        playThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                play = new Play(frequency, amplitude, duration, channel);
+                play.playSound();
+                play = null;
+            }
+        });
+        playThread.start();
+
+        Log.e("test", "AudioTestActivity: playAsync() --after");
+    }
+
+
+    private void playAlgorithm() {
+
+        algorithmThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < samplesList.size(); i++) {
+
+                    if (saving) {
+                        try {
+                            savingThread.join();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    frequency = sample.getFrequenciesList().get(i);
+                    channel = sample.getChannelsList().get(i);
+
+                    resetValues();
+
+                    while (!stop) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            break;
+                        }
+                        Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
+                        amplitude = getAmplitude(level);
+                        playAsync();
+
+                        if (playThread != null) {
+                            try {
+                                playThread.join();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        if (index > (dataTable.length - 1) || level > maxLevel || amplitude == 1) {
+                            Log.e("test", "index = " + index + " dataTable.length-1 = " + (dataTable.length - 1) + " level = " + level + " maxLevel = " + maxLevel + " amplitude = " + amplitude);
+                            stopButtonAction();
+                            Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
+                            break;
+                        }
+                        level++;
+                    }
+                    if (stopAlgorithm) {
+                        break;
+                    }
+                }
+                if (!stopAlgorithm) {
+                    resultButtonAction();
+                }
+            }
+        });
+        algorithmThread.start();
+    }
+
+    private void initPlaySoundButton() {
+        Log.e("test", "AudioTestActivity: initPlaySoundButton() --before");
+
+        buttonStart = findViewById(R.id.btn_start);
+        buttonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playButtonAction();
+            }
+        });
+
+        Log.e("test", "AudioTestActivity: initPlaySoundButton() --after");
+    }
+
+    private void playButtonAction() {
+        vibe.vibrate(50);
+        volumeController.setMax();
+        stopAlgorithm = false;
+        showAudioTestMode();
+        playAlgorithm();
+    }
+
+    private void initStopSoundButton() {
+        Log.e("test", "AudioTestActivity: initStopSoundButton() --before");
+
+        buttonHeard = findViewById(R.id.btn_heard);
+        buttonHeard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopButtonAction();
+            }
+        });
+
+        Log.e("test", "AudioTestActivity: initStopSoundButton() --after");
+    }
+
+    private void stopButtonAction() {
+        Log.e("test", "AudioTestActivity: stopButtonAction() --before");
+        stopAndSave();
+        Log.e("test", "AudioTestActivity: stopButtonAction() --after");
+    }
+
+    private void stopAndSave() {
+
+        savingThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                stop = true;
+                saving = true;
+                vibe.vibrate(50);
+
+                if (playThread != null) {
+                    play.release();
+                    playThread.interrupt();
+                    play = null;
+                }
+                addPoint();
+                volumeController.setMax();
+                stop = false;
+                saving = false;
+            }
+        });
+        savingThread.start();
+    }
+
+    private void initAlgorithm() {
+
+        resetLists();
+
+        chosenFrequencies = frequenciesData.random(numberOfFrequencies, allFrequencies);
+        sample = new Sample(numberOfFrequencies, chosenFrequencies);
+        //        maxDecibels = preferences.loadDecibels(getApplicationContext());
+        maxDecibelsData = loudnessData.find(maxDecibels);
+        decibelsInTable = maxDecibelsData.get(0);
+        indexOfMaxDecibels = maxDecibelsData.get(1);
+
+        for (int i = 0; i < chosenFrequencies.size() * 2; i++) {
+            sample.getNewSample();
+        }
+        samplesList = sample.getSamplesList();
+        Log.e("test", "SamplesList: " + samplesList.toString());
+
+    }
+
+    private void initCancelButton() {
+        Log.e("test", "AudioTestActivity: initCancelButton() --before");
+
+        buttonCancel = findViewById(R.id.btn_finish);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                cancelButtonAction();
+            }
+        });
+
+        Log.e("test", "AudioTestActivity: initCancelButton() --after");
+    }
+
+    private void cancelButtonAction() {
+        Log.e("test", "AudioTestActivity: cancelButtonAction() --before");
+
+        vibe.vibrate(50);
+        stop = true;
+        volumeController.setMin();
+        Intent intent = new Intent(this, ChoiceActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+        Log.e("test", "AudioTestActivity: initCancelButton() --after");
+    }
+
+    private void initResultButton() {
+        Log.e("test", "AudioTestActivity: initResultButton() --before");
+
+        buttonResult = findViewById(R.id.btn_result);
+        buttonResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                resultButtonAction();
+            }
+        });
+
+        Log.e("test", "AudioTestActivity: initResultButton() --after");
+    }
+
+    private void resultButtonAction() {
+        Log.e("test", "AudioTestActivity: resultButtonAction() --before");
+
+        vibe.vibrate(50);
+        stopAlgorithm = true;
+        runOnUiThread(new Runnable() { //fixes e "Only the original thread that created a view hierarchy can touch its views."
+            @Override
+            public void run() {
+                showResultMode();
+            }
+        });
+        showResult();
+
+        Log.e("test", "AudioTestActivity: resultButtonAction() --after");
+    }
+
+    public void helpButton(View v) {
+        vibe.vibrate(50);
+        intent = new Intent(this, PopUpAudioTest.class);
+        startActivity(intent);
+    }
+
+    public void drawerButton(View v) {
+        vibe.vibrate(50);
+        drawer.openDrawer(Gravity.START);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (play != null) {
+            play.release();
+        }
+        stop = true;
+        stopAlgorithm = true;
+        try {
+            algorithmThread.interrupt();
+            playThread.interrupt();
+            savingThread.interrupt();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        playThread = null;
+        algorithmThread = null;
+        savingThread = null;
+        volumeController.setMin();
+        play = null;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_audio_test);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+//
+        drawer = findViewById(R.id.drawer_layout);
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.addDrawerListener(toggle);
+//        toggle.syncState();
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+
+        volumeController = new VolumeController((AudioManager) this.getSystemService(Context.AUDIO_SERVICE));
+
+        textViewStart = findViewById(R.id.tv_start);
+        textViewHeard = findViewById(R.id.tv_heard);
+        textViewCancel = findViewById(R.id.tv_back);
+        textViewResult = findViewById(R.id.tv_result);
+        textViewAudioTest = findViewById(R.id.textViewAudioTest);
+        tableLayout = findViewById(R.id.tl_audioTest);
+
+        xAxis = new ArrayList<>();
+        yAxis = new ArrayList<>();
+        channels = new ArrayList<>();
+
+        preferences = new Preferences();
+
+        frequenciesData = new FrequenciesData();
+
+        allFrequencies = preferences.loadFrequencies(getApplicationContext());
+
+        numberOfFrequencies = allFrequencies.size();
+
+        resetLists();
+
+        initPlaySoundButton();
+        initStopSoundButton();
+        initCancelButton();
+        initResultButton();
+
+        showStartMode();
+
+        loudnessData = new LoudnessData();
+        dataTable = loudnessData.make();
+
+        preferences = new Preferences();
+
+        initAlgorithm();
+
+        Log.e("test", "AudioTestActivity: onCreate() // values: allFrequencies.toString() = " + allFrequencies.toString() + "\n numberOfFrequencies = " + numberOfFrequencies);
     }
 
 
@@ -227,267 +515,6 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
 
-    private void playAsync() {
-        Log.e("test", "AudioTestActivity: playAsync() --before");
-
-        if (play != null) {
-            return;
-        }
-
-        playThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                amplitude = 0.0;
-                level = 0;
-                index = 0;
-
-                // play the loop until the thread is interrupted or condition is met
-                while (!Thread.currentThread().isInterrupted()) {
-                    amplitude = getAmplitude(level);
-
-                    play = new Play(frequency, amplitude, duration, channel);
-                    play.playSound();
-                    play = null;
-
-                    level++;
-
-                    Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
-
-                    if (index > (dataTable.length - 1) || level > maxLevel || amplitude == 1) {
-                        playThread.interrupt();
-                        addAndPlayNew();
-                            Log.e("test","playThread interrupted in if in while loop ");
-
-                        Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
-                        break;
-                    }
-                }
-            }
-        });
-        playThread.start();
-
-        Log.e("test", "AudioTestActivity: playAsync() --after");
-    }
-
-
-    private void initPlaySoundButton() {
-        Log.e("test", "AudioTestActivity: initPlaySoundButton() --before");
-
-        buttonStart = findViewById(R.id.btn_start);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                playButtonAction();
-            }
-        });
-
-        Log.e("test", "AudioTestActivity: initPlaySoundButton() --after");
-    }
-
-    private void playButtonAction() {
-        Log.e("test", "AudioTestActivity: playButtonAction() --before");
-        chosenFrequencies = frequenciesData.random(numberOfFrequencies, allFrequencies);
-        vibe.vibrate(50);
-        stop = false;
-        showAudioTestMode();
-        volumeController.setMax();
-        resetValues();
-//        maxDecibels = preferences.loadDecibels(getApplicationContext());
-        maxDecibelsData = loudnessData.find(maxDecibels);
-        decibelsInTable = maxDecibelsData.get(0);
-        indexOfMaxDecibels = maxDecibelsData.get(1);
-        getNewSample();
-        playAsync();
-
-        Log.e("test", "AudioTestActivity: playButtonAction() --after // values: decibelsInTable = " + decibelsInTable + "; indexOfMaxDecibels = " + indexOfMaxDecibels);
-    }
-
-    private void initStopSoundButton() {
-        Log.e("test", "AudioTestActivity: initStopSoundButton() --before");
-
-        buttonHeard = findViewById(R.id.btn_heard);
-        buttonHeard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                stopButtonAction();
-            }
-        });
-
-        Log.e("test", "AudioTestActivity: initStopSoundButton() --after");
-    }
-
-    private void stopButtonAction() {
-        Log.e("test", "AudioTestActivity: stopButtonAction() --before");
-
-        vibe.vibrate(50);
-        stop = true;
-        if (play != null){
-            playThread.interrupt();
-            play.release();
-            play = null;
-        }
-        addAndPlayNew();
-        Log.e("test", "Play thread replayed");
-
-
-        Log.e("test", "AudioTestActivity: stopButtonAction() --after");
-    }
-
-    private void addAndPlayNew(){
-        addPoint();
-        resetValues();
-        getNewSample();
-        volumeController.setMax();
-        playAsync();
-    }
-
-    private void initCancelButton() {
-        Log.e("test", "AudioTestActivity: initCancelButton() --before");
-
-        buttonCancel = findViewById(R.id.btn_finish);
-        buttonCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                cancelButtonAction();
-            }
-        });
-
-        Log.e("test", "AudioTestActivity: initCancelButton() --after");
-    }
-
-    private void cancelButtonAction() {
-        Log.e("test", "AudioTestActivity: cancelButtonAction() --before");
-
-        vibe.vibrate(50);
-        stop = true;
-//        showStartMode();
-//        onPause();
-//        hardResetValues();
-
-        Intent intent = new Intent(this, ChoiceActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-        Log.e("test", "AudioTestActivity: initCancelButton() --after");
-    }
-
-    private void initResultButton() {
-        Log.e("test", "AudioTestActivity: initResultButton() --before");
-
-        buttonResult = findViewById(R.id.btn_result);
-        buttonResult.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                resultButtonAction();
-            }
-        });
-
-        Log.e("test", "AudioTestActivity: initResultButton() --after");
-    }
-
-    private void resultButtonAction() {
-        Log.e("test", "AudioTestActivity: resultButtonAction() --before");
-
-        vibe.vibrate(50);
-        runOnUiThread(new Runnable() { //fixes e "Only the original thread that created a view hierarchy can touch its views."
-            @Override
-            public void run() {
-                showResultMode();
-            }
-        });
-        showResult();
-
-        Log.e("test", "AudioTestActivity: resultButtonAction() --after");
-    }
-
-    public void helpButton(View v) {
-        vibe.vibrate(50);
-        intent = new Intent(this, PopUpAudioTest.class);
-        startActivity(intent);
-    }
-
-    public void drawerButton(View v) {
-        vibe.vibrate(50);
-        drawer.openDrawer(Gravity.START);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (play != null) {
-            play.release();
-        }
-        if (stop) {
-            stop = false;
-        }
-        if (playThread != null) {
-            try {
-                playThread.interrupt();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        volumeController.setMin();
-        play = null;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_audio_test);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//
-        drawer = findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        volumeController = new VolumeController((AudioManager) this.getSystemService(Context.AUDIO_SERVICE));
-
-        textViewStart = findViewById(R.id.tv_start);
-        textViewHeard = findViewById(R.id.tv_heard);
-        textViewCancel = findViewById(R.id.tv_back);
-        textViewResult = findViewById(R.id.tv_result);
-        textViewAudioTest = findViewById(R.id.textViewAudioTest);
-        tableLayout = findViewById(R.id.tl_audioTest);
-
-        xAxis = new ArrayList<>();
-        yAxis = new ArrayList<>();
-        channels = new ArrayList<>();
-
-        preferences = new Preferences();
-
-        frequenciesData = new FrequenciesData();
-
-        allFrequencies = preferences.loadFrequencies(getApplicationContext());
-
-        numberOfFrequencies = allFrequencies.size();
-
-        hardResetValues();
-
-        initPlaySoundButton();
-        initStopSoundButton();
-        initCancelButton();
-        initResultButton();
-
-        showStartMode();
-
-        loudnessData = new LoudnessData();
-        dataTable = loudnessData.make();
-
-        preferences = new Preferences();
-
-        Log.e("test", "AudioTestActivity: onCreate() // values: allFrequencies.toString() = " + allFrequencies.toString() + "\n numberOfFrequencies = " + numberOfFrequencies);
-    }
-
     @Override
     public void onBackPressed() {
         volumeController.setMin();
@@ -497,7 +524,6 @@ public class AudioTestActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

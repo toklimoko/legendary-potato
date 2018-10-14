@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity
     private void choiceButtonAction() {
 
         Intent intent;
+        intent = new Intent(this, ChoiceActivity.class);
 
         // CALIBRATION CHECK - WORKING
 //        boolean calibrated = preferences.loadCalibrated(getApplicationContext());
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity
 //            intent = new Intent(this, Dialog.class);
 //        }
 
-        intent = new Intent(this, ChoiceActivity.class);
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
