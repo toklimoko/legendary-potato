@@ -21,6 +21,7 @@ import android.widget.TextView;
 
 import com.tomek.audiometr.algorithms.FrequenciesData;
 import com.tomek.audiometr.algorithms.LoudnessData;
+import com.tomek.audiometr.algorithms.StopWatch;
 import com.tomek.audiometr.helpers.Drawer;
 import com.tomek.audiometr.helpers.Preferences;
 import com.tomek.audiometr.helpers.VolumeController;
@@ -38,7 +39,7 @@ public class AudioTestActivity extends AppCompatActivity
     private double frequency = 0.0;
     private double amplitude = 0.0;
     private double decibels = 0.0;
-    private int duration = 1;
+    private int duration = 2; //seconds
     private String channel = "Both";
     private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
     private double frequencyLimitMin = 0;
@@ -49,6 +50,7 @@ public class AudioTestActivity extends AppCompatActivity
     private double indexOfMaxDecibels = 0;
     private int level = 0;
     private int index = 0;
+    private double time = 0.0;
     private boolean stop = false;
     private boolean saving = false;
     private boolean stopAlgorithm = false;
@@ -73,6 +75,8 @@ public class AudioTestActivity extends AppCompatActivity
     private Thread playThread;
     private Thread algorithmThread;
     private Thread savingThread;
+    private Thread timeThread;
+    private StopWatch timer;
     private Play play;
 
     private Sample sample;
@@ -87,6 +91,7 @@ public class AudioTestActivity extends AppCompatActivity
     private ArrayList<Double> xAxis;
     private ArrayList<Double> yAxis;
     private ArrayList<String> channels;
+    private ArrayList<Double> times;
 
     private Double[][] dataTable;
     private LoudnessData loudnessData;
@@ -107,12 +112,16 @@ public class AudioTestActivity extends AppCompatActivity
     private void addPoint() {
         Log.e("test", "AudioTestActivity: add() --before");
 
+
         xAxis.add(frequency);
         yAxis.add(decibels);
         channels.add(channel);
+        times.add(time);
+
+        Log.e("test", "stop time = " + time);
 
         Log.e("test", "AudioTestActivity: add() --after // values: added frequency = " + frequency + "; added decibels = " + decibels + "; added channel = " + channel + "\t"
-                + "xAxis.size() = " + xAxis.size() + "; yAxis.size() = " + yAxis.size() + "; channels.size() = " + channels.size());
+                + "xAxis.size() = " + xAxis.size() + "; yAxis.size() = " + yAxis.size() + "; channels.size() = " + channels.size() + "; times.size() = " + times.size());
 
     }
 
@@ -130,14 +139,15 @@ public class AudioTestActivity extends AppCompatActivity
         intentResult.putExtra("xAxis", xAxis);
         intentResult.putExtra("yAxis", yAxis);
         intentResult.putExtra("channels", channels);
+        intentResult.putExtra("times", times);
         intentResult.putExtra("decibelsLimit", decibelsInTable);
         intentResult.putExtra("frequencyLimitMin", frequencyLimitMin);
         intentResult.putExtra("frequencyLimitMax", frequencyLimitMax);
 
         startActivity(intentResult);
 
-        Log.e("test", "AudioTestActivity: showResult() --after // values: xAxis.toString() = " + xAxis.toString() + "\t"
-                + "yAxis.toString() = " + yAxis.toString() + "\t" + "channels.toString() = " + channels.toString());
+        Log.e("test", "AudioTestActivity: showResult() --after // values: xAxis.toString() = " + xAxis.toString() + "\n"
+                + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n" + "times.toString = " + times.toString());
     }
 
     private void resetValues() {
@@ -160,9 +170,24 @@ public class AudioTestActivity extends AppCompatActivity
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
+        times = new ArrayList<>();
 
         Log.e("test", "AudioTestActivity: resetLists() --after");
     }
+
+
+//    private void timeWatch(){
+//
+//
+//        timeThread = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                timer = new StopWatch();
+//
+//            }
+//        });
+//        timeThread.start();
+//    }
 
 
     private void playAsync() {
@@ -177,6 +202,7 @@ public class AudioTestActivity extends AppCompatActivity
             public void run() {
 
                 play = new Play(frequency, amplitude, duration, channel);
+                timer.begin();
                 play.playSound();
                 play = null;
             }
@@ -212,6 +238,7 @@ public class AudioTestActivity extends AppCompatActivity
                         }
                         Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
                         amplitude = getAmplitude(level);
+
                         playAsync();
 
                         if (playThread != null) {
@@ -260,6 +287,7 @@ public class AudioTestActivity extends AppCompatActivity
         volumeController.setMax();
         stopAlgorithm = false;
         showAudioTestMode();
+        timer = new StopWatch();
         playAlgorithm();
     }
 
@@ -288,14 +316,17 @@ public class AudioTestActivity extends AppCompatActivity
         savingThread = new Thread(new Runnable() {
             @Override
             public void run() {
+                time = timer.getElapsedTimeSecs();
                 stop = true;
                 saving = true;
                 vibe.vibrate(50);
 
-                if (playThread != null) {
+                if (play != null) {
                     play.release();
-                    playThread.interrupt();
                     play = null;
+                }
+                if (playThread != null) {
+                    playThread.interrupt();
                 }
                 addPoint();
                 volumeController.setMax();
@@ -445,6 +476,7 @@ public class AudioTestActivity extends AppCompatActivity
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
         channels = new ArrayList<>();
+        times = new ArrayList<>();
 
         preferences = new Preferences();
 

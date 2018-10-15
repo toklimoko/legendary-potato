@@ -47,10 +47,12 @@ public class ResultActivity extends Activity {
     private GraphicalView chartView;
     private XYSeries seriesR;
     private XYSeries seriesL;
+    private XYSeries seriesT;
 
     private ArrayList<Double> xAxis;
     private ArrayList<Double> yAxis;
     private ArrayList<String> channels;
+    private ArrayList<Double> times;
 
     private Vibrator vibe;
 
@@ -75,23 +77,54 @@ public class ResultActivity extends Activity {
         }
     }
 
+    private void rejectPoints(){
+        if (seriesT != null) {
+            seriesT.clearSeriesValues();
+        }
+
+        seriesT = new XYSeries("NIEWAŻNY POMIAR");
+
+        double sum = 0.0;
+        double average = 0.0;
+
+        for (int i = 0; i < times.size(); i++) {
+           sum = sum + times.get(i);
+        }
+        average = sum/times.size();
+
+        for (int i = 0; i < times.size(); i++) {
+            if (times.get(i)<0.20*average || times.get(i)>1.80*average){
+                seriesT.add(xAxis.get(i),yAxis.get(i));
+            }
+        }
+    }
+
     private void drawChart() {
 
         XYSeriesRenderer rendererR = new XYSeriesRenderer();
-        rendererR.setLineWidth(5);
+        rendererR.setLineWidth(7);
         rendererR.setColor(Color.argb(255, 255, 145, 6));
         rendererR.setPointStyle(PointStyle.CIRCLE);
-        rendererR.setPointStrokeWidth(20);
+        rendererR.setPointStrokeWidth(22);
 
         XYSeriesRenderer rendererL = new XYSeriesRenderer();
-        rendererL.setLineWidth(5);
+        rendererL.setLineWidth(7);
         rendererL.setColor(Color.argb(255, 41, 182, 246));
         rendererL.setPointStyle(PointStyle.X);
-        rendererL.setPointStrokeWidth(30);
+        rendererL.setPointStrokeWidth(32);
+
+        XYSeriesRenderer rendererT = new XYSeriesRenderer();
+//        rendererT.setLineWidth(5);
+        rendererT.setLineWidth(0);
+//        rendererT.setColor(Color.argb(255,186  ,6,6)); //RED
+        rendererT.setColor(Color.GRAY);
+        rendererT.setPointStyle(PointStyle.SQUARE);
+        rendererT.setPointStrokeWidth(20);
 
         XYMultipleSeriesRenderer mRenderer = new XYMultipleSeriesRenderer();
         mRenderer.addSeriesRenderer(rendererR);
         mRenderer.addSeriesRenderer(rendererL);
+        mRenderer.addSeriesRenderer(rendererT);
         mRenderer.setApplyBackgroundColor(true);
         mRenderer.setBackgroundColor(Color.TRANSPARENT);
         mRenderer.setYAxisMax(0);
@@ -124,6 +157,7 @@ public class ResultActivity extends Activity {
         XYMultipleSeriesDataset dataset = new XYMultipleSeriesDataset();
         dataset.addSeries(seriesR);
         dataset.addSeries(seriesL);
+        dataset.addSeries(seriesT);
 
         chartView = ChartFactory.getLineChartView(this, dataset, mRenderer);
         chartLayout.addView(chartView);
@@ -160,11 +194,13 @@ public class ResultActivity extends Activity {
         xAxis = (ArrayList<Double>) getIntent().getSerializableExtra("xAxis");
         yAxis = (ArrayList<Double>) getIntent().getSerializableExtra("yAxis");
         channels = (ArrayList<String>) getIntent().getSerializableExtra("channels");
+        times = (ArrayList<Double>) getIntent().getSerializableExtra("times");
         decibelsLimit = -1 * (double) getIntent().getSerializableExtra("decibelsLimit");
         frequencyLimitMin = (double) getIntent().getSerializableExtra("frequencyLimitMin");
         frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
 
         separateByChannels();
+        rejectPoints();
         file = new Files();
 
         imageViewBackground = findViewById(R.id.iv_resultBackground);
@@ -177,7 +213,7 @@ public class ResultActivity extends Activity {
 
 
         Log.e("test", "ResultActivity: onCreate() // values: " + "\n" + "xAxis.toString() = " + xAxis.toString() + "\n"
-                + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n"
+                + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n" + "times.toString() = " + times.toString() + "\n"
                 + "decibelsLimit = " + decibelsLimit + "; frequencyLimitMin = " + frequencyLimitMin + "; frequencyLimitMax = " + frequencyLimitMax);
 
         drawChart();
