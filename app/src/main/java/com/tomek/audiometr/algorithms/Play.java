@@ -12,19 +12,19 @@ public class Play {
 
     private double frequency = 0.0;
     private double amplitude = 0.0;
-    private int duration = 1;
+    private int duration = 1000; // miliseconds
     private String channel = "Both";
 
     private double amplitudeL = 0.0;
     private double amplitudeR = 0.0;
 
-    public AudioTrack mAudioTrack;
+    private AudioTrack mAudioTrack;
 
 
     public Play(double frequency, double amplitude, int duration, String channel) {
         this.frequency = frequency;
         this.amplitude = amplitude;
-        this.duration = duration * 44100; //44100 bits per 1 second
+        this.duration = duration * 44100 / 1000; //44100 bits per 1 second, converted to miliseconds
         this.channel = channel;
 
         init();

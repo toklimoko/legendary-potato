@@ -32,6 +32,7 @@ import com.tomek.audiometr.algorithms.Sample;
 
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class AudioTestActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -39,7 +40,7 @@ public class AudioTestActivity extends AppCompatActivity
     private double frequency = 0.0;
     private double amplitude = 0.0;
     private double decibels = 0.0;
-    private int duration = 2; //seconds
+    private int duration = 1500; //miliseconds
     private String channel = "Both";
     private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
     private double frequencyLimitMin = 0;
@@ -51,9 +52,12 @@ public class AudioTestActivity extends AppCompatActivity
     private int level = 0;
     private int index = 0;
     private double time = 0.0;
+    private int numberOfSample = 0;
+    private int samplesListSize = 0;
     private boolean stop = false;
     private boolean saving = false;
     private boolean stopAlgorithm = false;
+    private String string = "";
 
     private ImageButton buttonStart;
     private ImageButton buttonHeard;
@@ -65,6 +69,8 @@ public class AudioTestActivity extends AppCompatActivity
     private TextView textViewCancel;
     private TextView textViewResult;
     private TextView textViewAudioTest;
+    private TextView textSampleNumber;
+    private TextView textProgress;
 
     private TableLayout tableLayout;
     private DrawerLayout drawer;
@@ -92,6 +98,12 @@ public class AudioTestActivity extends AppCompatActivity
     private ArrayList<Double> yAxis;
     private ArrayList<String> channels;
     private ArrayList<Double> times;
+
+    private ArrayList<Double> xAxisFinal;
+    private ArrayList<Double> yAxisFinal;
+    private ArrayList<String> channelsFinal;
+    private ArrayList<Double> timesFinal;
+
 
     private Double[][] dataTable;
     private LoudnessData loudnessData;
@@ -136,10 +148,10 @@ public class AudioTestActivity extends AppCompatActivity
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
         intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        intentResult.putExtra("xAxis", xAxis);
-        intentResult.putExtra("yAxis", yAxis);
-        intentResult.putExtra("channels", channels);
-        intentResult.putExtra("times", times);
+        intentResult.putExtra("xAxis", xAxisFinal);
+        intentResult.putExtra("yAxis", yAxisFinal);
+        intentResult.putExtra("channels", channelsFinal);
+        intentResult.putExtra("times", timesFinal);
         intentResult.putExtra("decibelsLimit", decibelsInTable);
         intentResult.putExtra("frequencyLimitMin", frequencyLimitMin);
         intentResult.putExtra("frequencyLimitMax", frequencyLimitMax);
@@ -148,6 +160,31 @@ public class AudioTestActivity extends AppCompatActivity
 
         Log.e("test", "AudioTestActivity: showResult() --after // values: xAxis.toString() = " + xAxis.toString() + "\n"
                 + "yAxis.toString() = " + yAxis.toString() + "\n" + "channels.toString() = " + channels.toString() + "\n" + "times.toString = " + times.toString());
+    }
+
+    private void deleteSilence() {
+
+        xAxisFinal = new ArrayList<>();
+        yAxisFinal = new ArrayList<>();
+        channelsFinal = new ArrayList<>();
+        timesFinal = new ArrayList<>();
+
+        for (int i = 0; i < xAxis.size(); i++) {
+            Log.e("test", "xAxis.size = " + xAxis.size());
+
+            double tempX = xAxis.get(i);
+            double tempY = yAxis.get(i);
+            String tempC = channels.get(i);
+            double tempT = times.get(i);
+
+            if (tempY != 0.0) {
+                xAxisFinal.add(tempX);
+                yAxisFinal.add(tempY);
+                channelsFinal.add(tempC);
+                timesFinal.add(tempT);
+            }
+
+        }
     }
 
     private void resetValues() {
@@ -215,10 +252,16 @@ public class AudioTestActivity extends AppCompatActivity
 
     private void playAlgorithm() {
 
+        if (algorithmThread != null) {
+            return;
+        }
         algorithmThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i < samplesList.size(); i++) {
+                for (int i = 0; i < samplesListSize; i++) {
+
+                    numberOfSample = i+1;
+                    setTextSampleNumber(numberOfSample, samplesListSize);
 
                     if (saving) {
                         try {
@@ -283,10 +326,14 @@ public class AudioTestActivity extends AppCompatActivity
     }
 
     private void playButtonAction() {
+        if (algorithmThread != null) {
+            return;
+        }
         vibe.vibrate(50);
+        showAudioTestMode();
         volumeController.setMax();
         stopAlgorithm = false;
-        showAudioTestMode();
+        stop = false;
         timer = new StopWatch();
         playAlgorithm();
     }
@@ -313,12 +360,15 @@ public class AudioTestActivity extends AppCompatActivity
 
     private void stopAndSave() {
 
+        if (saving) {
+            return;
+        }
         savingThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 time = timer.getElapsedTimeSecs();
-                stop = true;
                 saving = true;
+                stop = true;
                 vibe.vibrate(50);
 
                 if (play != null) {
@@ -352,7 +402,8 @@ public class AudioTestActivity extends AppCompatActivity
             sample.getNewSample();
         }
         samplesList = sample.getSamplesList();
-        Log.e("test", "SamplesList: " + samplesList.toString());
+        samplesListSize = samplesList.size();
+
 
     }
 
@@ -373,6 +424,7 @@ public class AudioTestActivity extends AppCompatActivity
     private void cancelButtonAction() {
         Log.e("test", "AudioTestActivity: cancelButtonAction() --before");
 
+        textSampleNumber.setVisibility(View.INVISIBLE);
         vibe.vibrate(50);
         stop = true;
         volumeController.setMin();
@@ -408,6 +460,7 @@ public class AudioTestActivity extends AppCompatActivity
                 showResultMode();
             }
         });
+        deleteSilence();
         showResult();
 
         Log.e("test", "AudioTestActivity: resultButtonAction() --after");
@@ -471,7 +524,9 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel = findViewById(R.id.tv_back);
         textViewResult = findViewById(R.id.tv_result);
         textViewAudioTest = findViewById(R.id.textViewAudioTest);
+        textSampleNumber = findViewById(R.id.txtSampleNumber);
         tableLayout = findViewById(R.id.tl_audioTest);
+        textProgress = findViewById(R.id.textProgress);
 
         xAxis = new ArrayList<>();
         yAxis = new ArrayList<>();
@@ -505,6 +560,11 @@ public class AudioTestActivity extends AppCompatActivity
         Log.e("test", "AudioTestActivity: onCreate() // values: allFrequencies.toString() = " + allFrequencies.toString() + "\n numberOfFrequencies = " + numberOfFrequencies);
     }
 
+    private void setTextSampleNumber(int numberOfSample, int samplesListSize) {
+        string = numberOfSample + " / " + samplesListSize;
+        textSampleNumber.setText(string);
+    }
+
 
     private void showStartMode() {
         buttonStart.setVisibility(View.VISIBLE);
@@ -517,6 +577,11 @@ public class AudioTestActivity extends AppCompatActivity
         textViewResult.setVisibility(View.GONE);
         tableLayout.setVisibility(View.VISIBLE);
         textViewAudioTest.setText(R.string.tv_audioTest_1);
+        textSampleNumber.setVisibility(View.INVISIBLE);
+//        if(textSampleNumber != null) {
+//            textSampleNumber.clearComposingText();
+//        }
+        textProgress.setVisibility(View.INVISIBLE);
     }
 
     private void showAudioTestMode() {
@@ -530,6 +595,9 @@ public class AudioTestActivity extends AppCompatActivity
         textViewResult.setVisibility(View.GONE);
         tableLayout.setVisibility(View.GONE);
         textViewAudioTest.setText(R.string.tv_audioTest_2);
+        textSampleNumber.setVisibility(View.VISIBLE);
+        textProgress.setVisibility(View.VISIBLE);
+
     }
 
     private void showResultMode() {
@@ -541,9 +609,10 @@ public class AudioTestActivity extends AppCompatActivity
         textViewCancel.setVisibility(View.VISIBLE);
         buttonResult.setVisibility(View.VISIBLE);
         textViewResult.setVisibility(View.VISIBLE);
-        tableLayout.setVisibility(View.VISIBLE);
         tableLayout.setVisibility(View.GONE);
         textViewAudioTest.setText(R.string.tv_audioTest_3);
+        textSampleNumber.setVisibility(View.INVISIBLE);
+        textProgress.setVisibility(View.INVISIBLE);
     }
 
 

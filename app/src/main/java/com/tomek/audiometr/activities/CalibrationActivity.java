@@ -62,6 +62,7 @@ public class CalibrationActivity extends AppCompatActivity
 
     private static final double referenceAmp = 1.0;
     public double average = 0;
+    private int duration = 4000; //miliseconds
 
     private LoudnessData loudnessData;
 
@@ -98,7 +99,7 @@ public class CalibrationActivity extends AppCompatActivity
                 if (list != null) {
                     list.clear();
                 }
-                play = new Play(1000, 1, 4, "Both");
+                play = new Play(1000, 1, duration, "Both");
                 play.playSound();
                 play = null;
                 mHandler.post(getValue);

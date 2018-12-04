@@ -23,7 +23,7 @@ public class Files {
     public Files() {
     }
 
-    public String saveFile(String folder, String fileName, ArrayList<Double> xAxis, ArrayList<Double> yAxis, ArrayList<String> channels, Context context, Activity activity) {
+    public String saveFile(String folder, String fileName, ArrayList<Double> xAxis, ArrayList<Double> yAxis, ArrayList<String> channels, ArrayList<Double> times, ArrayList<String> selectedTimes, Context context, Activity activity) {
 
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
@@ -31,7 +31,7 @@ public class Files {
         }
 
         String string = new String();
-        string = "Frequency [Hz]" + "\t" + "Decibels [dB]" + "\t" + "Ear" + "\n";
+        string = "Frequency [Hz]" + "\t" + "Decibels [dB]" + "\t" + "Ear" + "\t" + "Reaction time [s]" + "\t" + "Test" + "\n";
         java.io.File root = android.os.Environment.getExternalStorageDirectory();
         java.io.File dir = new java.io.File(root.getAbsolutePath() + folder);
         dir.mkdirs();
@@ -47,7 +47,7 @@ public class Files {
 
 
             for (int i = 0; i < xAxis.size(); i++) {
-                string = string + xAxis.get(i).toString() + "\t" + yAxis.get(i).toString() + "\t" + channels.get(i).toString() + "\n";
+                string = string + xAxis.get(i).toString() + "\t" + yAxis.get(i).toString() + "\t" + channels.get(i) + "\t" + times.get(i).toString() + "\t" + selectedTimes.get(i) + "\n";
             }
 
             pw.print(string);

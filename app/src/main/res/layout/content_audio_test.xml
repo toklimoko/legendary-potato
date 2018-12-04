@@ -198,14 +198,59 @@
         android:id="@+id/textViewAudioTest"
         android:layout_width="304dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="16dp"
         android:text="@string/tv_audioTest_1"
         android:textAlignment="center"
         android:textColor="@color/lightText"
         android:textSize="25sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtSampleNumber" />
+
+    <TextView
+        android:id="@+id/textProgress"
+        android:layout_width="304dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="70dp"
+        android:text="@string/tv_audioTest_14"
+        android:textAlignment="center"
+        android:textColor="@color/lightText"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_help" />
+
+    <!--<TextView-->
+        <!--android:id="@+id/txtSampleNumberTitle"-->
+        <!--android:layout_width="83dp"-->
+        <!--android:layout_height="wrap_content"-->
+
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:text="@string/sampleNumber"-->
+        <!--android:textAlignment="center"-->
+        <!--android:textColor="@color/lightText"-->
+        <!--android:textSize="20sp"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintHorizontal_bias="0.501"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/textViewAudioTest" />-->
+
+    <TextView
+        android:id="@+id/txtSampleNumber"
+        android:layout_width="83dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textAlignment="center"
+        android:textColor="@color/lightText"
+        android:textSize="25sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textProgress" />
 
     <TableLayout
         android:id="@+id/tl_audioTest"

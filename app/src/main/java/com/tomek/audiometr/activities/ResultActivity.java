@@ -53,6 +53,7 @@ public class ResultActivity extends Activity {
     private ArrayList<Double> yAxis;
     private ArrayList<String> channels;
     private ArrayList<Double> times;
+    private ArrayList<String> selectedTimes;
 
     private Vibrator vibe;
 
@@ -95,6 +96,9 @@ public class ResultActivity extends Activity {
         for (int i = 0; i < times.size(); i++) {
             if (times.get(i)<0.20*average || times.get(i)>1.80*average){
                 seriesT.add(xAxis.get(i),yAxis.get(i));
+                selectedTimes.add("Incorrect");
+            } else{
+                selectedTimes.add("Correct");
             }
         }
     }
@@ -168,7 +172,7 @@ public class ResultActivity extends Activity {
     public void saveResult(View view) {
         vibe.vibrate(50);
         Date currentTime = Calendar.getInstance().getTime();
-        path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv",xAxis,yAxis,channels,getApplicationContext(), this);
+        path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv",xAxis,yAxis,channels,times,selectedTimes,getApplicationContext(), this);
 
         Toast.makeText(getApplicationContext(), "Zapisano w: " + path,
                 Toast.LENGTH_LONG).show();
@@ -198,6 +202,8 @@ public class ResultActivity extends Activity {
         decibelsLimit = -1 * (double) getIntent().getSerializableExtra("decibelsLimit");
         frequencyLimitMin = (double) getIntent().getSerializableExtra("frequencyLimitMin");
         frequencyLimitMax = (double) getIntent().getSerializableExtra("frequencyLimitMax");
+
+        selectedTimes = new ArrayList<>();
 
         separateByChannels();
         rejectPoints();
