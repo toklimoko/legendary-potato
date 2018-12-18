@@ -27,16 +27,12 @@ import com.tomek.audiometr.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ImageButton btnCalibration;
-    private ImageButton btnAudioTest;
     private Vibrator vibe;
     private AudioManager audioManager;
     private VolumeController volumeController;
 
-    private Preferences preferences;
-
     private void initCalibrationButton() {
-        btnCalibration = findViewById(R.id.btn_calibration);
+        ImageButton btnCalibration = findViewById(R.id.btn_calibration);
         btnCalibration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -53,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initChoiceButton() {
-        btnAudioTest = findViewById(R.id.btn_audioTest);
+        ImageButton btnAudioTest = findViewById(R.id.btn_audioTest);
         btnAudioTest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -133,7 +129,7 @@ public class MainActivity extends AppCompatActivity
         initCalibrationButton();
         initChoiceButton();
 
-        preferences = new Preferences();
+        Preferences preferences = new Preferences();
         preferences.savePreference("calibrated", "false", getApplicationContext());
     }
 

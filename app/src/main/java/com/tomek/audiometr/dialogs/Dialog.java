@@ -19,7 +19,6 @@ import com.tomek.audiometr.activities.ChoiceActivity;
 
 public class Dialog extends Activity {
 
-    private ConstraintLayout constraintLayout;
     private Vibrator vibe;
 
     public void goCalibrate(View v){
@@ -41,7 +40,7 @@ public class Dialog extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dialog);
 
-        constraintLayout = findViewById(R.id.cl_dialog);
+        ConstraintLayout constraintLayout = findViewById(R.id.cl_dialog);
 
         constraintLayout.setBackgroundColor(getResources().getColor(R.color.dialog_background_color));
 

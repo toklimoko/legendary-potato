@@ -37,17 +37,12 @@ public class FrequenciesData {
     public ArrayList<Integer> random(int numberOfFrequencies, ArrayList<Integer> allFrequencies) {
         Log.e("test", "AudioTestActivity: randomFrequencies() --before");
 
-        int index = 0;
-        int newFrequency = 0;
-//        int frequencyLimitMin;
-//        int frequencyLimitMax;
-
         Random randomGenerator = new Random();
         ArrayList<Integer> chosenFrequencies = new ArrayList<>();
 
         while (chosenFrequencies.size() < numberOfFrequencies) {
-            index = randomGenerator.nextInt(allFrequencies.size());
-            newFrequency = allFrequencies.get(index);
+            int index = randomGenerator.nextInt(allFrequencies.size());
+            int newFrequency = allFrequencies.get(index);
             if (!chosenFrequencies.contains(newFrequency)) {
                 chosenFrequencies.add(newFrequency);
             }

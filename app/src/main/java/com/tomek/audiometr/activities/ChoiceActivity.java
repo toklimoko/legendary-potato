@@ -37,11 +37,8 @@ import java.util.Arrays;
 public class ChoiceActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ImageButton buttonGo;
-
     private DrawerLayout drawer;
 
-    private RadioGroup radioGroup;
     private RadioButton radioButtonBasic;
     private RadioButton radioButtonExtended;
 
@@ -72,7 +69,7 @@ public class ChoiceActivity extends AppCompatActivity
     private void initGoButton() {
         Log.e("test", "ChoiceActivity: initGoButton() --before");
 
-        buttonGo = findViewById(R.id.btn_go);
+        ImageButton buttonGo = findViewById(R.id.btn_go);
         buttonGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,7 +123,7 @@ public class ChoiceActivity extends AppCompatActivity
         volumeController = new VolumeController((AudioManager) this.getSystemService(Context.AUDIO_SERVICE));
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        radioGroup = findViewById(R.id.radioGroup);
+        RadioGroup radioGroup = findViewById(R.id.radioGroup);
         radioButtonBasic = findViewById(R.id.rb_basicTest);
         radioButtonExtended = findViewById(R.id.rb_extendedTest);
 

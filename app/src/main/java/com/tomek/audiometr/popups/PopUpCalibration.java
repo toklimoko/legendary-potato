@@ -16,8 +16,6 @@ import com.tomek.audiometr.R;
 
 public class PopUpCalibration extends Activity {
 
-    private ImageView imageViewBackground;
-    private ImageView imageViewIcon;
     private Vibrator vibe;
 
     public void closeButton(View v) {
@@ -30,11 +28,11 @@ public class PopUpCalibration extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pop_up_calibration_info);
-        imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
+        ImageView imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
         imageViewBackground.setImageResource(R.drawable.wall3);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        imageViewIcon = findViewById(R.id.iv_logo_pop_info);
+        ImageView imageViewIcon = findViewById(R.id.iv_logo_pop_info);
         imageViewIcon.setImageResource(R.drawable.calibration_icon);
         imageViewIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
 

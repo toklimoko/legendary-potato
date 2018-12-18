@@ -38,13 +38,8 @@ public class ResultActivity extends Activity {
     private double frequencyLimitMin;
     private double frequencyLimitMax;
 
-    private String path;
-
     private LinearLayout chartLayout;
-    private ImageView imageViewBackground;
-    private ImageView imageSaveIcon;
 
-    private GraphicalView chartView;
     private XYSeries seriesR;
     private XYSeries seriesL;
     private XYSeries seriesT;
@@ -163,7 +158,7 @@ public class ResultActivity extends Activity {
         dataset.addSeries(seriesL);
         dataset.addSeries(seriesT);
 
-        chartView = ChartFactory.getLineChartView(this, dataset, mRenderer);
+        GraphicalView chartView = ChartFactory.getLineChartView(this, dataset, mRenderer);
         chartLayout.addView(chartView);
         chartView.repaint();
     }
@@ -172,7 +167,7 @@ public class ResultActivity extends Activity {
     public void saveResult(View view) {
         vibe.vibrate(50);
         Date currentTime = Calendar.getInstance().getTime();
-        path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv",xAxis,yAxis,channels,times,selectedTimes,getApplicationContext(), this);
+        String path = file.saveFile("/AUDIOMETR/", "Result_" + currentTime.toString() + ".csv", xAxis, yAxis, channels, times, selectedTimes, getApplicationContext(), this);
 
         Toast.makeText(getApplicationContext(), "Zapisano w: " + path,
                 Toast.LENGTH_LONG).show();
@@ -209,11 +204,11 @@ public class ResultActivity extends Activity {
         rejectPoints();
         file = new Files();
 
-        imageViewBackground = findViewById(R.id.iv_resultBackground);
+        ImageView imageViewBackground = findViewById(R.id.iv_resultBackground);
         imageViewBackground.setImageResource(R.drawable.wall4);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        imageSaveIcon = findViewById(R.id.iv_save);
+        ImageView imageSaveIcon = findViewById(R.id.iv_save);
         imageSaveIcon.setImageResource(R.drawable.save_icon);
         imageSaveIcon.setScaleType(ImageView.ScaleType.FIT_XY);
 

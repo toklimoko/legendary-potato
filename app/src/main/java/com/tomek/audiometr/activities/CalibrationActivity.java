@@ -39,7 +39,6 @@ import java.util.ArrayList;
 public class CalibrationActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private ImageButton btnCalibration;
     private DrawerLayout drawer;
 
 
@@ -159,7 +158,7 @@ public class CalibrationActivity extends AppCompatActivity
 
 
     private void initCalibrateButton() {
-        btnCalibration = findViewById(R.id.btn_calibration);
+        ImageButton btnCalibration = findViewById(R.id.btn_calibration);
         btnCalibration.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

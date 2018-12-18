@@ -16,8 +16,6 @@ import com.tomek.audiometr.R;
 
 public class PopUpAppInfo extends Activity {
 
-    private ImageView imageViewBackground;
-    private ImageView imageViewLogo;
     private Vibrator vibe;
 
 
@@ -32,11 +30,11 @@ public class PopUpAppInfo extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.pop_up_app_info);
-        imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
+        ImageView imageViewBackground = findViewById(R.id.iv_popUpAppInfo);
         imageViewBackground.setImageResource(R.drawable.wall3);
         imageViewBackground.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        imageViewLogo = findViewById(R.id.iv_logo_pop_info);
+        ImageView imageViewLogo = findViewById(R.id.iv_logo_pop_info);
         imageViewLogo.setImageResource(R.drawable.logo);
 
         vibe = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

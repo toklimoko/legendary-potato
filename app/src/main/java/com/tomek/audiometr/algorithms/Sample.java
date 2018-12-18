@@ -16,24 +16,10 @@ public class Sample {
     private String channel = "";
     private int numberOfFrequencies;
     private ArrayList<Integer> chosenFrequencies;
-    private ArrayList<String> channels = new ArrayList<String>();
 
-    public ArrayList<Sample> samplesList = new ArrayList<>();
-    public ArrayList<String> sampleData = new ArrayList<>();
-    public ArrayList<Integer> frequenciesList = new ArrayList<>();
-    public ArrayList<String> channelsList = new ArrayList<>();
-
-    private Random randomGenerator;
-    private Sample temporarySample;
-
-    private int indexF = 0;
-    private int indexC = 0;
-    private int newFrequency = 0;
-    private String newChannel = "";
-    private boolean k = false;
-    private boolean done = false;
-    private int m;
-
+    private ArrayList<Sample> samplesList = new ArrayList<>();
+    private ArrayList<Double> frequenciesList = new ArrayList<>();
+    private ArrayList<String> channelsList = new ArrayList<>();
 
     public Sample(int numberOfFrequencies, ArrayList<Integer> chosenFrequencies) {
         this.numberOfFrequencies = numberOfFrequencies;
@@ -43,7 +29,7 @@ public class Sample {
                 + "; chosenFrequencies = " + chosenFrequencies);
     }
 
-    public Sample(double frequency, String channel) {
+    private Sample(double frequency, String channel) {
         this.frequency = frequency;
         this.channel = channel;
 
@@ -51,91 +37,73 @@ public class Sample {
                 + "; channel = " + channel);
     }
 
+    public ArrayList<Sample> makeSamplesList(){
+        for (int i = 0; i < chosenFrequencies.size() * 2; i++) {
+            getNewSample();
+        }
+        return samplesList;
+    }
 
-    public ArrayList<String> getNewSample() {
+
+    private void getNewSample() {
         Log.e("test", "Sample: getNewSample() --before");
 
-        channels = new ArrayList<>();
+        ArrayList<String> channels = new ArrayList<>();
         channels.addAll(Arrays.asList("Left", "Right"));
 
-        done = false;
-        k = false;
-
-        if (samplesList.size() + 1 > numberOfFrequencies * 2) {
-
-            Log.e("test", "Sample: getNewSample() // msg: all attempts made, reuturn null // values: samplesList.size() =  "
-                    + (samplesList.size() + 1) + "; numberOfFrequencies = " + (numberOfFrequencies * 2));
-
-            return null;
-        }
-
+        boolean done = false;
 
         while (!done) {
 
-            randomGenerator = new Random();
+            Random randomGenerator = new Random();
 
-            randomFrequency();
-            randomChannel();
+            int newFrequency = randomFrequency(randomGenerator, numberOfFrequencies, chosenFrequencies);
+            String newChannel = randomChannel(randomGenerator, channels);
+
             Log.e("test", "Sample: getNewSample() --while loop // msg: start loop with randomly picked frequency and channel");
 
-            temporarySample = new Sample(newFrequency, newChannel);
+
+            for (int i = 0; i < 2; i++) {
+
+                Sample temporarySample = new Sample(newFrequency, newChannel);
+
+                if (!checkIfExists(temporarySample, samplesList)) {
+                    addToLists(temporarySample);
+                    done = true;
+                    break;
+                } else {
+                    if (newChannel.equals("Left")) {
+                        newChannel = "Right";
+                    } else if (newChannel.equals("Right")) {
+                        newChannel = "Left";
+                    }
+                }
+            }
 
             Log.e("test", "Sample: getNewSample() --while loop // msg: temporary sample taken from constructor // values: frequency = " + newFrequency + " channel = " + newChannel);
 
-            if (!checkIfExists(temporarySample)) {
-                addToLists();
-                done = true;
-            } else {
-
-                if (newChannel.equals("Left")) {
-                    newChannel = "Right";
-                } else if (newChannel.equals("Right")) {
-                    newChannel = "Left";
-                }
-
-                temporarySample = new Sample(newFrequency, newChannel);
-                if (!checkIfExists(temporarySample)) {
-                    addToLists();
-                    done = true;
-                }
-
-                Log.e("test", "Sample: getNewSample() --while loop // msg: test if channels change helps");
-            }
         }
-        Log.e("test", "Sample: getNewSample() --while loop --after // msg: sending back // values: frequency = " + newFrequency + " channel = " + newChannel);
 
-        return sampleData;
     }
 
-    public ArrayList<String> addToLists() {
-        Log.e("test", "Sample: addToLists() --before");
 
-        samplesList.add(temporarySample);
-        sampleData.add(String.valueOf(newFrequency));
-        sampleData.add(newChannel);
-        frequenciesList.add(newFrequency);
-        channelsList.add(newChannel);
 
-        Log.e("test", "Sample: addToLists() --after");
-        return sampleData;
-    }
-
-    public int randomFrequency() {
+    private int randomFrequency(Random randomGenerator, int numberOfFrequencies, ArrayList<Integer> chosenFrequencies) {
         Log.e("test", "Sample: randomFrequency() --before");
 
-        indexF = randomGenerator.nextInt(numberOfFrequencies);
-        newFrequency = chosenFrequencies.get(indexF); //losuj częstotliwość
+        int indexF = randomGenerator.nextInt(numberOfFrequencies);
+        int newFrequency = chosenFrequencies.get(indexF);
 
         Log.e("test", "Sample: randomFrequency() --after");
 
         return newFrequency;
     }
 
-    public String randomChannel() {
+    private String randomChannel(Random randomGenerator, ArrayList<String> channels) {
         Log.e("test", "Sample: randomChannel() --before");
 
-        indexC = randomGenerator.nextInt(2);
-        newChannel = channels.get(indexC); //losuj częstotliwość
+        int indexC = randomGenerator.nextInt(2);
+        String newChannel = channels.get(indexC);
 
         Log.e("test", "Sample: randomChannel() --after");
 
@@ -143,13 +111,12 @@ public class Sample {
     }
 
 
-    public boolean checkIfExists(Sample sample) {
+    private boolean checkIfExists(Sample sample, ArrayList<Sample> samplesList) {
         Log.e("test", "Sample: checkIfExists() --before");
 
-        m = 0;
+        int m = 0;
 
         for (int i = 0; i < samplesList.size(); i++) {
-//            Log.e("test", "Sample: checkIfExists() --for loop // values: samplesList.toString() = " + samplesList.toString() + "; temporarySample.toString() = " + temporarySample.toString());
 
             if (samplesList.get(i).toString().equals(sample.toString())) {
                 m++;
@@ -166,20 +133,30 @@ public class Sample {
 
     }
 
-    public ArrayList<Sample> getSamplesList() {
-        return samplesList;
+    private void addToLists(Sample temporarySample) {
+        Log.e("test", "Sample: addToLists() --before");
+
+        samplesList.add(temporarySample);
+        frequenciesList.add(temporarySample.getFrequency());
+        channelsList.add(temporarySample.getChannel());
+
+        Log.e("test", "Sample: addToLists() --after");
     }
 
-    public ArrayList<Integer> getFrequenciesList(){
+    private double getFrequency() {
+        return frequency;
+    }
+
+    private String getChannel() {
+        return channel;
+    }
+
+    public ArrayList<Double> getFrequenciesList() {
         return frequenciesList;
     }
 
-    public ArrayList<String> getChannelsList(){
+    public ArrayList<String> getChannelsList() {
         return channelsList;
-    }
-
-    public void setSamplesList(ArrayList<Sample> samplesList) {
-        this.samplesList = samplesList;
     }
 
     @Override

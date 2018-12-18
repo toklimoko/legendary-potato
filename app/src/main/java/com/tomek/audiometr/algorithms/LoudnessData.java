@@ -84,7 +84,7 @@ public class LoudnessData {
         return average;
     }
 
-    public double getDecibels(MediaRecorder mRecorder, Double referenceAmp) {
+    private double getDecibels(MediaRecorder mRecorder, Double referenceAmp) {
         decibels = 20 * Math.log10(getAmplitude(mRecorder) / referenceAmp);
         return decibels;
     }

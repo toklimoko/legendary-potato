@@ -11,9 +11,7 @@ import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.ImageButton;
 import android.widget.TableLayout;
@@ -32,32 +30,22 @@ import com.tomek.audiometr.algorithms.Sample;
 
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class AudioTestActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private double frequency = 0.0;
-    //private double amplitude = 0.0;
-    private double decibels = 0.0;
+    private double decibels = 0.0; //zbadać
     private final int duration = 1500; //miliseconds
-    private String channel = "Both";
-    private int numberOfFrequencies = 0; // equivalent to numberOfFrequencies*2 attempts
-    private double frequencyLimitMin = 0;
-    private double frequencyLimitMax = 18000;
     private final double MAXDECIBELS = -100.0;
-    private double maxLevel = 18;
+    private double maximumLoudnessLevel = 18;
     private double decibelsInTable = 0.0;
     private double indexOfMaxDecibels = 0;
     private int level = 0;
     private int index = 0;
-    private double time = 0.0;
     private int numberOfSample = 0;
     private int samplesListSize = 0;
-    private boolean stop = false;//ta jest do zbadania
-    // private boolean saving = false;
+    private boolean stop = false; //zbadać
     private boolean stopAlgorithm = false;
-    private String string = "";
 
     private ImageButton buttonStart;
     private ImageButton buttonHeard;
@@ -75,24 +63,16 @@ public class AudioTestActivity extends AppCompatActivity
     private TableLayout tableLayout;
     private DrawerLayout drawer;
 
-    private Intent intent;
-
     private Vibrator vibe;
-   // private Thread playThread;
     private Thread algorithmThread;
-    // private Thread savingThread;
-    // private Thread timeThread;
     private StopWatch timer;
     private Play play;
 
     private Sample sample;
     private VolumeController volumeController;
 
-    private ArrayList<Integer> allFrequencies;
     private ArrayList<Integer> chosenFrequencies;
     private ArrayList<Sample> samplesList;
-
-    private ArrayList<Double> maxDecibelsData;
 
     private ArrayList<Double> xAxis;
     private ArrayList<Double> yAxis;
@@ -107,7 +87,6 @@ public class AudioTestActivity extends AppCompatActivity
 
     private Double[][] dataTable;
     private LoudnessData loudnessData;
-    private Preferences preferences;
     private FrequenciesData frequenciesData;
 
     private double getAmplitude(int level) {
@@ -116,12 +95,11 @@ public class AudioTestActivity extends AppCompatActivity
         double amplitude = dataTable[index][1];
         decibels = dataTable[index][0] - decibelsInTable;
 
-        Log.e("test", "Channel = " + channel + "\t frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB");
 
         return amplitude;
     }
 
-    private void addPoint() {
+    private void addPoint(double frequency, double decibels, String channel, double time) {
         Log.e("test", "AudioTestActivity: add() --before");
 
 
@@ -142,8 +120,8 @@ public class AudioTestActivity extends AppCompatActivity
 
         volumeController.setMin();
 
-        frequencyLimitMin = frequenciesData.xLimits(chosenFrequencies).get(0);
-        frequencyLimitMax = frequenciesData.xLimits(chosenFrequencies).get(1);
+        double frequencyLimitMin = frequenciesData.xLimits(chosenFrequencies).get(0);
+        double frequencyLimitMax = frequenciesData.xLimits(chosenFrequencies).get(1);
 
         Intent intentResult = new Intent(AudioTestActivity.this, ResultActivity.class);
         intentResult.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -187,13 +165,11 @@ public class AudioTestActivity extends AppCompatActivity
         }
     }
 
-    private void resetValues() {
+    private void resetLoudness() {
         Log.e("test", "AudioTestActivity: resetValues() --before");
 
-        //amplitude = 0.0;
         level = 0;
         index = 0;
-
 
         Log.e("test", "AudioTestActivity: resetValues() --after");
     }
@@ -201,7 +177,7 @@ public class AudioTestActivity extends AppCompatActivity
     private void resetLists() {
         Log.e("test", "AudioTestActivity: resetLists() --before");
 
-        resetValues();
+        resetLoudness();
         chosenFrequencies = new ArrayList<>();
         samplesList = new ArrayList<>();
         xAxis = new ArrayList<>();
@@ -211,44 +187,6 @@ public class AudioTestActivity extends AppCompatActivity
 
         Log.e("test", "AudioTestActivity: resetLists() --after");
     }
-
-
-//    private void timeWatch(){
-//
-//
-//        timeThread = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                timer = new StopWatch();
-//
-//            }
-//        });
-//        timeThread.start();
-//    }
-
-
-   /* private void playAsync() {
-        Log.e("test", "AudioTestActivity: playAsync() --before");
-
-        if (play != null) {
-            return;
-        }
-
-        playThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                play = new Play(frequency, amplitude, duration, channel);
-                timer.begin();
-                play.playSound();
-                play = null;
-            }
-        });
-        playThread.start();
-
-        Log.e("test", "AudioTestActivity: playAsync() --after");
-    }*/
-
 
     private void playAlgorithm() {
 
@@ -264,10 +202,10 @@ public class AudioTestActivity extends AppCompatActivity
                     numberOfSample = i + 1;
                     setTextSampleNumber(numberOfSample, samplesListSize);
 
-                    frequency = sample.getFrequenciesList().get(i);
-                    channel = sample.getChannelsList().get(i);
+                    double frequency = sample.getFrequenciesList().get(i);
+                    String channel = sample.getChannelsList().get(i);
 
-                    resetValues();
+                    resetLoudness();
 
                     stop = false;
                     while (!stop) {
@@ -276,15 +214,16 @@ public class AudioTestActivity extends AppCompatActivity
                         }
 
                         double amplitude = getAmplitude(level);
-                        Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: amplitude = " + amplitude + "\t level = " + level);
+
+                        Log.e("test", "AudioTestActivity: playButtonAction() --while loop // values: channel = " + channel + "\t frequency = " + frequency + "\t amplitude = " + amplitude + "\t decibels = " + decibels + "dB" + "\t level = " + level);
 
                         play = new Play(frequency, amplitude, duration, channel);
                         timer.begin();
                         play.playSound();
                         play = null;
 
-                        if (index > (dataTable.length - 1) || level > maxLevel || amplitude == 1) {
-                            Log.e("test", "index = " + index + " dataTable.length-1 = " + (dataTable.length - 1) + " level = " + level + " maxLevel = " + maxLevel + " amplitude = " + amplitude);
+                        if (index > (dataTable.length - 1) || level > maximumLoudnessLevel || amplitude == 1) {
+                            Log.e("test", "index = " + index + " dataTable.length-1 = " + (dataTable.length - 1) + " level = " + level + " maxLevel = " + maximumLoudnessLevel + " amplitude = " + amplitude);
                             stop = true;
                             Log.e("test", "AudioTestActivity: playButtonAction() --while loop // msg: got new sample, new Thread");
                             break;
@@ -293,7 +232,8 @@ public class AudioTestActivity extends AppCompatActivity
                         level++;
                     }
 
-                    saveMeasuredSample();
+
+                    saveMeasuredSample(frequency, decibels, channel);
 
                     if (stopAlgorithm) {
                         break;
@@ -359,17 +299,11 @@ public class AudioTestActivity extends AppCompatActivity
             play = null;
         }
 
-        //if(play!=null){
-
-        //}
-        //stopAndSave();
         Log.e("test", "AudioTestActivity: stopButtonAction() --after");
     }
 
-    private void saveMeasuredSample() {
-        time = timer.getElapsedTimeSecs();
-        // saving = true;
-
+    private void saveMeasuredSample(double frequency, double decibels, String channel) {
+        double time = timer.getElapsedTimeSecs();
         vibe.vibrate(50);
 
         if (play != null) {
@@ -377,66 +311,23 @@ public class AudioTestActivity extends AppCompatActivity
             play = null;
         }
 
-//        if (playThread != null) {
-//            playThread.interrupt();
-//        }
-
-
-        addPoint();
+        addPoint(frequency, decibels, channel, time);
         volumeController.setMax();
     }
 
-   /* private void stopAndSave() {
-
-        if (saving) {
-            return;
-        }
-        savingThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                time = timer.getElapsedTimeSecs();
-                saving = true;
-
-                vibe.vibrate(50);
-
-                if (play != null) {
-                    play.release();
-                    play = null;
-                }
-                if (playThread != null) {
-                    playThread.interrupt();
-                }
-
-                if(stop) {
-                    addPoint();
-                    volumeController.setMax();
-                    stop = false;
-                }
-
-                saving = false;
-            }
-        });
-        savingThread.start();
-    }*/
-
-    private void initAlgorithm() {
+    private void initAlgorithm(int numberOfFrequencies, ArrayList<Integer> allFrequencies) {
 
         resetLists();
 
         chosenFrequencies = frequenciesData.random(numberOfFrequencies, allFrequencies);
         sample = new Sample(numberOfFrequencies, chosenFrequencies);
         //        maxDecibels = preferences.loadDecibels(getApplicationContext());
-        maxDecibelsData = loudnessData.find(MAXDECIBELS);
+        ArrayList<Double> maxDecibelsData = loudnessData.find(MAXDECIBELS);
         decibelsInTable = maxDecibelsData.get(0);
         indexOfMaxDecibels = maxDecibelsData.get(1);
 
-        for (int i = 0; i < chosenFrequencies.size() * 2; i++) {
-            sample.getNewSample();
-        }
-        samplesList = sample.getSamplesList();
+        samplesList = sample.makeSamplesList();
         samplesListSize = samplesList.size();
-
-
     }
 
     private void initCancelButton() {
@@ -500,7 +391,7 @@ public class AudioTestActivity extends AppCompatActivity
 
     public void helpButton(View v) {
         vibe.vibrate(50);
-        intent = new Intent(this, PopUpAudioTest.class);
+        Intent intent = new Intent(this, PopUpAudioTest.class);
         startActivity(intent);
     }
 
@@ -562,13 +453,13 @@ public class AudioTestActivity extends AppCompatActivity
         channels = new ArrayList<>();
         times = new ArrayList<>();
 
-        preferences = new Preferences();
 
         frequenciesData = new FrequenciesData();
 
-        allFrequencies = preferences.loadFrequencies(getApplicationContext());
+        Preferences preferences = new Preferences();
+        ArrayList<Integer> allFrequencies = preferences.loadFrequencies(getApplicationContext());
 
-        numberOfFrequencies = allFrequencies.size();
+        int numberOfFrequencies = allFrequencies.size();
 
         resetLists();
 
@@ -582,15 +473,15 @@ public class AudioTestActivity extends AppCompatActivity
         loudnessData = new LoudnessData();
         dataTable = loudnessData.make();
 
-        preferences = new Preferences();
+//        preferences = new Preferences();
 
-        initAlgorithm();
+        initAlgorithm(numberOfFrequencies, allFrequencies);
 
         Log.e("test", "AudioTestActivity: onCreate() // values: allFrequencies.toString() = " + allFrequencies.toString() + "\n numberOfFrequencies = " + numberOfFrequencies);
     }
 
     private void setTextSampleNumber(int numberOfSample, int samplesListSize) {
-        string = numberOfSample + " / " + samplesListSize;
+        String string = numberOfSample + " / " + samplesListSize;
         textSampleNumber.setText(string);
     }
 

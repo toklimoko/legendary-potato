@@ -15,8 +15,6 @@ import com.tomek.audiometr.activities.MainActivity;
 
 public class SplashScreen extends Activity {
 
-    private ConstraintLayout constraintLayout;
-
     private void thread() {
         Thread splashThread = new Thread() {
             @Override
@@ -38,7 +36,7 @@ public class SplashScreen extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        constraintLayout = findViewById(R.id.cl_splashScreen);
+        ConstraintLayout constraintLayout = findViewById(R.id.cl_splashScreen);
         constraintLayout.setBackgroundColor(getResources().getColor(R.color.SplashSecondColor));
 
         thread();
