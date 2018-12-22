@@ -20,14 +20,14 @@ public class FrequenciesData {
 
     public ArrayList<Integer> basicAudioTest() {
         allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000));
+        allFrequencies.addAll(Arrays.asList(125, 250, 500, 1000, 2000, 4000, 8000));
 
         return allFrequencies;
     }
 
     public ArrayList<Integer> extendedAudioTest() {
         allFrequencies = new ArrayList<>();
-        allFrequencies.addAll(Arrays.asList(100, 125, 150, 200, 300, 400, 500, 700, 1000, 2000, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000, 16000, 17000, 18000));
+        allFrequencies.addAll(Arrays.asList(100, 125, 150, 250, 300, 400, 500, 700, 1000, 2000, 2500, 3000, 4000, 6000, 8000, 10000, 12000, 14000, 15000, 16000, 17000, 18000));
 
         return allFrequencies;
     }

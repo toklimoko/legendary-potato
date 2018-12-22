@@ -12,7 +12,7 @@ public class Play {
 
     private double frequency = 0.0;
     private double amplitude = 0.0;
-    private int duration = 1000; // miliseconds
+    private int duration = 1500; // miliseconds
     private String channel = "Both";
 
     private double amplitudeL = 0.0;
@@ -51,13 +51,17 @@ public class Play {
             mBuffer[i] = (short) (mSound[i] * Short.MAX_VALUE);
         }
 
-        if (channel.equals("Left")) {
-            amplitudeL = amplitude;
-        } else if (channel.equals("Right")) {
-            amplitudeR = amplitude;
-        } else if (channel.equals("Both")) {
-            amplitudeR = amplitude;
-            amplitudeL = amplitude;
+        switch (channel) {
+            case "Left":
+                amplitudeL = amplitude;
+                break;
+            case "Right":
+                amplitudeR = amplitude;
+                break;
+            case "Both":
+                amplitudeR = amplitude;
+                amplitudeL = amplitude;
+                break;
         }
 
         mAudioTrack.setStereoVolume((float) amplitudeL, (float) amplitudeR);
