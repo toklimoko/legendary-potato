@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tomek.audiometr.R;
@@ -39,6 +40,8 @@ public class ResultActivity extends Activity {
     private double frequencyLimitMax;
 
     private LinearLayout chartLayout;
+    private TextView textResultValue;
+
 
     private XYSeries seriesR;
     private XYSeries seriesL;
@@ -54,7 +57,7 @@ public class ResultActivity extends Activity {
 
     private Files file;
 
-    private void separateByChannels(){
+    private void separateByChannels() {
 
         if (seriesR != null || seriesL != null) {
             seriesR.clearSeriesValues();
@@ -73,7 +76,7 @@ public class ResultActivity extends Activity {
         }
     }
 
-    private void rejectPoints(){
+    private void rejectPoints() {
         if (seriesT != null) {
             seriesT.clearSeriesValues();
         }
@@ -84,18 +87,103 @@ public class ResultActivity extends Activity {
         double average = 0.0;
 
         for (int i = 0; i < times.size(); i++) {
-           sum = sum + times.get(i);
+            sum = sum + times.get(i);
         }
-        average = sum/times.size();
+        average = sum / times.size();
 
         for (int i = 0; i < times.size(); i++) {
-            if (times.get(i)<0.20*average || times.get(i)>1.80*average){
-                seriesT.add(xAxis.get(i),yAxis.get(i));
+            if (times.get(i) < 0.03 * average || times.get(i) > 1.97 * average) {
+                seriesT.add(xAxis.get(i), yAxis.get(i));
                 selectedTimes.add("Incorrect");
-            } else{
+            } else {
                 selectedTimes.add("Correct");
             }
         }
+    }
+
+    private void calculateResult() {
+
+        ArrayList<Double> freqToCalculate = new ArrayList<>();
+        ArrayList<Double> ampToCalculate = new ArrayList<>();
+        ArrayList<String> chanToCalculate = new ArrayList<>();
+
+        //search for frequencies
+        for (int i = 0; i < xAxis.size(); i++) {
+            double tempFreq = xAxis.get(i);
+            double tempAmp = yAxis.get(i);
+            String tempChan = channels.get(i);
+
+            if (tempFreq == 500 || tempFreq == 1000 || tempFreq == 2000 || tempFreq == 4000) {
+                freqToCalculate.add(tempFreq);
+                ampToCalculate.add(tempAmp);
+                chanToCalculate.add(tempChan);
+            }
+        }
+
+        ArrayList<Double> pairedFreq = new ArrayList<>();
+        ArrayList<Double> pairedAmp = new ArrayList<>();
+        ArrayList<String> pairedChan = new ArrayList<>();
+
+        //search for pairs of frequencies
+        for (int i = 0; i < freqToCalculate.size(); i++) {
+            double tempFreq = freqToCalculate.get(i);
+
+            for (int j = 0; j < freqToCalculate.size(); j++) {
+                if (tempFreq == freqToCalculate.get(j)) {
+                    double tempAmp = ampToCalculate.get(j);
+                    String tempChan = chanToCalculate.get(j);
+
+                    pairedFreq.add(tempFreq);
+                    pairedAmp.add(tempAmp);
+                    pairedChan.add(tempChan);
+                }
+            }
+        }
+
+        ArrayList<Double> comparedFreq = new ArrayList<>();
+        ArrayList<Double> comparedAmp = new ArrayList<>();
+        ArrayList<String> comparedChan = new ArrayList<>();
+
+        //compare
+        for (int i = 0; i < pairedFreq.size() - 1; i = i + 2) {
+            double tempFreq = pairedFreq.get(i);
+            double tempAmp = pairedAmp.get(i);
+            String tempChan = pairedChan.get(i);
+
+            double tempFreq2 = pairedFreq.get(i + 1);
+            double tempAmp2 = pairedAmp.get(i + 1);
+            String tempChan2 = pairedChan.get(i + 1);
+
+            if (tempAmp < tempAmp2) {
+                comparedFreq.add(tempFreq);
+                comparedAmp.add(tempAmp);
+                comparedChan.add(tempChan);
+            } else {
+                comparedFreq.add(tempFreq2);
+                comparedAmp.add(tempAmp2);
+                comparedChan.add(tempChan2);
+            }
+
+        }
+
+        Log.e("test", "pairedFreqlist = " + pairedFreq.toString() + "\n pairedAmpList = " + pairedAmp.toString() + "\n pairedChanList = " + pairedChan.toString());
+        Log.e("test", "comparedFreqlist = " + comparedFreq.toString() + "\n comparedAmpList = " + comparedAmp.toString() + "\n comparedChanList = " + comparedChan.toString());
+
+        //count average
+
+        double sum = 0;
+        for (int i = 0; i < comparedAmp.size(); i++) {
+            sum = sum + comparedAmp.get(i);
+        }
+        double average = sum / comparedAmp.size();
+
+        setTextResult(Math.round(average));
+    }
+
+
+    private void setTextResult(double resultValue) {
+        String string = resultValue + " dB";
+        textResultValue.setText(string);
     }
 
     private void drawChart() {
@@ -200,8 +288,12 @@ public class ResultActivity extends Activity {
 
         selectedTimes = new ArrayList<>();
 
+        textResultValue = findViewById(R.id.txtResult);
+
+
         separateByChannels();
         rejectPoints();
+        calculateResult();
         file = new Files();
 
         ImageView imageViewBackground = findViewById(R.id.iv_resultBackground);

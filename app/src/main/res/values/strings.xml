@@ -33,7 +33,7 @@ Celem aplikacji jest umożliwienie wyznaczenia orientacyjnego audiogramu, a wyni
     <string name="result">Wynik badania</string>
     <string name="author">Autor: Tomasz Klimek</string>
     <string name="eMail">E-mail: toklimoko@gmail.com</string>
-    <string name="version">Wersja: 102018_3</string>
+    <string name="version">Wersja: 122018_2</string>
     <string name="tv_audioTest_1">Aby rozpocząć badanie: </string>
     <string name="tv_audioTest_11">1. Udaj się w ciche miejsce</string>
     <string name="tv_audioTest_12">2. Załóż poprawnie słuchawki</string>
@@ -45,13 +45,14 @@ Celem aplikacji jest umożliwienie wyznaczenia orientacyjnego audiogramu, a wyni
     <string name="tv_calib4">Podczas wykonywania kalibracji należy pamiętać, aby (tak jak całe badanie) odbyła się ona w zacisznym miejscu. Należy trzymać stałą odległość między słuchawką a mikrofonem i unikać stukania. W razie problemów kalibrację można przeprowadzać wielokrotnie.</string>
     <string name="tv_test1">Jak wykonać badanie?</string>
     <string name="tv_test2">Usiądź w cichym miejscu, załóż słuchawki na uszy. Kliknij przycisk \"Zacznij badanie\" i nasłuchuj kolejnych dźwięków. W chwili, gdy usłyszysz ton, dotknij przycisk \"Słyszę\". Badanie zakończy się automatycznie, po wygenerowaniu odpowiedniej ilości dźwięków.</string>
-    <string name="tv_test3">Pamiętaj, aby przed badaniem wykonać kalibrację urządzenia! Podczas kalibracji nie zakładaj słuchawek! \n Badanie powinno się odbyć w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas badania nie można zmieniać głośności aplikacji. W razie problemów badanie można wielokrotnie powtarzać.</string>
+    <string name="tv_test31">Pamiętaj, aby przed badaniem wykonać kalibrację urządzenia! Podczas kalibracji nie zakładaj słuchawek! \n Badanie powinno się odbyć w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas badania nie można zmieniać głośności aplikacji. W razie problemów badanie można wielokrotnie powtarzać.</string>
+    <string name="tv_test3">Badanie powinno się odbyć w zacisznym miejscu ze słuchawkami szczelnie przyłożonymi do uszu. Podczas badania nie można zmieniać głośności aplikacji. W razie problemów badanie można wielokrotnie powtarzać.</string>
     <string name="tv_test5">Uwaga</string>
-    <string name="tv_choice_1">Wybierz rodzaj badania:</string>
+    <string name="tv_choice_1">Wybierz typ badania:</string>
     <string name="go">Dalej</string>
     <string name="tv_basicTest">Badanie podstawowe</string>
     <string name="tv_extendedTest">Badanie rozszerzone</string>
-    <string name="tv_basicTestTime">Czas trwania: około 7 min</string>
+    <string name="tv_basicTestTime">Czas trwania: około 5 min</string>
     <string name="tv_extendedTestTime">Czas trwania: około 15 min</string>
     <string name="calibrate">Kalibruj</string>
     <string name="save">Zapisz</string>
@@ -59,7 +60,7 @@ Celem aplikacji jest umożliwienie wyznaczenia orientacyjnego audiogramu, a wyni
     <string name="skip">Pomiń</string>
     <string name="basic_test">Badanie podstawowe</string>
     <string name="extended_test">Badanie rozszerzone</string>
-    <string name="basic_test1">Obejmuje test w podstawowym zakresie 9 częstotliwości: 125, 250, 500, 1000, 2000, 3000, 4000, 6000, 8000 Hz. Badanie trwa około 7 minut.</string>
+    <string name="basic_test1">Obejmuje test w podstawowym zakresie 7 częstotliwości: 125, 250, 500, 1000, 2000, 4000, 8000 Hz. Badanie trwa około 5 minut.</string>
     <string name="extended_test1">Obejmuje test w rozszerzonym zakresie 22 częstotliwości i pozwala na dokładniejszy wynik. Badanie trwa około 15 minut.</string>
     <string name="start">Start</string>
     <string name="app_info">Informacje o programie</string>
